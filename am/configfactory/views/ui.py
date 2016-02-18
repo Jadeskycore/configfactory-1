@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from am.configfactory import backup
 from am.configfactory.forms import ComponentForm, ComponentSettingsForm
 from am.configfactory.models import Component
-from am.configfactory.utils import flatten_dict
+from am.configfactory.utils import flatten_dict, sort_dict
 
 
 def index(request):
@@ -90,7 +90,7 @@ def component_view(request, alias, environment=None):
         settings_val = component.get_settings(environment)
 
     if readonly:
-        settings_val = flatten_dict(settings_val)
+        settings_val = sort_dict(flatten_dict(settings_val))
 
     if isinstance(settings_val, dict):
         settings_val = json.dumps(settings_val, indent=4)
