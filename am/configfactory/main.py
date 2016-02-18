@@ -9,11 +9,11 @@ import tornado.wsgi
 import tornado.httpserver
 import tornado.web
 import tornado.autoreload
-from django.core.urlresolvers import reverse
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
 from django.conf import settings
 from django.core.management import call_command
+from django.core.urlresolvers import reverse
 from django.core.wsgi import get_wsgi_application
 
 from am.configfactory import APP_ROOT, DATA_ROOT
@@ -62,7 +62,7 @@ def main(as_module=False):
     settings.AUTH_ENABLED = auth
     settings.AUTH_USERNAME = auth_username
     settings.AUTH_PASSWORD = auth_password
-    settings.DATA_DIR = backup_dir
+    settings.BACKUP_DIR = backup_dir
     settings.BACKUP_PERIOD = backup_period
     settings.BACKUP_COUNT = backup_count
 

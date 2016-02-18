@@ -51,7 +51,7 @@ ENVIRONMENTS = [
     'production'
 ]
 
-BACKUP_ROOT = DATA_ROOT
+BACKUP_DIR = DATA_ROOT
 
 BACKUP_PERIOD = 10  # seconds
 
