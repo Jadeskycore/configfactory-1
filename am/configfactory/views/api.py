@@ -54,10 +54,13 @@ def component_settings(request, environment, alias, path=None):
     component = get_object_or_404(Component, alias=alias)
 
     flatten = _get_flatten_param(request) or path is not None
-    data = component.get_settings(environment, flatten=flatten)
+    data = component.get_settings(environment)
 
     if path:
         data = data.get(path)
+
+    if flatten:
+        data = sort_dict(flatten_dict(data))
 
     return JsonResponse(data=data, safe=False)
 
