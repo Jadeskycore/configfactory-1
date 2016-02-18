@@ -51,6 +51,9 @@ def main(as_module=False):
 
     call_command('migrate')
 
+    if not os.path.exists(DATA_ROOT):
+        os.makedirs(DATA_ROOT)
+
     tornado_application = tornado.web.Application(handlers=[
         (r'/backups/(.*)', tornado.web.StaticFileHandler, dict(path=DATA_ROOT)),
         (r'.*', tornado.web.FallbackHandler, dict(fallback=wsgi_application)),
