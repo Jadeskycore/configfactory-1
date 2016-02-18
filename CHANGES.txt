@@ -1,2 +1,6 @@
 Next release
 ============
+
+v1.6 (2016-02-18)
+=================
+- fixed backup directory
