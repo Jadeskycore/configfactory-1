@@ -53,6 +53,10 @@ ENVIRONMENTS = [
 
 BACKUP_ROOT = DATA_ROOT
 
+BACKUP_PERIOD = 10  # seconds
+
+BACKUP_COUNT = 10  # seconds
+
 AUTH_ENABLED = True
 
 AUTH_USERNAME = 'admin'

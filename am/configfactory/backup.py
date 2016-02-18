@@ -17,9 +17,11 @@ def dump():
     return name
 
 
-def cleanup(seconds=10):
+def cleanup():
+    seconds = settings.BACKUP_PERIOD
+    max_count = settings.BACKUP_COUNT
     check_datetime = timezone.make_aware(timezone.now() - timezone.timedelta(seconds=seconds))
-    backups = [b['name'] for b in get_all()[10:] if check_datetime > b['created_at']]
+    backups = [b['name'] for b in get_all()[max_count:] if check_datetime > b['created_at']]
     for filename in backups:
         delete(filename)
 

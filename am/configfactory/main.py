@@ -34,7 +34,8 @@ def main(as_module=False):
     parser.add_argument('--port', default='4444', help='Server port')
     parser.add_argument('--backup_dir', default=DATA_ROOT, help='Backup dir')
     parser.add_argument('--backup', dest='backup', action='store_true', help='Use backup service', default=False)
-    parser.add_argument('--backup_period', help='Backup period (seconds)', default=10)
+    parser.add_argument('--backup_period', type=int, help='Backup period (seconds)', default=10)
+    parser.add_argument('--backup_count', type=int, help='Backup count', default=10)
     parser.add_argument('--debug', dest='debug', action='store_true', default=False)
     parser.add_argument('--reload', dest='reload', action='store_true', default=False)
     parser.add_argument('--auth', dest='auth', action='store_true', help='Use authentication', default=False)
@@ -53,6 +54,7 @@ def main(as_module=False):
     auth_password = args.auth_password
     backup = args.backup
     backup_period = args.backup_period
+    backup_count = args.backup_count
     backup_dir = args.backup_dir
 
     # Overwrite django settings
@@ -61,6 +63,8 @@ def main(as_module=False):
     settings.AUTH_USERNAME = auth_username
     settings.AUTH_PASSWORD = auth_password
     settings.DATA_DIR = backup_dir
+    settings.BACKUP_PERIOD = backup_period
+    settings.BACKUP_COUNT = backup_count
 
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)
@@ -86,6 +90,7 @@ def main(as_module=False):
     print('auth: {}'.format(auth))
     print('backup: {}'.format(backup))
     print('backup_period: every {} seconds'.format(backup_period))
+    print('backup_count: {}'.format(backup_count))
     print('backup_dir: {}'.format(backup_dir))
 
     http_server.listen(port=port, address=host)
