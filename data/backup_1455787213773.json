@@ -1,0 +1,16 @@
+[
+{
+    "model": "configfactory.component",
+    "pk": 1,
+    "fields": {
+        "name": "AMQP",
+        "alias": "amqp",
+        "settings": "{\"apps\":{\"app1\":\"Application 1\"},\"age\":10,\"name\":123}",
+        "settings_development": "{\"apps\":{\"app1\":\"Application 2\"},\"age\":10,\"name\":234234234}",
+        "settings_staging": "{\"age\":14}",
+        "settings_production": "{\"apps\":{\"app1\":\"Application 1\"},\"age\":10,\"name\":123}",
+        "created_at": "2016-02-17T06:43:38.068",
+        "updated_at": "2016-02-18T01:27:36.421"
+    }
+}
+]

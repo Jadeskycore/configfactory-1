@@ -1,0 +1,2 @@
+class ConfigFactoryClientException(Exception):
+    pass
