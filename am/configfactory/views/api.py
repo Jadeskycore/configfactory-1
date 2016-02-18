@@ -3,9 +3,23 @@ from collections import OrderedDict
 from django.conf import settings
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404
+from django.views.decorators.http import require_http_methods
 
+from am.configfactory import backup
 from am.configfactory.models import Component
 from am.configfactory.utils import flatten_dict, sort_dict
+
+
+@require_http_methods(["POST"])
+def backup_dump(request):
+    name = backup.dump()
+    return JsonResponse(data=name, safe=False)
+
+
+@require_http_methods(["POST"])
+def backup_cleanup(request):
+    backup.cleanup()
+    return JsonResponse(data=True, safe=False)
 
 
 def components(request, environment=None, path=None):

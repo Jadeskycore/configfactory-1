@@ -1,5 +1,4 @@
 import json
-import os
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -7,7 +6,7 @@ from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 
-from am.configfactory import backup, DATA_ROOT
+from am.configfactory import backup
 from am.configfactory.forms import ComponentForm, ComponentSettingsForm
 from am.configfactory.models import Component
 from am.configfactory.utils import flatten_dict

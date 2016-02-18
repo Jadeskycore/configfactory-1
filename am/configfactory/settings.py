@@ -1,6 +1,6 @@
 import os
 
-from am.configfactory import APP_ROOT, BASE_ROOT
+from am.configfactory import APP_ROOT, BASE_ROOT, DATA_ROOT
 
 ALLOWED_HOSTS = ['*']
 
@@ -50,6 +50,8 @@ ENVIRONMENTS = [
     'staging',
     'production'
 ]
+
+BACKUP_ROOT = DATA_ROOT
 
 AUTH_ENABLED = True
 
