@@ -15,6 +15,7 @@ except FileNotFoundError:
     VERSION = 'dev'
 
 requires = [
+    'pytest-runner',
     'django==1.9.2',
     'tornado==4.3',
     'jsonfield==1.0.3',
@@ -36,7 +37,7 @@ setup(
     zip_safe=False,
     install_requires=requires,
     tests_require=requires + [
-
+        'pytest'
     ],
     entry_points="""\
     [console_scripts]
