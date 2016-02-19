@@ -62,3 +62,5 @@ AUTH_ENABLED = True
 AUTH_USERNAME = 'admin'
 
 AUTH_PASSWORD = 'password'
+
+TIME_ZONE = 'UTC'

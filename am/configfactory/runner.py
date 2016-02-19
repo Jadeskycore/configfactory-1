@@ -9,6 +9,7 @@ import tornado.wsgi
 import tornado.httpserver
 import tornado.web
 import tornado.autoreload
+from django.utils import timezone
 from tornado import gen
 from tornado.httpclient import AsyncHTTPClient
 from django.conf import settings
@@ -89,9 +90,10 @@ def main(as_module=False):
     print('reload: {}'.format(reload))
     print('auth: {}'.format(auth))
     print('backup: {}'.format(backup))
-    print('backup_period: every {} seconds'.format(backup_period))
-    print('backup_count: {}'.format(backup_count))
-    print('backup_dir: {}'.format(backup_dir))
+    print('backup period: every {} seconds'.format(backup_period))
+    print('backup count: {}'.format(backup_count))
+    print('backup dir: {}'.format(backup_dir))
+    print('current time: {}'.format(timezone.get_current_timezone_name()))
 
     http_server.listen(port=port, address=host)
 
