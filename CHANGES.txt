@@ -1,6 +1,10 @@
 Next release
 ============
 
+v1.10 (2016-02-19)
+=================
+- added timezone support
+
 v1.9 (2016-02-19)
 =================
 - added client default settings
