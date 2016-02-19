@@ -1,5 +1,3 @@
-import json
-
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -58,9 +56,6 @@ def component_edit_schema(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
     schema = component.schema
-
-    if isinstance(schema, dict):
-        schema = json.dumps(schema, indent=4)
 
     if request.method == 'POST':
 
@@ -123,9 +118,6 @@ def component_view(request, alias, environment=None):
 
     if readonly:
         settings_val = sort_dict(flatten_dict(settings_val))
-
-    if isinstance(settings_val, dict):
-        settings_val = json.dumps(settings_val, indent=4)
 
     if request.method == 'POST':
 

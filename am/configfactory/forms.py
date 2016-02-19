@@ -5,6 +5,8 @@ from django import forms
 from django.forms import fields
 from django.core.exceptions import ValidationError
 
+from jsonfield.encoder import JSONEncoder
+
 from am.configfactory.models import Component
 
 
@@ -27,6 +29,11 @@ class JSONFormField(fields.CharField):
             return super().clean(value)
         except TypeError:
             raise ValidationError("Enter valid JSON")
+
+    def prepare_value(self, value):
+        if isinstance(value, dict):
+            return json.dumps(value, indent=4, cls=JSONEncoder, sort_keys=True)
+        return value
 
 
 class ComponentForm(forms.ModelForm):
