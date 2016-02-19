@@ -1,6 +1,10 @@
 Next release
 ============
 
+v1.9 (2016-02-19)
+=================
+- added client default settings
+
 v1.8 (2016-02-19)
 =================
 - added json key sorting
