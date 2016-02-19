@@ -3,19 +3,33 @@ import logging
 import requests
 from requests.auth import HTTPBasicAuth
 
-from .exceptions import ConfigFactoryClientException
+from am.configfactory.utils import merge_dicts
+from am.configfactory.client.exceptions import ConfigFactoryClientException
 
 logger = logging.getLogger(__name__)
 
 
 class ConfigFactoryClient:
 
-    def __init__(self, base_url: str, username: str, password: str, raise_exceptions=True, environment='development'):
+    def __init__(self, base_url: str, username: str, password: str, raise_exceptions=True,
+                 environment='development', default_settings=None):
+
         self.base_url = base_url[:-1] if base_url.endswith('/') else base_url
         self.auth = HTTPBasicAuth(username, password)
         self.raise_exceptions = raise_exceptions
         self.environment = environment
-        self._settings = self.load()
+
+        if default_settings is None:
+            default_settings = {}
+
+        try:
+            self._settings = self.load()
+        except Exception as e:
+            self._settings = {}
+            logger.warning("Cannot load settings. Using defaults. [{}]".format(str(e)))
+
+        # Load default settings
+        self._settings = merge_dicts(default_settings, self._settings)
 
     def _create_url(self, path, **params):
         """
