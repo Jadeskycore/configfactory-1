@@ -1,6 +1,10 @@
 Next release
 ============
 
+v1.7 (2016-02-19)
+=================
+- added json schema validation
+
 v1.6 (2016-02-18)
 =================
 - fixed backup directory

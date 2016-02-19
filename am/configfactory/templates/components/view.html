@@ -14,17 +14,16 @@
                         </li>
                         {% for environment in environments %}
                             <li class="{% if environment == current_environment %}active{% endif %}">
-                                <a href="
-                                        {% url 'components-view' alias=component.alias environment=environment %}{% if readonly %}?readonly=1{% endif %}">{{ environment }}</a>
+                                <a href="{% url 'components-view' alias=component.alias environment=environment %}{% if readonly %}?readonly=1{% endif %}">{{ environment }}</a>
                             </li>
                         {% endfor %}
                     </ul>
                     {% if current_environment %}
-                        <a href="{% url 'api-component' environment=current_environment alias=component.alias %}{% if readonly %}?flatten=1{% endif %}" target="_blank" class="btn btn-primary pull-right">
+                        <a href="{% url 'api-component' environment=current_environment alias=component.alias %}{% if readonly %}?flatten=1{% endif %}" target="_blank" class="btn btn-default pull-right">
                             <i class="fa fa-eye fa-fw"></i> [API] GET CONFIG
                         </a>
                     {% else %}
-                        <a href="{% url 'api' %}{% if readonly %}?flatten=1{% endif %}" target="_blank" class="btn btn-primary pull-right">
+                        <a href="{% url 'api' %}{% if readonly %}?flatten=1{% endif %}" target="_blank" class="btn btn-default pull-right">
                             <i class="fa fa-eye fa-fw"></i> [API] GET CONFIG
                         </a>
                     {% endif %}
@@ -36,7 +35,7 @@
                     <form method="post">
                         {% include 'shared/forms/_field.html' with field=form.settings hide_label=True %}
                         {% if not readonly %}
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-download"></i>
                                 Update
                             </button>
@@ -45,6 +44,12 @@
                             <i class="fa fa-pencil-square-o"></i>
                             Edit
                         </a>
+                        {% if component.require_schema %}
+                            <a href="{% url 'components-edit-schema' alias=component.alias %}" class="btn btn-primary">
+                                <i class="fa fa-pencil-square-o"></i>
+                                Edit schema
+                            </a>
+                        {% endif %}
                         <a href="{% url 'components-delete' alias=component.alias %}" class="btn btn-danger">
                             <i class="fa fa-trash-o"></i>
                             Delete

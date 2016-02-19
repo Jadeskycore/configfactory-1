@@ -7,7 +7,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 
 from am.configfactory import backup
-from am.configfactory.forms import ComponentForm, ComponentSettingsForm
+from am.configfactory.forms import ComponentForm, ComponentSettingsForm, ComponentSchemaForm
 from am.configfactory.models import Component
 from am.configfactory.utils import flatten_dict, sort_dict
 
@@ -43,11 +43,42 @@ def component_edit(request, alias):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "Component successfully updated.")
             return redirect(to=reverse('components-view', kwargs={'alias': component.alias}))
     else:
         form = ComponentForm(instance=component)
 
     return render(request, 'components/edit.html', {
+        'form': form,
+        'component': component
+    })
+
+
+def component_edit_schema(request, alias):
+
+    component = get_object_or_404(Component, alias=alias)
+    schema = component.schema
+
+    if isinstance(schema, dict):
+        schema = json.dumps(schema, indent=4)
+
+    if request.method == 'POST':
+
+        form = ComponentSchemaForm(data=request.POST, initial={
+            'schema': schema
+        })
+
+        if form.is_valid():
+            data = form.cleaned_data
+            component.schema = data['schema']
+            component.save()
+            messages.success(request, "Component schema successfully updated.")
+    else:
+        form = ComponentSchemaForm(initial={
+            'schema': schema
+        })
+
+    return render(request, 'components/edit_schema.html', {
         'form': form,
         'component': component
     })
@@ -59,6 +90,7 @@ def component_delete(request, alias):
 
     if request.method == 'POST':
         component.delete()
+        messages.success(request, "Component successfully deleted.")
         return redirect(to=reverse('index'))
 
     return render(request, 'components/delete.html', {
@@ -97,20 +129,27 @@ def component_view(request, alias, environment=None):
 
     if request.method == 'POST':
 
-        form = ComponentSettingsForm(data=request.POST, initial={
-            'settings': settings_val
-        })
+        form = ComponentSettingsForm(
+            require_schema=component.require_schema, schema=component.schema, data=request.POST,
+            initial={
+                'settings': settings_val
+            })
 
         if form.is_valid():
 
             data = form.cleaned_data
             setattr(component, settings_attr, data['settings'])
             component.save()
+            messages.success(request, "Component settings successfully deleted.")
+        else:
+            messages.error(request, "Validation error.", extra_tags=' alert-danger')
 
     else:
-        form = ComponentSettingsForm(initial={
-            'settings': settings_val
-        })
+        form = ComponentSettingsForm(
+            require_schema=component.require_schema, schema=component.schema,
+            initial={
+                'settings': settings_val
+            })
 
     return render(request, 'components/view.html',  {
         'component': component,

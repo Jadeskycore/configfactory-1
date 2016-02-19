@@ -21,7 +21,8 @@ requires = [
     'jsonfield==1.0.3',
     'django-autoslug==1.9.3',
     'pytz==2015.7',
-    'requests==2.9.1'
+    'requests==2.9.1',
+    'jsonschema==2.5.1'
 ]
 
 setup(
@@ -41,6 +42,6 @@ setup(
     ],
     entry_points="""\
     [console_scripts]
-    configfactory = am.configfactory.main:main
+    configfactory = am.configfactory.runner:main
     """,
 )

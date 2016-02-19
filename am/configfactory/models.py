@@ -23,6 +23,10 @@ class Component(models.Model):
 
     settings_production = JSONField(default={})
 
+    schema = JSONField(default={})
+
+    require_schema = models.BooleanField(default=False, help_text='Use json schema validation')
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(auto_now=True)

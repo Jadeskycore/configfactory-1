@@ -1,4 +1,4 @@
-from am.configfactory.main import main
+from am.configfactory.runner import main
 
 
 if __name__ == '__main__':

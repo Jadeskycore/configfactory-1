@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^components/create/$', view=views.ui.component_create, name='components-create'),
     url(r'^components/(?P<alias>[-\w\d]+)/$', view=views.ui.component_view, name='components-view'),
     url(r'^components/(?P<alias>[-\w\d]+)/edit/$', view=views.ui.component_edit, name='components-edit'),
+    url(r'^components/(?P<alias>[-\w\d]+)/edit/schema/$', view=views.ui.component_edit_schema,
+        name='components-edit-schema'),
     url(r'^components/(?P<alias>[-\w\d]+)/delete/$', view=views.ui.component_delete, name='components-delete'),
     url(r'^components/(?P<alias>[-\w\d]+)/(?P<environment>\w+)/$', view=views.ui.component_view,
         name='components-view'),
