@@ -1,6 +1,10 @@
 Next release
 ============
 
+v1.12 (2016-02-19)
+==================
+- added global property
+
 v1.11 (2016-02-19)
 ==================
 - added update confirmation
