@@ -9,7 +9,7 @@
                 <div class="col-lg-10">
                     <form method="post">
                         {% include 'shared/forms/_field.html' with field=form.schema hide_label=True %}
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to update settings?')">
                             <i class="fa fa-download"></i>
                             Update schema
                         </button>
