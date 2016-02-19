@@ -7,17 +7,19 @@
                     style="font-size: 18px; font-weight: bold">[{{ component.alias }}]</span></h1>
             <div class="row">
                 <div class="col-lg-12">
-                    <ul class="nav nav-pills pull-left">
-                        <li class="{% if current_environment == None %}active{% endif %}">
-                            <a href="
-                                    {% url 'components-view' alias=component.alias %}{% if readonly %}?readonly=1{% endif %}">base</a>
-                        </li>
-                        {% for environment in environments %}
-                            <li class="{% if environment == current_environment %}active{% endif %}">
-                                <a href="{% url 'components-view' alias=component.alias environment=environment %}{% if readonly %}?readonly=1{% endif %}">{{ environment }}</a>
+                    {% if not component.is_global %}
+                        <ul class="nav nav-pills pull-left">
+                            <li class="{% if current_environment == None %}active{% endif %}">
+                                <a href="
+                                        {% url 'components-view' alias=component.alias %}{% if readonly %}?readonly=1{% endif %}">base</a>
                             </li>
-                        {% endfor %}
-                    </ul>
+                            {% for environment in environments %}
+                                <li class="{% if environment == current_environment %}active{% endif %}">
+                                    <a href="{% url 'components-view' alias=component.alias environment=environment %}{% if readonly %}?readonly=1{% endif %}">{{ environment }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     {% if current_environment %}
                         <a href="{% url 'api-component' environment=current_environment alias=component.alias %}{% if readonly %}?flatten=1{% endif %}" target="_blank" class="btn btn-default pull-right">
                             <i class="fa fa-eye fa-fw"></i> [API] GET CONFIG

@@ -44,7 +44,7 @@ class ComponentForm(forms.ModelForm):
 
     class Meta:
         model = Component
-        fields = ('name', 'require_schema')
+        fields = ('name', 'require_schema', 'is_global')
 
 
 class ComponentSettingsForm(forms.Form):

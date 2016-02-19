@@ -25,7 +25,9 @@ class Component(models.Model):
 
     schema = JSONField(default={})
 
-    require_schema = models.BooleanField(default=False, help_text='Use json schema validation')
+    require_schema = models.BooleanField(default=True, help_text='Use json schema validation')
+
+    is_global = models.BooleanField(default=False, help_text="Use only base environment")
 
     created_at = models.DateTimeField(auto_now_add=True)
 

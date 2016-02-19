@@ -9,6 +9,7 @@
                     <form method="post">
                         {% include 'shared/forms/_field.html' with field=form.name %}
                         {% include 'shared/forms/_field.html' with field=form.require_schema %}
+                        {% include 'shared/forms/_field.html' with field=form.is_global %}
                         <button type="submit" class="btn btn-primary">Save changes</button>
                         <a href="{% url 'components-view' alias=component.alias %}" class="btn btn-primary">Cancel</a>
                     </form>
