@@ -1,5 +1,6 @@
 Next release
 ============
+- added client environment property
 
 v1.12 (2016-02-19)
 ==================

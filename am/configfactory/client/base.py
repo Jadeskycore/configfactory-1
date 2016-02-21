@@ -17,7 +17,7 @@ class ConfigFactoryClient:
         self.base_url = base_url[:-1] if base_url.endswith('/') else base_url
         self.auth = HTTPBasicAuth(username, password)
         self.raise_exceptions = raise_exceptions
-        self.environment = environment
+        self._environment = environment
 
         if default_settings is None:
             default_settings = {}
@@ -63,6 +63,10 @@ class ConfigFactoryClient:
             raise ConfigFactoryClientException("Invalid response. Got [{}].".format(response.status_code))
 
         return response.json()
+
+    @property
+    def environment(self):
+        return self._environment
 
     @property
     def settings(self):
