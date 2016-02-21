@@ -3,6 +3,7 @@ import logging
 import requests
 from requests.auth import HTTPBasicAuth
 
+from am.configfactory import settings
 from am.configfactory.utils import merge_dicts
 from am.configfactory.client.exceptions import ConfigFactoryClientException
 
@@ -22,11 +23,17 @@ class ConfigFactoryClient:
         if default_settings is None:
             default_settings = {}
 
-        try:
-            self._settings = self.load()
-        except Exception as e:
-            self._settings = {}
-            logger.warning("Cannot load settings. Using defaults. [{}]".format(str(e)))
+        self._settings = {}
+
+        if environment in settings.ENVIRONMENTS:
+            try:
+                self._settings = self.load()
+            except Exception as e:
+                logger.warning("Cannot load settings. Using defaults. [{}]".format(str(e)))
+        else:
+            logger.warning("Not supported environment. Available environments are: {}.".format(
+                ','.join(settings.ENVIRONMENTS)
+            ))
 
         # Load default settings
         self._settings = merge_dicts(default_settings, self._settings)

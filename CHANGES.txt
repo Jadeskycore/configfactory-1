@@ -1,6 +1,9 @@
 Next release
 ============
+
+v1.13 (2016-02-21)
 - added client environment property
+- added client not supported environments warning message
 
 v1.12 (2016-02-19)
 ==================
