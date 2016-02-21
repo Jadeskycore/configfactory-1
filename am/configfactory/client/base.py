@@ -32,7 +32,7 @@ class ConfigFactoryClient:
                 logger.warning("Cannot load settings. Using defaults. [{}]".format(str(e)))
         else:
             logger.warning("Not supported environment. Available environments are: {}.".format(
-                ','.join(settings.ENVIRONMENTS)
+                ', '.join(settings.ENVIRONMENTS)
             ))
 
         # Load default settings
