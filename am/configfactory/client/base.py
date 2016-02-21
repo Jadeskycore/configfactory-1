@@ -31,7 +31,8 @@ class ConfigFactoryClient:
             except Exception as e:
                 logger.warning("Cannot load settings. Using defaults. [{}]".format(str(e)))
         else:
-            logger.warning("Not supported environment. Available environments are: {}.".format(
+            logger.warning("`{}` is supported environment. Available environments are: {}.".format(
+                environment,
                 ', '.join(settings.ENVIRONMENTS)
             ))
 
