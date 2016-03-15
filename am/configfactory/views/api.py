@@ -68,5 +68,5 @@ def component_settings(request, environment, alias, path=None):
 def _get_flatten_param(request):
     try:
         return bool(int(request.GET.get('flatten', False)))
-    except TypeError:
+    except (TypeError, ValueError):
         return False

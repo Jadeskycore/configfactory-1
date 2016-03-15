@@ -16,6 +16,8 @@ def merge_dicts(dict1, dict2):
 
 
 def flatten_dict(d, parent_key='', sep='.'):
+    if not isinstance(d, dict):
+        return d
     items = []
     for k, v in d.items():
         new_key = parent_key + sep + k if parent_key else k
@@ -27,4 +29,6 @@ def flatten_dict(d, parent_key='', sep='.'):
 
 
 def sort_dict(d):
+    if not isinstance(d, dict):
+        return d
     return collections.OrderedDict(sorted(d.items()))
