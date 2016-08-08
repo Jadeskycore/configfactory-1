@@ -132,7 +132,7 @@ def component_view(request, alias, environment=None):
             data = form.cleaned_data
             setattr(component, settings_attr, data['settings'])
             component.save()
-            messages.success(request, "Component settings successfully deleted.")
+            messages.success(request, "Component settings successfully updated.")
         else:
             messages.error(request, "Validation error.", extra_tags=' alert-danger')
 
