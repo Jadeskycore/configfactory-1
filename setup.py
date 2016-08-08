@@ -18,10 +18,10 @@ requires = [
     'pytest-runner',
     'django==1.9.2',
     'tornado==4.3',
-    'jsonfield==1.0.3',
+    'django-jsonfield==1.0.1',
     'django-autoslug==1.9.3',
-    'pytz==2015.7',
-    'requests==2.9.1',
+    'pytz==2016.6.1',
+    'requests==2.10.0',
     'jsonschema==2.5.1'
 ]
 
