@@ -12,8 +12,9 @@ logger = logging.getLogger(__name__)
 
 class ConfigFactoryClient:
 
-    def __init__(self, base_url: str, username: str, password: str, raise_exceptions=True,
-                 environment='development', default_settings=None):
+    def __init__(self, base_url: str, username: str, password: str,
+                 raise_exceptions=True, environment='development',
+                 default_settings=None, default_strict=None):
 
         self.base_url = base_url[:-1] if base_url.endswith('/') else base_url
         self.auth = HTTPBasicAuth(username, password)
@@ -38,6 +39,10 @@ class ConfigFactoryClient:
 
         # Load default settings
         self._settings = merge_dicts(default_settings, self._settings)
+
+        if default_strict is None:
+            default_strict = False
+        self._default_strict = default_strict
 
     def _create_url(self, path, **params):
         """
@@ -114,7 +119,7 @@ class ConfigFactoryClient:
         """
         self._settings = self.load()
 
-    def get(self, path: str, default=None, component=None, load=False, strict=False):
+    def get(self, path: str, default=None, component=None, load=False, strict=None):
         """
         Get value by path.
 
@@ -131,6 +136,9 @@ class ConfigFactoryClient:
 
         if component:
             path = '.'.join([component, path])
+
+        if strict is None:
+            strict = self._default_strict
 
         if strict:
             return self.settings[path]

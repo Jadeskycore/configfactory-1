@@ -21,7 +21,7 @@ requires = [
     'django-jsonfield==1.0.1',
     'django-autoslug==1.9.3',
     'pytz==2016.6.1',
-    'requests==2.10.0',
+    'requests==2.11.1',
     'jsonschema==2.5.1'
 ]
 
