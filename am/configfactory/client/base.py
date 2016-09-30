@@ -31,11 +31,6 @@ class ConfigFactoryClient:
                 self._settings = self.load()
             except Exception as e:
                 logger.warning("Cannot load settings. Using defaults. [{}]".format(str(e)))
-        else:
-            logger.warning("`{}` is not supported environment. Available environments are: {}.".format(
-                environment,
-                ', '.join(settings.ENVIRONMENTS)
-            ))
 
         # Load default settings
         self._settings = merge_dicts(default_settings, self._settings)
