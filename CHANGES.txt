@@ -1,6 +1,10 @@
 Next release
 ============
 
+v1.17 (2016-10-12)
+==================
+- added client cache
+
 v1.16 (2016-10-12)
 ==================
 - cleanup warning
