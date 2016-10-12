@@ -1,5 +1,6 @@
+import os
+import json
 import logging
-
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -17,7 +18,11 @@ class ConfigFactory:
                  password: str,
                  environment='development',
                  default_settings=None,
-                 default_strict=None):
+                 default_strict=None,
+                 use_cache=False,
+                 cache_root=None,
+                 cache_filename='configfactory.json',
+                 ):
 
         self._base_url = base_url[:-1] \
             if base_url.endswith('/') else base_url
@@ -26,6 +31,16 @@ class ConfigFactory:
 
         default_settings = default_settings or {}
         settings = {}
+
+        if default_strict is None:
+            default_strict = False
+        self._default_strict = default_strict
+
+        if cache_root is None:
+            cache_root = '/var/tmp'
+
+        self._use_cache = use_cache
+        self._cache_filename = os.path.join(cache_root, cache_filename)
 
         try:
             settings = self.load()
@@ -36,10 +51,6 @@ class ConfigFactory:
 
         # Load default settings
         self._settings = merge_dicts(default_settings, settings)
-
-        if default_strict is None:
-            default_strict = False
-        self._default_strict = default_strict
 
     @property
     def environment(self):
@@ -104,25 +115,62 @@ class ConfigFactory:
             logger.error(message)
             return ConfigFactoryError(message)
 
-    def load(self, component: str=None):
+    def load(self, component: str=None, use_cache=None):
         """
         Load settings.
 
         :param component: Component alias
+        :param use_cache: Use cache
         :return: Settings
         """
-        if component is None:
-            url = self._create_url(
-                path='/{environment}/',
-                environment=self.environment
-            )
-        else:
-            url = self._create_url(
-                path='/{environment}/{component}/',
-                environment=self.environment,
-                component=component
-            )
-        return self._make_request(url, params={'flatten': 1})
+
+        settings = None
+
+        if use_cache is None:
+            use_cache = self._use_cache
+
+        if use_cache:
+            settings = self._read_cache()
+
+        if settings is None:
+
+            if component is None:
+                url = self._create_url(
+                    path='/{environment}/',
+                    environment=self.environment
+                )
+            else:
+                url = self._create_url(
+                    path='/{environment}/{component}/',
+                    environment=self.environment,
+                    component=component
+                )
+
+            settings = self._make_request(url, params={'flatten': 1})
+
+            if use_cache:
+                self._write_cache(settings)
+
+        return settings or {}
+
+    def _read_cache(self) -> dict:
+        """
+        Load settings from cache.
+
+        :return: Settings
+        """
+        try:
+            with open(self._cache_filename) as f:
+                return json.load(f)
+        except IOError:
+            return None
+
+    def _write_cache(self, settings):
+        """
+        Write settings to the cache.
+        """
+        with open(self._cache_filename, 'w') as f:
+            json.dump(settings, f, ensure_ascii=False)
 
     def reload(self):
         """
