@@ -1,2 +1,2 @@
-class ConfigFactoryClientException(Exception):
+class ConfigFactoryError(Exception):
     pass

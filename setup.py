@@ -16,8 +16,8 @@ except FileNotFoundError:
 
 requires = [
     'pytest-runner',
-    'django==1.9.2',
-    'tornado==4.3',
+    'django==1.10.1',
+    'tornado==4.4.2',
     'django-jsonfield==1.0.1',
     'django-autoslug==1.9.3',
     'pytz==2016.6.1',

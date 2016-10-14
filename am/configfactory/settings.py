@@ -41,7 +41,6 @@ MIDDLEWARE_CLASSES = [
 ]
 
 INSTALLED_APPS = [
-
     'am.configfactory',
 ]
 
