@@ -22,7 +22,8 @@ requires = [
     'django-autoslug==1.9.3',
     'pytz==2016.6.1',
     'requests==2.11.1',
-    'jsonschema==2.5.1'
+    'jsonschema==2.5.1',
+    'jsonfield==1.0.3'
 ]
 
 setup(
