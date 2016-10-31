@@ -1,6 +1,10 @@
 Next release
 ============
 
+v1.18 (2016-10-31)
+==================
+- removed client in favour of am-config
+
 v1.17 (2016-10-12)
 ==================
 - added client cache

@@ -1,2 +1,0 @@
-class ConfigFactoryError(Exception):
-    pass
