@@ -42,7 +42,20 @@ MIDDLEWARE_CLASSES = [
 
 INSTALLED_APPS = [
     'am.configfactory',
+    'django.contrib.staticfiles',
 ]
+
+STATIC_URL = '/static/'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+)
+
+STATICFILES_DIRS = (
+    os.path.join(APP_ROOT, 'static'),
+)
+
+# STATIC_ROOT = os.path.join(APP_ROOT, 'static')
 
 ENVIRONMENTS = [
     'development',
