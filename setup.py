@@ -17,13 +17,14 @@ except FileNotFoundError:
 requires = [
     'pytest-runner',
     'django==1.10.3',
-    'tornado==4.4.2',
     'django-jsonfield==1.0.1',
     'django-autoslug==1.9.3',
+    'dj-static==0.0.6',
     'pytz==2016.10',
     'requests==2.11.1',
     'jsonschema==2.5.1',
-    'gunicorn==19.6.0'
+    'gunicorn==19.6.0',
+    'apscheduler==3.3.0'
 ]
 
 setup(

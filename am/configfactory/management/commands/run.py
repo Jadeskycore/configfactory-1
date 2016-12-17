@@ -2,14 +2,14 @@ import multiprocessing
 from multiprocessing import Process
 
 from django.conf import settings
-from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
-# from am.configfactory.app import WSGIApplication, CronApplication
-# from am.configfactory.users.models import User
+from am.configfactory.wsgi import WSGIApplication
 
 
 class Command(BaseCommand):
+
+    help = 'Run Config Factory application.'
 
     def add_arguments(self, parser):
         super().add_arguments(parser)
@@ -23,7 +23,7 @@ class Command(BaseCommand):
             '--debug',
             action='store_true',
             dest='debug',
-            default=False,
+            default=settings.DEBUG,
             help='Use debug.',
         )
 
@@ -44,6 +44,7 @@ class Command(BaseCommand):
             'proc_name': 'configfactory',
         })
 
+        # Set default debug options
         if debug:
             options['reload'] = True
             options['use_static'] = True
@@ -52,11 +53,11 @@ class Command(BaseCommand):
             options['workers'] = multiprocessing.cpu_count() * 2 + 1
 
         # Initialize wsgi application
-        # wsgi_app = WSGIApplication(options)
+        wsgi_app = WSGIApplication(options=options)
 
         # Create wsgi application process
-        # wsgi_app_process = Process(target=wsgi_app.run)
-        # wsgi_app_process.start()
+        wsgi_app_process = Process(target=wsgi_app.run)
+        wsgi_app_process.start()
 
         # Initialize cron worker
         # cron_app = CronApplication()
@@ -66,10 +67,8 @@ class Command(BaseCommand):
         # cron_app_process.start()
 
         # Run multiple processes
-        # try:
-        #     wsgi_app_process.join()
+        try:
+            wsgi_app_process.join()
         #     cron_app_process.join()
-        # except (KeyboardInterrupt, SystemExit):
-        #     print('Shot down signal received...')
-
-
+        except (KeyboardInterrupt, SystemExit):
+            print('Shot down signal received...')

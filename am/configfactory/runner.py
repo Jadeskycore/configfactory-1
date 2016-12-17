@@ -1,26 +1,15 @@
 import argparse
 import os
 import sys
-import logging
-import tornado
-import tornado.ioloop
-import tornado.log
-import tornado.wsgi
-import tornado.httpserver
-import tornado.web
-import tornado.autoreload
 from django.utils import timezone
-from tornado import gen
-from tornado.httpclient import AsyncHTTPClient
 from django.conf import settings
 from django.core.management import call_command
 from django.core.urlresolvers import reverse
-from django.core.wsgi import get_wsgi_application
 
-from am.configfactory import APP_ROOT, DATA_ROOT
+from am.configfactory import DATA_ROOT
 
 
-def main(as_module=False):
+def main_(as_module=False):
 
     this_module = __package__ + '.main'
 
@@ -67,22 +56,12 @@ def main(as_module=False):
     settings.BACKUP_PERIOD = backup_period
     settings.BACKUP_COUNT = backup_count
 
-    logging.basicConfig(level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
-
-    wsgi_application = tornado.wsgi.WSGIContainer(get_wsgi_application())
+    # wsgi_application = tornado.wsgi.WSGIContainer(get_wsgi_application())
 
     call_command('migrate')
 
     if not os.path.exists(backup_dir):
         raise RuntimeError("Backup directory `{}` does not exist.".format(backup_dir))
-
-    tornado_application = tornado.web.Application(handlers=[
-        (r'/backups/(.*)', tornado.web.StaticFileHandler, dict(path=backup_dir)),
-        (r'.*', tornado.web.FallbackHandler, dict(fallback=wsgi_application)),
-    ], static_path=os.path.join(APP_ROOT, 'static'), debug=debug, autoreload=reload)
-
-    http_server = tornado.httpserver.HTTPServer(tornado_application)
 
     print('====== Starting ConfigFactory server {}:{} ======'.format(host, port))
     print('Server parameters:')
@@ -95,7 +74,7 @@ def main(as_module=False):
     print('backup dir: {}'.format(backup_dir))
     print('current time: {}'.format(timezone.get_current_timezone_name()))
 
-    http_server.listen(port=port, address=host)
+    # http_server.listen(port=port, address=host)
 
     if backup:
 
@@ -111,26 +90,26 @@ def main(as_module=False):
                 'auth_password': auth_password,
             })
 
-        @gen.coroutine
-        def auto_backup():
-            logger.info("Starting data backup.")
-            http_client = AsyncHTTPClient()
-            try:
-                yield http_client.fetch(backup_url, method='POST', body=b'', **request_params)
-                yield http_client.fetch(backup_cleanup_url, method='POST', body=b'', **request_params)
-                raise gen.Return
-            except tornado.httpclient.HTTPError as e:
-                logger.warning('Backup error: {}'.format(str(e)))
+        # @gen.coroutine
+        # def auto_backup():
+        #     logger.info("Starting data backup.")
+        #     http_client = AsyncHTTPClient()
+        #     try:
+        #         yield http_client.fetch(backup_url, method='POST', body=b'', **request_params)
+        #         yield http_client.fetch(backup_cleanup_url, method='POST', body=b'', **request_params)
+        #         raise gen.Return
+        #     except tornado.httpclient.HTTPError as e:
+        #         logger.warning('Backup error: {}'.format(str(e)))
 
-        timer = tornado.ioloop.PeriodicCallback(auto_backup, backup_period * 1000)
+        # timer = tornado.ioloop.PeriodicCallback(auto_backup, backup_period * 1000)
 
         print('====== Starting backup service ======')
-        timer.start()
+        # timer.start()
 
-    tornado.ioloop.IOLoop.current().start()
+    # tornado.ioloop.IOLoop.current().start()
 
 
-def main_():
+def main():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "am.configfactory.settings")
     from django.core.management import execute_from_command_line
     sys.argv.insert(1, 'run')
