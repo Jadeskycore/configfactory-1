@@ -128,3 +128,10 @@ def main(as_module=False):
         timer.start()
 
     tornado.ioloop.IOLoop.current().start()
+
+
+def main_():
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "am.configfactory.settings")
+    from django.core.management import execute_from_command_line
+    sys.argv.insert(1, 'run')
+    execute_from_command_line(sys.argv)
