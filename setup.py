@@ -41,7 +41,8 @@ setup(
     zip_safe=False,
     install_requires=requires,
     tests_require=requires + [
-        'pytest'
+        'pytest',
+        'pytest-django',
     ],
     entry_points="""\
     [console_scripts]
