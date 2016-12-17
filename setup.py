@@ -23,6 +23,7 @@ requires = [
     'pytz==2016.10',
     'requests==2.11.1',
     'jsonschema==2.5.1',
+    'gunicorn==19.6.0'
 ]
 
 setup(
@@ -32,6 +33,8 @@ setup(
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
         "Programming Language :: Python",
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
     ],
     packages=find_packages(),
     include_package_data=True,
