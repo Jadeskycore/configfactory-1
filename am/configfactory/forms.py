@@ -1,9 +1,9 @@
 import json
-import jsonschema
 
+import jsonschema
 from django import forms
-from django.forms import fields
 from django.core.exceptions import ValidationError
+from django.forms import fields
 
 from am.configfactory.models import Component
 

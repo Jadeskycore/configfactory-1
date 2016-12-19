@@ -1,12 +1,11 @@
 import collections
 
-from django.db import models
-from django.conf import settings
-
 from autoslug import AutoSlugField
+from django.conf import settings
+from django.db import models
 from jsonfield import JSONField
 
-from am.configfactory.utils import merge_dicts, flatten_dict, sort_dict
+from am.configfactory.utils import flatten_dict, merge_dicts, sort_dict
 
 
 class Component(models.Model):

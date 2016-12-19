@@ -1,11 +1,15 @@
+from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.http import Http404
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 
 from am.configfactory import backup
-from am.configfactory.forms import ComponentForm, ComponentSettingsForm, ComponentSchemaForm
+from am.configfactory.forms import (
+    ComponentForm,
+    ComponentSchemaForm,
+    ComponentSettingsForm,
+)
 from am.configfactory.models import Component
 from am.configfactory.utils import flatten_dict, sort_dict
 
@@ -42,7 +46,8 @@ def component_edit(request, alias):
         if form.is_valid():
             form.save()
             messages.success(request, "Component successfully updated.")
-            return redirect(to=reverse('components-view', kwargs={'alias': component.alias}))
+            return redirect(to=reverse('components-view',
+                                       kwargs={'alias': component.alias}))
     else:
         form = ComponentForm(instance=component)
 
@@ -132,9 +137,13 @@ def component_view(request, alias, environment=None):
             data = form.cleaned_data
             setattr(component, settings_attr, data['settings'])
             component.save()
-            messages.success(request, "Component settings successfully updated.")
+            messages.success(
+                request, "Component settings successfully updated.")
         else:
-            messages.error(request, "Validation error.", extra_tags=' alert-danger')
+            messages.error(
+                request,
+                "Validation error.",
+                extra_tags=' alert-danger')
 
     else:
         form = ComponentSettingsForm(
@@ -143,10 +152,10 @@ def component_view(request, alias, environment=None):
                 'settings': settings_val
             })
 
-    return render(request, 'components/view.html',  {
+    return render(request, 'components/view.html', {
         'component': component,
         'environments': environments,
-        'current_environment':  environment,
+        'current_environment': environment,
         'form': form,
         'readonly': readonly
     })
@@ -158,7 +167,9 @@ def backup_dump(request):
 
         name = backup.dump()
 
-        messages.success(request, 'Settings successfully dumped as `{}`.'.format(name))
+        messages.success(
+            request,
+            'Settings successfully dumped as `{}`.'.format(name))
         return redirect(to=reverse('backup-load'))
 
     return render(request, 'backup/dump.html', {
@@ -172,7 +183,8 @@ def backup_load(request, filename=None):
 
         if request.method == 'POST':
             backup.load(filename)
-            messages.success(request, 'Backup `{}` successfully loaded.'.format(filename))
+            messages.success(
+                request, 'Backup `{}` successfully loaded.'.format(filename))
             return redirect(to=reverse('backup-load'))
 
         return render(request, 'backup/load_confirmation.html', {
@@ -193,7 +205,9 @@ def backup_delete(request, filename):
 
     if request.method == 'POST':
         backup.delete(filename)
-        messages.success(request, 'Backup `{}` successfully deleted.'.format(filename))
+        messages.success(
+            request,
+            'Backup `{}` successfully deleted.'.format(filename))
         return redirect(to=reverse('backup-load'))
 
     return render(request, 'backup/delete.html', {

@@ -1,5 +1,4 @@
 import collections
-
 from copy import deepcopy
 
 
@@ -9,7 +8,7 @@ def merge_dicts(dict1, dict2):
     result = deepcopy(dict1)
     for k, v in dict2.items():
         if k in result and isinstance(result[k], dict):
-                result[k] = merge_dicts(result[k], v)
+            result[k] = merge_dicts(result[k], v)
         else:
             result[k] = deepcopy(v)
     return result
