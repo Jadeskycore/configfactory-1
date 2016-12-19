@@ -4,7 +4,7 @@ from multiprocessing import Process
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from am.configfactory.wsgi import WSGIApplication
+from am.configfactory import backup, scheduler, wsgi
 
 
 class Command(BaseCommand):
@@ -12,7 +12,15 @@ class Command(BaseCommand):
     help = 'Run Config Factory application.'
 
     def add_arguments(self, parser):
+
         super().add_arguments(parser)
+
+        parser.add_argument(
+            '--bind',
+            dest='bind',
+            default='127.0.0.1:8000',
+            help='The socket to bind.',
+        )
         parser.add_argument(
             '--use-static',
             action='store_true',
@@ -26,6 +34,26 @@ class Command(BaseCommand):
             default=settings.DEBUG,
             help='Use debug.',
         )
+        parser.add_argument(
+            '--backup_interval',
+            dest='backup_interval',
+            type=int,
+            help='Backup interval (seconds).',
+            default=backup.BACKUP_INTERVAL
+        )
+        parser.add_argument(
+            '--backup_count',
+            dest='backup_count',
+            type=int,
+            help='Backup count.',
+            default=backup.BACKUP_COUNT
+        )
+        parser.add_argument(
+            '--backup_dir',
+            dest='backup_dir',
+            help='Backup directory.',
+            default=backup.BACKUP_DIR
+        )
 
     def handle(self, *args, **options):
 
@@ -34,6 +62,11 @@ class Command(BaseCommand):
 
         # Set settings
         settings.DEBUG = debug
+
+        # Set backup settings
+        backup.BACKUP_INTERVAL = options['backup_interval']
+        backup.BACKUP_COUNT = options['backup_count']
+        backup.BACKUP_DIR = options['backup_dir']
 
         # Create super user
         # if User.objects.count() == 0:
@@ -53,22 +86,19 @@ class Command(BaseCommand):
             options['workers'] = multiprocessing.cpu_count() * 2 + 1
 
         # Initialize wsgi application
-        wsgi_app = WSGIApplication(options=options)
+        wsgi_app = wsgi.Application(options=options)
 
         # Create wsgi application process
         wsgi_app_process = Process(target=wsgi_app.run)
         wsgi_app_process.start()
 
-        # Initialize cron worker
-        # cron_app = CronApplication()
-
         # Create and start cron application process
-        # cron_app_process = Process(target=cron_app.run)
-        # cron_app_process.start()
+        scheduler_process = Process(target=scheduler.run)
+        scheduler_process.start()
 
         # Run multiple processes
         try:
             wsgi_app_process.join()
-        #     cron_app_process.join()
+            scheduler_process.join()
         except (KeyboardInterrupt, SystemExit):
             print('Shot down signal received...')

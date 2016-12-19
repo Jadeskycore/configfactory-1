@@ -1,6 +1,6 @@
 import os
 
-from am.configfactory import APP_ROOT, BASE_ROOT, DATA_ROOT
+from am.configfactory import paths
 
 ALLOWED_HOSTS = ['*']
 
@@ -13,7 +13,7 @@ ROOT_URLCONF = 'am.configfactory.urls'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_ROOT, 'db.sqlite3'),
+        'NAME': os.path.join(paths.BASE_ROOT, 'db.sqlite3'),
     }
 }
 
@@ -21,7 +21,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(APP_ROOT, 'templates'),
+            os.path.join(paths.APP_ROOT, 'templates'),
         ],
         'APP_DIRS': False,
         'OPTIONS': {
@@ -37,7 +37,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'am.configfactory.middleware.BasicAuthMiddleware',
 ]
 
 INSTALLED_APPS = [
@@ -52,7 +51,7 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_DIRS = (
-    os.path.join(APP_ROOT, 'static'),
+    os.path.join(paths.APP_ROOT, 'static'),
 )
 
 # STATIC_ROOT = os.path.join(APP_ROOT, 'static')
@@ -62,17 +61,5 @@ ENVIRONMENTS = [
     'staging',
     'production'
 ]
-
-BACKUP_DIR = DATA_ROOT
-
-BACKUP_PERIOD = 10  # seconds
-
-BACKUP_COUNT = 10  # seconds
-
-AUTH_ENABLED = True
-
-AUTH_USERNAME = 'admin'
-
-AUTH_PASSWORD = 'password'
 
 TIME_ZONE = 'UTC'

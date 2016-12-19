@@ -2,7 +2,7 @@ import gunicorn.app.base
 from django.core.handlers.wsgi import WSGIHandler
 
 
-class WSGIApplication(gunicorn.app.base.BaseApplication):
+class Application(gunicorn.app.base.BaseApplication):
     """
     WSGI application loader.
     """
