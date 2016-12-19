@@ -20,6 +20,7 @@ requires = [
     'django-jsonfield==1.0.1',
     'django-autoslug==1.9.3',
     'dj-static==0.0.6',
+    'djangorestframework==3.5.3',
     'pytz==2016.10',
     'requests==2.11.1',
     'jsonschema==2.5.1',
