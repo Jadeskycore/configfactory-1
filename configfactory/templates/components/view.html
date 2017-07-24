@@ -3,9 +3,10 @@
 {% block content %}
     <div class="row">
         <div class="col-lg-12">
-            <h2>{{ component.name }} <span style="font-size: 18px; font-weight: bold">[{{ component.alias }}]</span></h2>
+            <h3>{{ component.name }} <span style="font-size: 18px; font-weight: bold">[{{ component.alias }}]</span></h3>
+            <hr>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-10">
                     {% if not component.is_global %}
                         <ul class="nav nav-pills pull-left">
                             <li class="{% if current_environment == None %}active{% endif %}">
@@ -19,20 +20,37 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-                    {% if current_environment %}
-                        <a href="{% url 'api-component' environment=current_environment alias=component.alias %}{% if readonly %}?flatten=1{% endif %}" target="_blank" class="btn btn-default pull-right">
-                            <i class="fa fa-eye fa-fw"></i> [API] GET CONFIG
-                        </a>
-                    {% else %}
-                        <a href="{% url 'api' %}{% if readonly %}?flatten=1{% endif %}" target="_blank" class="btn btn-default pull-right">
-                            <i class="fa fa-eye fa-fw"></i> [API] GET CONFIG
-                        </a>
-                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    <ul class="nav nav-pills pull-right">
+                        <li class="{% if not readonly %}active{% endif %}">
+                            {% if current_environment %}
+                                <a href="{% url 'components-view' alias=component.alias environment=current_environment %}" data-toggle="tooltip" title="Edit">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'components-view' alias=component.alias %}" data-toggle="tooltip" title="Edit">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </a>
+                            {% endif %}
+                        </li>
+                        <li class="{% if readonly %}active{% endif %}">
+                            {% if current_environment %}
+                                <a href="{% url 'components-view' alias=component.alias environment=current_environment %}?readonly=1" data-toggle="tooltip" title="Flatten View">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'components-view' alias=component.alias %}?readonly=1" data-toggle="tooltip" title="Flatten View">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            {% endif %}
+                        </li>
+                    </ul>
                 </div>
             </div>
             <hr>
             <div class="row">
-                <div class="col-lg-10">
+                <div class="col-md-12">
                     <form method="post">
                         {% include 'shared/forms/_field.html' with field=form.settings hide_label=True %}
                         {% if not readonly %}
@@ -56,36 +74,6 @@
                             Delete
                         </a>
                     </form>
-                </div>
-                <div class="col-lg-2">
-                    <ul class="nav nav-pills nav-stacked">
-                        <li class="{% if not readonly %}active{% endif %}">
-                            {% if current_environment %}
-                                <a href="{% url 'components-view' alias=component.alias environment=current_environment %}">
-                                    <i class="fa fa-pencil-square-o"></i>
-                                    Edit
-                                </a>
-                            {% else %}
-                                <a href="{% url 'components-view' alias=component.alias %}">
-                                    <i class="fa fa-pencil-square-o"></i>
-                                    Edit
-                                </a>
-                            {% endif %}
-                        </li>
-                        <li class="{% if readonly %}active{% endif %}">
-                            {% if current_environment %}
-                                <a href="{% url 'components-view' alias=component.alias environment=current_environment %}?readonly=1">
-                                    <i class="fa fa-eye"></i>
-                                    Flatten View
-                                </a>
-                            {% else %}
-                                <a href="{% url 'components-view' alias=component.alias %}?readonly=1">
-                                    <i class="fa fa-eye"></i>
-                                    Flatten View
-                                </a>
-                            {% endif %}
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>

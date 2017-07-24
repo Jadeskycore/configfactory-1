@@ -46,11 +46,8 @@
             </ul>
         </div>
         <div id="page-content-wrapper">
-
-            <div id="page-wrapper">
-                {% include 'shared/_flash_messages.html' %}
-                {% block content %}{% endblock %}
-            </div>
+            {% include 'shared/_flash_messages.html' %}
+            {% block content %}{% endblock %}
         </div>
     </div>
     <script src="{% static 'vendor/jquery/js/jquery-1.11.1.js' %}"></script>
