@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from configfactory import backup, scheduler, wsgi
+from configfactory.support.server import GunicornServer
 
 
 class Command(BaseCommand):
@@ -86,11 +87,14 @@ class Command(BaseCommand):
             options['workers'] = multiprocessing.cpu_count() * 2 + 1
 
         # Initialize wsgi application
-        wsgi_app = wsgi.Application(options=options)
+        server = GunicornServer(
+            wsgi_app=wsgi.application,
+            options=options
+        )
 
         # Create wsgi application process
-        wsgi_app_process = Process(target=wsgi_app.run)
-        wsgi_app_process.start()
+        server_process = Process(target=server.run)
+        server_process.start()
 
         # Create and start cron application process
         scheduler_process = Process(target=scheduler.run)
@@ -98,7 +102,7 @@ class Command(BaseCommand):
 
         # Run multiple processes
         try:
-            wsgi_app_process.join()
+            server_process.join()
             scheduler_process.join()
         except (KeyboardInterrupt, SystemExit):
             print('Shot down signal received...')
