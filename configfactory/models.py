@@ -1,6 +1,5 @@
 import collections
 
-from autoslug import AutoSlugField
 from django.conf import settings
 from django.db import models
 from jsonfield import JSONField
@@ -12,7 +11,10 @@ class Component(models.Model):
 
     name = models.CharField(max_length=64, unique=True)
 
-    alias = AutoSlugField(populate_from='name')
+    alias = models.SlugField(
+        unique=True,
+        help_text='Unique component alias'
+    )
 
     settings = JSONField(default={})
 

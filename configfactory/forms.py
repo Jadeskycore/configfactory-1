@@ -36,13 +36,18 @@ class JSONFormField(fields.CharField):
 
 class ComponentForm(forms.ModelForm):
 
-    name = forms.CharField(required=True, widget=forms.TextInput(attrs={
-        'class': 'form-control'
-    }))
-
     class Meta:
+
         model = Component
-        fields = ('name', 'require_schema', 'is_global')
+        fields = ('name', 'alias', 'require_schema', 'is_global')
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+            'alias': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+        }
 
 
 class ComponentSettingsForm(forms.Form):
