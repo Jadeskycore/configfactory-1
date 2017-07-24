@@ -12,15 +12,15 @@ with open(os.path.join(root_path, 'CHANGES.txt')) as f:
 version = __import__('configfactory').get_version()
 
 requires = [
-    'django==1.10.3',
+    'django==1.11.3',
     'django-jsonfield==1.0.1',
     'django-autoslug==1.9.3',
     'dj-static==0.0.6',
-    'pytz==2016.10',
+    'pytz==2017.2',
     'requests==2.11.1',
-    'jsonschema==2.5.1',
-    'gunicorn==19.6.0',
-    'apscheduler==3.3.0',
+    'jsonschema==2.6.0',
+    'gunicorn==19.7.1',
+    'apscheduler==3.3.1',
     'packaging==16.8',
 ]
 

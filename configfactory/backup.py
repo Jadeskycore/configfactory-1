@@ -66,7 +66,7 @@ def get_all():
             'name': filename,
             'size': os.path.getsize(os.path.join(BACKUP_DIR, filename)),
             'created_at': timezone.datetime.fromtimestamp(
-                timestamp=os.path.getctime(os.path.join(BACKUP_DIR, filename)),
+                os.path.getctime(os.path.join(BACKUP_DIR, filename)),
                 tz=timezone.get_current_timezone()
             )
         } for filename in sorted(os.listdir(BACKUP_DIR), reverse=True)

@@ -127,7 +127,9 @@ def component_view(request, alias, environment=None):
     if request.method == 'POST':
 
         form = ComponentSettingsForm(
-            require_schema=component.require_schema, schema=component.schema, data=request.POST,
+            require_schema=component.require_schema,
+            schema=component.schema,
+            data=request.POST,
             initial={
                 'settings': settings_val
             })
@@ -143,11 +145,13 @@ def component_view(request, alias, environment=None):
             messages.error(
                 request,
                 "Validation error.",
-                extra_tags=' alert-danger')
+                extra_tags=' alert-danger'
+            )
 
     else:
         form = ComponentSettingsForm(
-            require_schema=component.require_schema, schema=component.schema,
+            require_schema=component.require_schema,
+            schema=component.schema,
             initial={
                 'settings': settings_val
             })
@@ -169,7 +173,8 @@ def backup_dump(request):
 
         messages.success(
             request,
-            'Settings successfully dumped as `{}`.'.format(name))
+            'Settings successfully dumped as `{}`.'.format(name)
+        )
         return redirect(to=reverse('backup-load'))
 
     return render(request, 'backup/dump.html', {
@@ -210,6 +215,4 @@ def backup_delete(request, filename):
             'Backup `{}` successfully deleted.'.format(filename))
         return redirect(to=reverse('backup-load'))
 
-    return render(request, 'backup/delete.html', {
-
-    })
+    return render(request, 'backup/delete.html')
