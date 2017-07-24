@@ -1,13 +1,6 @@
 <div class="navbar-default sidebar" role="navigation" style="margin-top: 8px">
     <div class="sidebar-nav navbar-collapse">
         <ul class="nav" id="side-menu">
-            <li class="btn-item">
-                <form action="{% url 'components-create' %}">
-                    <button type="submit" class="btn btn-success btn-default btn-block">
-                        <i class="fa fa-plus"></i> ADD COMPONENT
-                    </button>
-                </form>
-            </li>
             {% for component in components %}
             <li>
 {#                {% set is_current=request.view_args.component_id == component.pk|string %}#}
