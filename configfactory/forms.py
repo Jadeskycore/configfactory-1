@@ -5,7 +5,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import fields
 
-from am.configfactory.models import Component
+from configfactory.models import Component
 
 
 class JSONFormField(fields.CharField):

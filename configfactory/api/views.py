@@ -4,8 +4,8 @@ from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 
-from am.configfactory.models import Component
-from am.configfactory.utils import flatten_dict, sort_dict
+from configfactory.models import Component
+from configfactory.utils import flatten_dict, sort_dict
 
 
 def components(request, environment=None):

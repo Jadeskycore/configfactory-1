@@ -4,14 +4,14 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from am.configfactory import backup
-from am.configfactory.forms import (
+from configfactory import backup
+from configfactory.forms import (
     ComponentForm,
     ComponentSchemaForm,
     ComponentSettingsForm,
 )
-from am.configfactory.models import Component
-from am.configfactory.utils import flatten_dict, sort_dict
+from configfactory.models import Component
+from configfactory.utils import flatten_dict, sort_dict
 
 
 def index(request):

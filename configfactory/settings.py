@@ -1,6 +1,6 @@
 import os
 
-from am.configfactory import paths
+from configfactory import paths
 
 ALLOWED_HOSTS = ['*']
 
@@ -8,7 +8,7 @@ SECRET_KEY = '28$0ld^(u&7o%f_e4sqh@rl&lere4kzsca#@&6@f+#5k7r963b'
 
 DEBUG = True
 
-ROOT_URLCONF = 'am.configfactory.urls'
+ROOT_URLCONF = 'configfactory.urls'
 
 DATABASES = {
     'default': {
@@ -26,7 +26,7 @@ TEMPLATES = [
         'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
-                'am.configfactory.context_proccessors.components',
+                'configfactory.context_proccessors.components',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -40,7 +40,7 @@ MIDDLEWARE_CLASSES = [
 ]
 
 INSTALLED_APPS = [
-    'am.configfactory',
+    'configfactory',
     'django.contrib.staticfiles',
 ]
 

@@ -1,4 +1,4 @@
-from am.configfactory.models import Component
+from configfactory.models import Component
 
 
 def components(request):

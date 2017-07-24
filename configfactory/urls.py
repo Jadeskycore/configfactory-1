@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 
-from am.configfactory import views
+from configfactory import views
 
 urlpatterns = [
     url(r'^$', view=views.index, name='index'),
@@ -19,5 +19,5 @@ urlpatterns = [
     url(r'^components/(?P<alias>[-\w\d]+)/(?P<environment>\w+)/$', view=views.component_view,
         name='components-view'),
 
-    url(r'^api/', include('am.configfactory.api.urls'))
+    url(r'^api/', include('configfactory.api.urls'))
 ]

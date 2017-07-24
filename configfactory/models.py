@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from jsonfield import JSONField
 
-from am.configfactory.utils import flatten_dict, merge_dicts, sort_dict
+from configfactory.utils import flatten_dict, merge_dicts, sort_dict
 
 
 class Component(models.Model):

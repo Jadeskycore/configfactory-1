@@ -4,7 +4,7 @@ from multiprocessing import Process
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from am.configfactory import backup, scheduler, wsgi
+from configfactory import backup, scheduler, wsgi
 
 
 class Command(BaseCommand):

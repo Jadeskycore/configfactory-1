@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management import call_command
 from django.utils import timezone
 
-from am.configfactory import paths
+from configfactory import paths
 
 BACKUP_DIR = getattr(settings, 'BACKUP_DIR', paths.DATA_ROOT)
 

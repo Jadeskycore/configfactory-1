@@ -12,7 +12,7 @@ SCHEDULER_SETTINGS = getattr(settings, 'SCHEDULER_SETTINGS', {})
 def run():
     """Run scheduler."""
 
-    from am.configfactory import backup
+    from configfactory import backup
 
     logger.info('Starting scheduler')
 
