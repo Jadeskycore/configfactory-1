@@ -5,37 +5,51 @@
     <title></title>
     <link href="/static/vendor/bootstrap/css/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
     <link href="/static/vendor/font-awesome/css/font-awesome.css" media="all" rel="stylesheet" type="text/css" />
-    <link href="/static/css/theme.css" media="all" rel="stylesheet" type="text/css" />
-    <link href="/static/css/base.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="/static/css/main.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <div id="wrapper">
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="{% url 'index' %}"><i class="fa fa-cubes fa-fw"></i> ConfigFactory</a>
-            </div>
-            <ul class="nav navbar-nav">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'index' %}"><i class="fa fa-cubes fa-fw"></i>
+                ConfigFactory</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="{% url 'backup-dump' %}">
+                    <i class="fa fa-upload"></i>
+                    DUMP
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'backup-load' %}">
+                    <i class="fa fa-download"></i>
+                    LOAD
+                </a>
+            </li>
+        </ul>
+        <a href="{% url 'components-create' %}" class="btn btn-success navbar-btn">
+            <i class="fa fa-plus"></i> ADD COMPONENT
+        </a>
+    </nav>
+    <div id="wrapper" class="toggled">
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                {% for component in components %}
                 <li>
-                    <a href="{% url 'backup-dump' %}">
-                        <i class="fa fa-upload"></i>
-                        DUMP
+    {#                {% set is_current=request.view_args.component_id == component.pk|string %}#}
+                    <a href="{% url 'components-view' alias=component.alias %}" class="{% if is_current %}active{% endif %}">
+                        <i class="fa fa-cube fa-fw"></i> {{ component.name|upper }} <small><strong>[{{ component.alias }}]</strong></small>
                     </a>
                 </li>
-                <li>
-                    <a href="{% url 'backup-load' %}">
-                        <i class="fa fa-download"></i>
-                        LOAD
-                    </a>
-                </li>
+                {% endfor %}
             </ul>
-            <a href="{% url 'components-create' %}" class="btn btn-success navbar-btn">
-                <i class="fa fa-plus"></i> ADD COMPONENT
-            </a>
-        </nav>
-        {% include 'shared/_sidebar.html' %}
-        <div id="page-wrapper">
-            {% include 'shared/_flask_messages.html' %}
-            {% block content %}{% endblock %}
+        </div>
+        <div id="page-content-wrapper">
+
+            <div id="page-wrapper">
+                {% include 'shared/_flask_messages.html' %}
+                {% block content %}{% endblock %}
+            </div>
         </div>
     </div>
     <script src="/static/vendor/jquery/js/jquery-1.11.1.js"></script>
@@ -44,7 +58,6 @@
     <script src="/static/vendor/jquery-ace/ace/mode-json.js"></script>
     <script src="/static/vendor/jquery-ace/jquery-ace.min.js"></script>
     <script src="/static/vendor/bootstrap/js/bootstrap.js"></script>
-    <script src="/static/js/base.js"></script>
     {% block page_js %}{% endblock %}
 </body>
 </html>
