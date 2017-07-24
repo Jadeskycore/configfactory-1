@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from jsonfield import JSONField
 
-from configfactory.utils import flatten_dict, merge_dicts, sort_dict
+from configfactory.utils import flatten_dict, merge_dicts
 
 
 class Component(models.Model):
@@ -44,7 +44,7 @@ class Component(models.Model):
     def __str__(self):
         return self.name
 
-    def get_settings(self, environment=None, flatten=False, sort=False):
+    def get_settings(self, environment=None, flatten=False):
 
         if environment:
             try:
@@ -57,9 +57,6 @@ class Component(models.Model):
 
         if flatten:
             ret = flatten_dict(ret)
-
-        if sort:
-            ret = sort_dict(ret)
 
         return ret
 

@@ -1,8 +1,11 @@
-import collections
+from collections import OrderedDict
 from copy import deepcopy
 
 
 def merge_dicts(dict1, dict2):
+    """
+    Merge two dictionaries.
+    """
     if not isinstance(dict2, dict):
         return dict2
     result = deepcopy(dict1)
@@ -15,19 +18,22 @@ def merge_dicts(dict1, dict2):
 
 
 def flatten_dict(d, parent_key='', sep='.'):
+    """
+    Flatten dictionary keys.
+    """
     if not isinstance(d, dict):
         return d
     items = []
     for k, v in d.items():
-        new_key = parent_key + sep + k if parent_key else k
-        if isinstance(v, collections.MutableMapping):
+        new_key = sep.join([parent_key, k]) if parent_key else k
+        if isinstance(v, dict):
             items.extend(flatten_dict(v, new_key, sep=sep).items())
         else:
             items.append((new_key, v))
-    return dict(items)
+    return OrderedDict(items)
 
 
 def sort_dict(d):
     if not isinstance(d, dict):
         return d
-    return collections.OrderedDict(sorted(d.items()))
+    return OrderedDict(sorted(d.items()))
