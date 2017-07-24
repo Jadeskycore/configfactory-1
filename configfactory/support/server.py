@@ -1,4 +1,8 @@
+import os
+
 import gunicorn.app.base
+
+from configfactory import paths
 
 
 class GunicornServer(gunicorn.app.base.BaseApplication):
@@ -24,5 +28,8 @@ class GunicornServer(gunicorn.app.base.BaseApplication):
         use_static = self.options.get('use_static')
         if use_static:
             from dj_static import Cling
-            return Cling(self.wsgi_app)
+            return Cling(
+                application=self.wsgi_app,
+                base_dir=os.path.join(paths.APP_ROOT, 'static')
+            )
         return self.wsgi_app

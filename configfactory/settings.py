@@ -54,8 +54,6 @@ STATICFILES_DIRS = (
     os.path.join(paths.APP_ROOT, 'static'),
 )
 
-STATIC_ROOT = os.path.join(paths.APP_ROOT, 'static')
-
 ENVIRONMENTS = [
     'development',
     'staging',
