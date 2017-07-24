@@ -1,5 +1,21 @@
+import json
 from collections import OrderedDict
 from copy import deepcopy
+
+from configfactory.exceptions import JSONEncodeError
+
+
+def json_dumps(obj, indent=None):
+    return json.dumps(obj, indent=indent)
+
+
+def json_loads(s):
+    try:
+        return json.loads(s, object_pairs_hook=OrderedDict)
+    except Exception as e:
+        raise JSONEncodeError(
+            'Invalid JSON: {}.'.format(e)
+        )
 
 
 def merge_dicts(dict1, dict2):
