@@ -8,11 +8,8 @@ with open(os.path.join(root_path, 'README.rst')) as f:
     README = f.read()
 with open(os.path.join(root_path, 'CHANGES.txt')) as f:
     CHANGES = f.read()
-try:
-    with open(os.path.join(root_path, 'version.txt')) as f:
-        VERSION = f.read()
-except FileNotFoundError:
-    VERSION = 'dev'
+
+version = __import__('configfactory').get_version()
 
 requires = [
     'django==1.10.3',
@@ -24,12 +21,13 @@ requires = [
     'requests==2.11.1',
     'jsonschema==2.5.1',
     'gunicorn==19.6.0',
-    'apscheduler==3.3.0'
+    'apscheduler==3.3.0',
+    'packaging==16.8',
 ]
 
 setup(
     name='am-configfactory',
-    version=VERSION,
+    version=version,
     description='Admiral Markets distributed configurations server',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
