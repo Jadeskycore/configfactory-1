@@ -11,11 +11,11 @@
                         <ul class="nav nav-pills pull-left">
                             <li class="{% if current_environment == None %}active{% endif %}">
                                 <a href="
-                                        {% url 'components-view' alias=component.alias %}{% if readonly %}?readonly=1{% endif %}">base</a>
+                                        {% url 'view_component' alias=component.alias %}{% if readonly %}?readonly=1{% endif %}">BASE</a>
                             </li>
                             {% for environment in environments %}
                                 <li class="{% if environment == current_environment %}active{% endif %}">
-                                    <a href="{% url 'components-view' alias=component.alias environment=environment %}{% if readonly %}?readonly=1{% endif %}">{{ environment }}</a>
+                                    <a href="{% url 'view_component_by_env' alias=component.alias environment=environment %}{% if readonly %}?readonly=1{% endif %}">{{ environment|upper }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -25,22 +25,22 @@
                     <ul class="nav nav-pills pull-right">
                         <li class="{% if not readonly %}active{% endif %}">
                             {% if current_environment %}
-                                <a href="{% url 'components-view' alias=component.alias environment=current_environment %}" data-toggle="tooltip" title="Edit">
+                                <a href="{% url 'view_component_by_env' alias=component.alias environment=current_environment %}" data-toggle="tooltip" title="Edit">
                                     <i class="fa fa-pencil-square-o"></i>
                                 </a>
                             {% else %}
-                                <a href="{% url 'components-view' alias=component.alias %}" data-toggle="tooltip" title="Edit">
+                                <a href="{% url 'view_component' alias=component.alias %}" data-toggle="tooltip" title="Edit">
                                     <i class="fa fa-pencil-square-o"></i>
                                 </a>
                             {% endif %}
                         </li>
                         <li class="{% if readonly %}active{% endif %}">
                             {% if current_environment %}
-                                <a href="{% url 'components-view' alias=component.alias environment=current_environment %}?readonly=1" data-toggle="tooltip" title="Flatten View">
+                                <a href="{% url 'view_component_by_env' alias=component.alias environment=current_environment %}?readonly=1" data-toggle="tooltip" title="Flatten View">
                                     <i class="fa fa-eye"></i>
                                 </a>
                             {% else %}
-                                <a href="{% url 'components-view' alias=component.alias %}?readonly=1" data-toggle="tooltip" title="Flatten View">
+                                <a href="{% url 'view_component' alias=component.alias %}?readonly=1" data-toggle="tooltip" title="Flatten View">
                                     <i class="fa fa-eye"></i>
                                 </a>
                             {% endif %}
@@ -59,17 +59,17 @@
                                 Update
                             </button>
                         {% endif %}
-                        <a href="{% url 'components-edit' alias=component.alias %}" class="btn btn-primary">
+                        <a href="{% url 'edit_component' alias=component.alias %}" class="btn btn-primary">
                             <i class="fa fa-pencil-square-o"></i>
                             Edit
                         </a>
                         {% if component.require_schema %}
-                            <a href="{% url 'components-edit-schema' alias=component.alias %}" class="btn btn-primary">
+                            <a href="{% url 'edit_component_schema' alias=component.alias %}" class="btn btn-primary">
                                 <i class="fa fa-pencil-square-o"></i>
                                 Edit schema
                             </a>
                         {% endif %}
-                        <a href="{% url 'components-delete' alias=component.alias %}" class="btn btn-danger">
+                        <a href="{% url 'delete_component' alias=component.alias %}" class="btn btn-danger">
                             <i class="fa fa-trash-o"></i>
                             Delete
                         </a>

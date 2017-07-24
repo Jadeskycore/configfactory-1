@@ -16,19 +16,19 @@
         </div>
         <ul class="nav navbar-nav">
             <li>
-                <a href="{% url 'backup-dump' %}">
+                <a href="{% url 'dump_backup' %}">
                     <i class="fa fa-upload"></i>
                     DUMP
                 </a>
             </li>
             <li>
-                <a href="{% url 'backup-load' %}">
+                <a href="{% url 'load_backup' %}">
                     <i class="fa fa-download"></i>
                     LOAD
                 </a>
             </li>
         </ul>
-        <a href="{% url 'components-create' %}" class="btn btn-success navbar-btn">
+        <a href="{% url 'new_component' %}" class="btn btn-success navbar-btn">
             <i class="fa fa-plus"></i> ADD COMPONENT
         </a>
     </nav>
@@ -38,7 +38,7 @@
                 {% for component in components %}
                 <li>
     {#                {% set is_current=request.view_args.component_id == component.pk|string %}#}
-                    <a href="{% url 'components-view' alias=component.alias %}" class="{% if is_current %}active{% endif %}">
+                    <a href="{% url 'view_component' alias=component.alias %}" class="{% if is_current %}active{% endif %}">
                         <i class="fa fa-cube fa-fw"></i> {{ component.name|upper }} <small><strong>[{{ component.alias }}]</strong></small>
                     </a>
                 </li>

@@ -26,10 +26,10 @@
                                     <td>{{ backup.created_at }}</td>
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group" aria-label="First group">
-                                            <a href="{% url 'backup-load' filename=backup.name %}" class="btn btn-success">
+                                            <a href="{% url 'load_backup_file' filename=backup.name %}" class="btn btn-success">
                                                 LOAD
                                             </a>
-                                            <a href="{% url 'backup-delete' filename=backup.name %}" class="btn btn-danger">
+                                            <a href="{% url 'delete_backup' filename=backup.name %}" class="btn btn-danger">
                                                 DELETE
                                             </a>
                                         </div>

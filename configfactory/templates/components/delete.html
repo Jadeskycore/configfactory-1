@@ -10,7 +10,7 @@
                     <form method="post">
                         <p>Are you sure you want to delete {{ component.name }} ?</p>
                         <button type="submit" class="btn btn-danger">Yes, delete</button>
-                        <a href="{% url 'components-view' alias=component.alias %}" class="btn btn-primary">Cancel</a>
+                        <a href="{% url 'view_component' alias=component.alias %}" class="btn btn-primary">Cancel</a>
                         <code style="display: block; margin-top: 12px; white-space: pre">{{ component.get_all_settings|jsonify }}</code>
                     </form>
                 </div>

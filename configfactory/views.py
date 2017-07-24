@@ -46,7 +46,7 @@ def component_edit(request, alias):
         if form.is_valid():
             form.save()
             messages.success(request, "Component successfully updated.")
-            return redirect(to=reverse('components-view',
+            return redirect(to=reverse('view_component',
                                        kwargs={'alias': component.alias}))
     else:
         form = ComponentForm(instance=component)
@@ -175,7 +175,7 @@ def backup_dump(request):
             request,
             'Settings successfully dumped as `{}`.'.format(name)
         )
-        return redirect(to=reverse('backup-load'))
+        return redirect(to=reverse('load_backup'))
 
     return render(request, 'backup/dump.html', {
 
@@ -190,7 +190,7 @@ def backup_load(request, filename=None):
             backup.load(filename)
             messages.success(
                 request, 'Backup `{}` successfully loaded.'.format(filename))
-            return redirect(to=reverse('backup-load'))
+            return redirect(to=reverse('load_backup'))
 
         return render(request, 'backup/load_confirmation.html', {
             'filename': filename
@@ -213,6 +213,6 @@ def backup_delete(request, filename):
         messages.success(
             request,
             'Backup `{}` successfully deleted.'.format(filename))
-        return redirect(to=reverse('backup-load'))
+        return redirect(to=reverse('load_backup'))
 
     return render(request, 'backup/delete.html')
