@@ -25,14 +25,14 @@ class Command(BaseCommand):
         parser.add_argument(
             '--use-static',
             action='store_true',
-            default=False,
+            default=True,
             help='Use static.',
         )
         parser.add_argument(
             '--debug',
             action='store_true',
             dest='debug',
-            default=settings.DEBUG,
+            default=False,
             help='Use debug.',
         )
         parser.add_argument(
@@ -81,8 +81,6 @@ class Command(BaseCommand):
         # Set default debug options
         if debug:
             options['reload'] = True
-            options['use_static'] = True
-
         else:
             options['workers'] = multiprocessing.cpu_count() * 2 + 1
 
