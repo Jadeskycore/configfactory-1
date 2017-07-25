@@ -1,6 +1,8 @@
 import os
 
+import dj_database_url
 from configfactory import paths
+from configfactory.support import config
 
 ALLOWED_HOSTS = ['*']
 
@@ -10,11 +12,13 @@ DEBUG = True
 
 ROOT_URLCONF = 'configfactory.urls'
 
+print(config['database.url'])
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(paths.BASE_ROOT, 'db.sqlite3'),
-    }
+    'default': dj_database_url.config(
+        env='CONFIGFACTORY_DATABASE_URL',
+        default=config['database.url']
+    )
 }
 
 TEMPLATES = [

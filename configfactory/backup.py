@@ -3,20 +3,20 @@ import os
 import time
 
 import appdirs
-from django.conf import settings
 from django.core.management import call_command
 from django.utils import timezone
 
+from configfactory.support import config
 
-BACKUP_DIR = getattr(
-    settings,
-    'BACKUP_DIR',
-    appdirs.user_data_dir('configfactory_backup')
+
+BACKUP_DIR = config.get(
+    'backup.dir',
+    default=appdirs.user_data_dir('configfactory_backup')
 )
 
-BACKUP_INTERVAL = getattr(settings, 'BACKUP_INTERVAL', 3600)  # seconds
+BACKUP_INTERVAL = config.get('backup.interval', default=3600)  # seconds
 
-BACKUP_COUNT = getattr(settings, 'BACKUP_COUNT', 20)
+BACKUP_COUNT = config.get('backup.count', default=20)
 
 logger = logging.getLogger(__name__)
 
