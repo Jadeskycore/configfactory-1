@@ -11,7 +11,6 @@ from configfactory.forms import (
     ComponentSettingsForm,
 )
 from configfactory.models import Component
-from configfactory.utils import flatten_dict, sort_dict
 
 
 def index(request):
@@ -108,21 +107,11 @@ def component_view(request, alias, environment=None):
     except TypeError:
         raise Http404
 
-    if environment:
-        settings_attr = 'settings_{}'.format(environment)
-    else:
-        settings_attr = 'settings'
-
-    try:
-        settings_val = getattr(component, settings_attr)
-    except AttributeError:
-        raise Http404
-
-    if environment:
-        settings_val = component.get_settings(environment)
-
-    if readonly:
-        settings_val = sort_dict(flatten_dict(settings_val))
+    settings_json = component.get_settings(
+        environment=environment,
+        flatten=readonly,
+        raw_json=True
+    )
 
     if request.method == 'POST':
 
@@ -131,16 +120,21 @@ def component_view(request, alias, environment=None):
             schema=component.schema,
             data=request.POST,
             initial={
-                'settings': settings_val
-            })
+                'settings': settings_json
+            }
+        )
 
         if form.is_valid():
-
             data = form.cleaned_data
-            setattr(component, settings_attr, data['settings'])
+            component.set_settings(
+                data=data['settings'],
+                environment=environment
+            )
             component.save()
             messages.success(
-                request, "Component settings successfully updated.")
+                request,
+                "Component settings successfully updated."
+            )
         else:
             messages.error(
                 request,
@@ -153,7 +147,7 @@ def component_view(request, alias, environment=None):
             require_schema=component.require_schema,
             schema=component.schema,
             initial={
-                'settings': settings_val
+                'settings': settings_json
             })
 
     return render(request, 'components/view.html', {

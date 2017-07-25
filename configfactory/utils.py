@@ -1,6 +1,6 @@
+import copy
 import json
 from collections import OrderedDict
-from copy import deepcopy
 
 from configfactory.exceptions import JSONEncodeError
 
@@ -24,12 +24,15 @@ def merge_dicts(dict1, dict2):
     """
     if not isinstance(dict2, dict):
         return dict2
-    result = deepcopy(dict1)
+    result = OrderedDict()
     for k, v in dict2.items():
-        if k in result and isinstance(result[k], dict):
-            result[k] = merge_dicts(result[k], v)
+        if k in result and isinstance(dict1[k], dict):
+            result[k] = merge_dicts(dict1[k], v)
         else:
-            result[k] = deepcopy(v)
+            result[k] = copy.deepcopy(v)
+    for k, v in dict1.items():
+        if k not in result:
+            result[k] = copy.deepcopy(v)
     return result
 
 
@@ -47,9 +50,3 @@ def flatten_dict(d, parent_key='', sep='.'):
         else:
             items.append((new_key, v))
     return OrderedDict(items)
-
-
-def sort_dict(d):
-    if not isinstance(d, dict):
-        return d
-    return OrderedDict(sorted(d.items()))

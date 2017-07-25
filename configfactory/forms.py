@@ -1,11 +1,11 @@
-import json
-
 import jsonschema
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import fields
 
+from configfactory.exceptions import JSONEncodeError
 from configfactory.models import Component
+from configfactory.utils import json_dumps, json_loads
 
 
 class JSONFormField(fields.CharField):
@@ -13,16 +13,14 @@ class JSONFormField(fields.CharField):
     def to_python(self, value):
         if isinstance(value, str):
             try:
-                return json.loads(value)
-            except ValueError:
+                return json_loads(value)
+            except JSONEncodeError:
                 raise ValidationError("Enter valid JSON")
         return value
 
     def clean(self, value):
-
         if not value and not self.required:
             return None
-
         try:
             return super().clean(value)
         except TypeError:
@@ -30,7 +28,7 @@ class JSONFormField(fields.CharField):
 
     def prepare_value(self, value):
         if isinstance(value, dict):
-            return json.dumps(value, indent=4, sort_keys=True)
+            return json_dumps(value, indent=4)
         return value
 
 
@@ -76,7 +74,10 @@ class ComponentSettingsForm(forms.Form):
 
 class ComponentSchemaForm(forms.Form):
 
-    schema = JSONFormField(required=False, widget=forms.Textarea(attrs={
-        'rows': 32,
-        'style': 'width: 100%',
-    }))
+    schema = JSONFormField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'rows': 32,
+            'style': 'width: 100%',
+        })
+    )

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 from jsonfield import JSONField
 
-from configfactory.utils import flatten_dict, merge_dicts
+from configfactory.utils import flatten_dict, merge_dicts, json_loads, json_dumps
 
 
 class Component(models.Model):
@@ -17,6 +17,12 @@ class Component(models.Model):
     )
 
     settings = JSONField(default={})
+
+    settings_json = models.TextField(
+        blank=True,
+        null=True,
+        default='{}'
+    )
 
     settings_development = JSONField(default={})
 
@@ -46,29 +52,60 @@ class Component(models.Model):
     def __str__(self):
         return self.name
 
-    def get_settings(self, environment=None, flatten=False):
+    def get_settings(self, environment=None, flatten=False, raw_json=False):
+
+        settings_dict = json_loads(self.settings_json)
+        base_settings_dict = settings_dict.get(
+            Environment.base_alias,
+            {}
+        )
 
         if environment:
-            try:
-                env_settings = getattr(self, 'settings_{}'.format(environment))
-            except AttributeError:
-                env_settings = {}
-            ret = merge_dicts(self.settings, env_settings)
+            env_settings_dict = settings_dict.get(environment, {})
+            ret = merge_dicts(
+                base_settings_dict,
+                env_settings_dict,
+            )
         else:
-            ret = self.settings
+            ret = base_settings_dict
 
         if flatten:
             ret = flatten_dict(ret)
 
+        if raw_json:
+            return json_dumps(ret, indent=4)
+
         return ret
+
+    def set_settings(self, data, environment=None):
+
+        if environment is None:
+            environment = Environment.base_alias
+
+        settings_dict = json_loads(self.settings_json)
+
+        if isinstance(data, str):
+            data = json_loads(data)
+
+        settings_dict[environment] = data
+
+        self.settings_json = json_dumps(settings_dict)
 
     def get_all_settings(self, flatten=False):
         return collections.OrderedDict(
             [
                 (
-                    environment if environment is not None else 'base',
+                    environment or Environment.base_alias,
                     self.get_settings(environment, flatten=flatten)
                 )
                 for environment in [None] + settings.ENVIRONMENTS
             ]
         )
+
+
+class Environment:
+
+    base_alias = 'base'
+
+    def __init__(self):
+        pass
