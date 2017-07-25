@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^backup/load/$', view=views.backup_load, name='load_backup'),
     url(r'^backup/load/(?P<filename>.+)/$', view=views.backup_load, name='load_backup_file'),
     url(r'^backup/delete/(?P<filename>.+)/$', view=views.backup_delete, name='delete_backup'),
+    url(r'^backup/serve/(?P<filename>.+)/$', view=views.backup_serve, name='serve_backup_file'),
     url(r'^components/create/$', view=views.component_create, name='new_component'),
     url(r'^components/(?P<alias>[-\w\d]+)/$', view=views.component_view, name='view_component'),
     url(r'^components/(?P<alias>[-\w\d]+)/edit/$',

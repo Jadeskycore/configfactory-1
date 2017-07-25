@@ -20,7 +20,7 @@
                             {% for backup in backups %}
                                 <tr>
                                     <td>
-                                        <a href="/backups/{{ backup.name }}">{{ backup.name }}</a>
+                                        <a href="{{ backup.url }}">{{ backup.name }}</a>
                                     </td>
                                     <td>{{ backup.size|filesizeformat }}</td>
                                     <td>{{ backup.created_at }}</td>

@@ -4,6 +4,7 @@ import time
 
 import appdirs
 from django.core.management import call_command
+from django.urls import reverse
 from django.utils import timezone
 
 from configfactory.support import config
@@ -25,13 +26,17 @@ def current_timestamp():
     return int(round(time.time() * 1000))
 
 
+def get_file(filename):
+    return os.path.join(BACKUP_DIR, filename)
+
+
 def dump():
 
     logger.info("Running settings backup...")
 
     name = 'backup_{}.json'.format(current_timestamp())
     call_command('dumpdata', 'configfactory.Component', format='json',
-                 output=os.path.join(BACKUP_DIR, name))
+                 output=get_file(name))
     return name
 
 
@@ -52,28 +57,31 @@ def cleanup():
 
 
 def load(filename):
-    call_command('loaddata', os.path.join(BACKUP_DIR, filename))
+    call_command('loaddata', get_file(filename))
 
 
 def exists(filename):
-    return os.path.exists(os.path.join(BACKUP_DIR, filename))
+    return os.path.exists(get_file(filename))
 
 
 def delete(filename):
     if exists(filename):
-        os.remove(os.path.join(BACKUP_DIR, filename))
+        os.remove(get_file(filename))
 
 
 def get_all():
     return [
         {
             'name': filename,
-            'size': os.path.getsize(os.path.join(BACKUP_DIR, filename)),
+            'url': reverse('serve_backup_file', kwargs={
+                'filename': filename
+            }),
+            'size': os.path.getsize(get_file(filename)),
             'created_at': timezone.datetime.fromtimestamp(
-                os.path.getctime(os.path.join(BACKUP_DIR, filename)),
+                os.path.getctime(get_file(filename)),
                 tz=timezone.get_current_timezone()
             )
         } for filename in sorted(os.listdir(BACKUP_DIR), reverse=True)
-        if os.path.isfile(os.path.join(BACKUP_DIR, filename))
+        if os.path.isfile(get_file(filename))
         and filename.endswith('.json')
     ]

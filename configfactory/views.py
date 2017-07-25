@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.static import serve
 
 from configfactory import backup
 from configfactory.forms import (
@@ -210,3 +211,15 @@ def backup_delete(request, filename):
         return redirect(to=reverse('load_backup'))
 
     return render(request, 'backup/delete.html')
+
+
+def backup_serve(request, filename):
+
+    if not backup.exists(filename):
+        raise Http404
+
+    return serve(
+        request=request,
+        path=filename,
+        document_root=backup.BACKUP_DIR
+    )
