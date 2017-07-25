@@ -1,0 +1,19 @@
+server:
+  host: 127.0.0.1
+  port: 8080
+
+database:
+  url: "sqlite:///db.sqlite3"
+
+backup:
+  dir: data
+  interval: 3600
+  count: 20
+
+environments:
+  - alias: development
+    name: Development
+
+users:
+  - username: admin
+    password: admin

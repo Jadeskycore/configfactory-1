@@ -12,8 +12,6 @@ DEBUG = True
 
 ROOT_URLCONF = 'configfactory.urls'
 
-print(config['database.url'])
-
 DATABASES = {
     'default': dj_database_url.config(
         env='CONFIGFACTORY_DATABASE_URL',
