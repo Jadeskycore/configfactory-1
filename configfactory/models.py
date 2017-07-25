@@ -16,19 +16,11 @@ class Component(models.Model):
         help_text='Unique component alias'
     )
 
-    settings = JSONField(default={})
-
     settings_json = models.TextField(
         blank=True,
         null=True,
         default='{}'
     )
-
-    settings_development = JSONField(default={})
-
-    settings_staging = JSONField(default={})
-
-    settings_production = JSONField(default={})
 
     schema = JSONField(default={})
 
