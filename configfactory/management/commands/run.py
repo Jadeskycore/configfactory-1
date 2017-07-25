@@ -1,7 +1,9 @@
 import multiprocessing
 from multiprocessing import Process
 
+import dj_database_url
 from django.conf import settings
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 from configfactory import backup, scheduler, wsgi
@@ -21,6 +23,12 @@ class Command(BaseCommand):
             dest='bind',
             default='127.0.0.1:8000',
             help='The socket to bind.',
+        )
+        parser.add_argument(
+            '--database_url',
+            dest='database_url',
+            help='Database url.',
+            default='sqlite://'
         )
         parser.add_argument(
             '--use-static',
@@ -63,11 +71,15 @@ class Command(BaseCommand):
 
         # Set settings
         settings.DEBUG = debug
+        settings.DATABASE = dj_database_url.config(options['database_url'])
 
         # Set backup settings
         backup.BACKUP_INTERVAL = options['backup_interval']
         backup.BACKUP_COUNT = options['backup_count']
         backup.BACKUP_DIR = options['backup_dir']
+
+        # Migrate database
+        call_command('migrate')
 
         # Create super user
         # if User.objects.count() == 0:
