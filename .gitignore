@@ -20,3 +20,4 @@ ideadb
 exception.log
 version.txt
 __pycache__
+/configfactory.yml
