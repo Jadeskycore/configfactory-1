@@ -22,6 +22,7 @@ requires = [
     'gunicorn==19.7.1',
     'apscheduler==3.3.1',
     'packaging==16.8',
+    'appdirs==1.4.3',
 ]
 
 setup(

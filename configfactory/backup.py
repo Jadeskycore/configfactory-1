@@ -2,17 +2,21 @@ import logging
 import os
 import time
 
+import appdirs
 from django.conf import settings
 from django.core.management import call_command
 from django.utils import timezone
 
-from configfactory import paths
 
-BACKUP_DIR = getattr(settings, 'BACKUP_DIR', paths.DATA_ROOT)
+BACKUP_DIR = getattr(
+    settings,
+    'BACKUP_DIR',
+    appdirs.user_data_dir('configfactory_backup')
+)
 
-BACKUP_INTERVAL = getattr(settings, 'BACKUP_INTERVAL', 10)  # seconds
+BACKUP_INTERVAL = getattr(settings, 'BACKUP_INTERVAL', 3600)  # seconds
 
-BACKUP_COUNT = getattr(settings, 'BACKUP_COUNT', 10)  # seconds
+BACKUP_COUNT = getattr(settings, 'BACKUP_COUNT', 20)
 
 logger = logging.getLogger(__name__)
 
