@@ -3,7 +3,7 @@ from collections import OrderedDict
 from configfactory.exceptions import ComponentDeleteError, InjectKeyError
 from django.db import transaction
 
-from configfactory.models import Component, environments
+from configfactory.models import Component, environment_manager
 from configfactory.utils import flatten_dict, inject_dict_params
 
 
@@ -28,7 +28,7 @@ def delete_component(component: Component):
 
         component.delete()
 
-        for environment in environments:
+        for environment in environment_manager.all():
             try:
                 inject_dict_params(
                     data=component.get_settings(environment),

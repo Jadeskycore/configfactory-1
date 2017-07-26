@@ -68,7 +68,7 @@ class Component(models.Model):
         )
 
         if isinstance(environment, str):
-            environment = environments.get(environment)
+            environment = environment_manager.get(environment)
 
         if environment.is_base:
             ret = base_settings_dict
@@ -156,6 +156,9 @@ class EnvironmentHandler:
                 fallback=fallback
             )
 
+    def all(self):
+        return list(self._environments.values())
+
     def get(self, alias=None):
         if alias is None:
             alias = Environment.base_alias
@@ -173,9 +176,4 @@ class EnvironmentHandler:
     def __getitem__(self, item):
         return self.get(item)
 
-    def __iter__(self):
-        for environment in self._environments.values():
-            yield environment
-
-
-environments = EnvironmentHandler()
+environment_manager = EnvironmentHandler()

@@ -11,7 +11,7 @@ from configfactory.forms import (
     ComponentSchemaForm,
     ComponentSettingsForm,
 )
-from configfactory.models import Component, environments
+from configfactory.models import Component, environment_manager
 from configfactory.services import (
     delete_component,
     get_all_settings,
@@ -120,7 +120,7 @@ def component_delete(request, alias):
 def component_view(request, alias, environment=None):
 
     component = get_object_or_404(Component, alias=alias)
-    environment = environments.get_or_404(environment)
+    environment = environment_manager.get_or_404(environment)
 
     try:
         readonly = int(request.GET.get('readonly', False))
@@ -181,7 +181,7 @@ def component_view(request, alias, environment=None):
 
     return render(request, 'components/view.html', {
         'component': component,
-        'environments': environments,
+        'environments': environment_manager.all(),
         'current_environment': environment,
         'form': form,
         'readonly': readonly

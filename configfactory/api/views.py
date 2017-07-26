@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
-from configfactory.models import Component, environments
+from configfactory.models import Component, environment_manager
 from configfactory.services import get_all_settings
 from configfactory.utils import inject_dict_params
 
@@ -17,14 +17,14 @@ def environments_view(request):
                 'environment': environment.alias
             })
         )
-    } for environment in environments]
+    } for environment in environment_manager.all()]
     return JsonResponse(data=data, safe=False)
 
 
 def components_view(request, environment):
 
     flatten = _get_flatten_param(request)
-    environment = environments.get_or_404(environment)
+    environment = environment_manager.get_or_404(environment)
 
     data = inject_dict_params(
         data=get_all_settings(
@@ -41,7 +41,7 @@ def components_view(request, environment):
 def component_settings_view(request, environment, alias):
 
     component = get_object_or_404(Component, alias=alias)
-    environment = environments.get_or_404(environment)
+    environment = environment_manager.get_or_404(environment)
 
     flatten = _get_flatten_param(request)
     data = component.get_settings(environment, flatten=flatten)
