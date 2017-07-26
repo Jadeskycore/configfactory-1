@@ -56,10 +56,6 @@ STATICFILES_DIRS = (
     os.path.join(paths.APP_ROOT, 'static'),
 )
 
-ENVIRONMENTS = [
-    'development',
-    'staging',
-    'production'
-]
+ENVIRONMENTS = config.get('environments', [])
 
 TIME_ZONE = 'UTC'

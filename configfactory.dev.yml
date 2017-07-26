@@ -11,8 +11,9 @@ backup:
   count: 20
 
 environments:
-  - alias: development
-    name: Development
+  - development
+  - production
+
 
 users:
   - username: admin

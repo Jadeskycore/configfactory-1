@@ -1,10 +1,9 @@
 from collections import OrderedDict
 
-from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 
-from configfactory.models import Component
+from configfactory.models import Component, environments
 
 
 def components(request, environment=None):
@@ -13,7 +12,7 @@ def components(request, environment=None):
     queryset = Component.objects.all()
 
     if environment:
-        if environment in settings.ENVIRONMENTS:
+        if environment in environments:
             data = OrderedDict([
                 (c.alias, c.get_settings(environment, flatten=flatten)) for c in queryset
             ])

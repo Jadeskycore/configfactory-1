@@ -84,13 +84,16 @@ class Component(models.Model):
         self.settings_json = json_dumps(settings_dict)
 
     def get_all_settings(self, flatten=False):
+        environments_ = []
+        for environment in environments:
+            environments_.append(environment)
         return collections.OrderedDict(
             [
                 (
                     environment or Environment.base_alias,
                     self.get_settings(environment, flatten=flatten)
                 )
-                for environment in [None] + settings.ENVIRONMENTS
+                for environment in environments_
             ]
         )
 
@@ -99,5 +102,25 @@ class Environment:
 
     base_alias = 'base'
 
+    def __init__(self, alias, name=None):
+        if name is None:
+            name = alias
+        self.alias = alias
+        self.name = name
+
+    @property
+    def is_base(self):
+        return self.alias == self.base_alias
+
+
+class EnvironmentHandler:
+
     def __init__(self):
-        pass
+        self._environments = getattr(settings, 'ENVIRONMENTS', [])
+
+    def __iter__(self):
+        for environment in self._environments:
+            yield environment
+
+
+environments = EnvironmentHandler()

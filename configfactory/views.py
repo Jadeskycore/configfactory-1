@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import Http404
@@ -11,7 +10,7 @@ from configfactory.forms import (
     ComponentSchemaForm,
     ComponentSettingsForm,
 )
-from configfactory.models import Component
+from configfactory.models import Component, environments
 
 
 def index(request):
@@ -101,7 +100,6 @@ def component_delete(request, alias):
 def component_view(request, alias, environment=None):
 
     component = get_object_or_404(Component, alias=alias)
-    environments = settings.ENVIRONMENTS
 
     try:
         readonly = int(request.GET.get('readonly', False))
