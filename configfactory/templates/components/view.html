@@ -9,13 +9,9 @@
                 <div class="col-md-10">
                     {% if not component.is_global %}
                         <ul class="nav nav-pills pull-left">
-                            <li class="{% if current_environment == None %}active{% endif %}">
-                                <a href="
-                                        {% url 'view_component' alias=component.alias %}{% if readonly %}?readonly=1{% endif %}">BASE</a>
-                            </li>
                             {% for environment in environments %}
-                                <li class="{% if environment == current_environment %}active{% endif %}">
-                                    <a href="{% url 'view_component_by_env' alias=component.alias environment=environment %}{% if readonly %}?readonly=1{% endif %}">{{ environment|upper }}</a>
+                                <li class="{% if environment.alias == current_environment.alias %}active{% endif %}">
+                                    <a href="{% url 'view_component_by_env' alias=component.alias environment=environment.alias %}{% if readonly %}?readonly=1{% endif %}">{{ environment.name|upper }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -24,26 +20,14 @@
                 <div class="col-md-2">
                     <ul class="nav nav-pills pull-right">
                         <li class="{% if not readonly %}active{% endif %}">
-                            {% if current_environment %}
-                                <a href="{% url 'view_component_by_env' alias=component.alias environment=current_environment %}" data-toggle="tooltip" title="Edit">
-                                    <i class="fa fa-pencil-square-o"></i>
-                                </a>
-                            {% else %}
-                                <a href="{% url 'view_component' alias=component.alias %}" data-toggle="tooltip" title="Edit">
-                                    <i class="fa fa-pencil-square-o"></i>
-                                </a>
-                            {% endif %}
+                            <a href="{% url 'view_component_by_env' alias=component.alias environment=current_environment.alias %}" data-toggle="tooltip" title="Edit">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </a>
                         </li>
                         <li class="{% if readonly %}active{% endif %}">
-                            {% if current_environment %}
-                                <a href="{% url 'view_component_by_env' alias=component.alias environment=current_environment %}?readonly=1" data-toggle="tooltip" title="Flatten View">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            {% else %}
-                                <a href="{% url 'view_component' alias=component.alias %}?readonly=1" data-toggle="tooltip" title="Flatten View">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            {% endif %}
+                            <a href="{% url 'view_component_by_env' alias=component.alias environment=current_environment.alias %}?readonly=1" data-toggle="tooltip" title="Flatten View">
+                                <i class="fa fa-eye"></i>
+                            </a>
                         </li>
                     </ul>
                 </div>

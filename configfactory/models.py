@@ -2,9 +2,15 @@ import collections
 
 from django.conf import settings
 from django.db import models
+from django.http import Http404
 from jsonfield import JSONField
 
-from configfactory.utils import flatten_dict, merge_dicts, json_loads, json_dumps
+from configfactory.utils import (
+    flatten_dict,
+    json_dumps,
+    json_loads,
+    merge_dicts,
+)
 
 
 class Component(models.Model):
@@ -52,14 +58,25 @@ class Component(models.Model):
             {}
         )
 
-        if environment:
-            env_settings_dict = settings_dict.get(environment, {})
+        if isinstance(environment, str):
+            environment = environments.get(environment)
+
+        if environment.is_base:
+            ret = base_settings_dict
+        else:
+            env_settings_dict = settings_dict.get(environment.alias)
+            if env_settings_dict is None:
+                if environment.fallback:
+                    env_settings_dict = settings_dict.get(
+                        environment.fallback,
+                        {}
+                    )
+                else:
+                    env_settings_dict = {}
             ret = merge_dicts(
                 base_settings_dict,
                 env_settings_dict,
             )
-        else:
-            ret = base_settings_dict
 
         if flatten:
             ret = flatten_dict(ret)
@@ -84,16 +101,13 @@ class Component(models.Model):
         self.settings_json = json_dumps(settings_dict)
 
     def get_all_settings(self, flatten=False):
-        environments_ = []
-        for environment in environments:
-            environments_.append(environment)
         return collections.OrderedDict(
             [
                 (
-                    environment or Environment.base_alias,
-                    self.get_settings(environment, flatten=flatten)
+                    environment.alias,
+                    self.get_settings(environment.alias, flatten=flatten)
                 )
-                for environment in environments_
+                for environment in environments
             ]
         )
 
@@ -102,24 +116,62 @@ class Environment:
 
     base_alias = 'base'
 
-    def __init__(self, alias, name=None):
+    def __init__(self, alias, name=None, fallback=None):
         if name is None:
-            name = alias
+            name = alias.title()
         self.alias = alias
         self.name = name
+        self.fallback = fallback
 
     @property
     def is_base(self):
         return self.alias == self.base_alias
 
+    def __str__(self):
+        return self.alias
+
 
 class EnvironmentHandler:
 
     def __init__(self):
-        self._environments = getattr(settings, 'ENVIRONMENTS', [])
+        self._environments = collections.OrderedDict([
+            (
+                Environment.base_alias,
+                Environment(
+                    alias=Environment.base_alias,
+                    name='Base'
+                )
+            )
+        ])
+        for environment in getattr(settings, 'ENVIRONMENTS', []):
+            alias = environment['alias']
+            name = environment.get('name')
+            fallback = environment.get('fallback')
+            self._environments[alias] = Environment(
+                alias=alias,
+                name=name,
+                fallback=fallback
+            )
+
+    def get(self, alias=None):
+        if alias is None:
+            alias = Environment.base_alias
+        return self._environments[alias]
+
+    def get_or_404(self, alias=None):
+        try:
+            return self.get(alias)
+        except KeyError:
+            raise Http404
+
+    def __contains__(self, item):
+        return item is self._environments
+
+    def __getitem__(self, item):
+        return self.get(item)
 
     def __iter__(self):
-        for environment in self._environments:
+        for environment in self._environments.values():
             yield environment
 
 

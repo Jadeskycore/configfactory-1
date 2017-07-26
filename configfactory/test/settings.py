@@ -8,6 +8,10 @@ DATABASES = {
 }
 
 ENVIRONMENTS = [
-    'development',
-    'testing',
+    {
+        'alias': 'development'
+    },
+    {
+        'alias': 'testing'
+    }
 ]

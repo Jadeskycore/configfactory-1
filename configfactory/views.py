@@ -100,6 +100,7 @@ def component_delete(request, alias):
 def component_view(request, alias, environment=None):
 
     component = get_object_or_404(Component, alias=alias)
+    environment = environments.get_or_404(environment)
 
     try:
         readonly = int(request.GET.get('readonly', False))
@@ -107,7 +108,7 @@ def component_view(request, alias, environment=None):
         raise Http404
 
     settings_json = component.get_settings(
-        environment=environment,
+        environment=environment.alias,
         flatten=readonly,
         raw_json=True
     )
@@ -127,7 +128,7 @@ def component_view(request, alias, environment=None):
             data = form.cleaned_data
             component.set_settings(
                 data=data['settings'],
-                environment=environment
+                environment=environment.alias
             )
             component.save()
             messages.success(

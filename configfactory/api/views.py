@@ -1,34 +1,41 @@
 from collections import OrderedDict
 
-from django.http import Http404, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from configfactory.models import Component, environments
 
 
-def components(request, environment=None):
+def components_view(request, environment=None):
 
     flatten = _get_flatten_param(request)
-    queryset = Component.objects.all()
+    components = Component.objects.all()
 
     if environment:
-        if environment in environments:
-            data = OrderedDict([
-                (c.alias, c.get_settings(environment, flatten=flatten)) for c in queryset
-            ])
-        else:
-            raise Http404
+        environment = environments.get_or_404(environment)
+        data = OrderedDict([
+            (
+                component.alias,
+                component.get_settings(environment.alias, flatten=flatten)
+            )
+            for component in components
+        ])
     else:
         data = OrderedDict([
-            (c.alias, c.get_all_settings(flatten=flatten)) for c in queryset
+            (
+                component.alias,
+                component.get_all_settings(flatten=flatten)
+            )
+            for component in components
         ])
 
     return JsonResponse(data=data, safe=False)
 
 
-def component_settings(request, environment, alias):
+def component_settings_view(request, environment, alias):
 
     component = get_object_or_404(Component, alias=alias)
+    environment = environments.get_or_404(environment)
 
     flatten = _get_flatten_param(request)
     data = component.get_settings(environment, flatten=flatten)
