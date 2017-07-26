@@ -108,7 +108,7 @@ def component_view(request, alias, environment=None):
         raise Http404
 
     settings_json = component.get_settings(
-        environment=environment.alias,
+        environment=environment,
         flatten=readonly,
         raw_json=True
     )

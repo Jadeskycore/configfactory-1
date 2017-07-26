@@ -105,7 +105,7 @@ class Component(models.Model):
             [
                 (
                     environment.alias,
-                    self.get_settings(environment.alias, flatten=flatten)
+                    self.get_settings(environment, flatten=flatten)
                 )
                 for environment in environments
             ]
