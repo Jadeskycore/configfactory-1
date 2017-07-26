@@ -15,7 +15,7 @@
 .cache/
 .idea/
 build/
-dist/
+/dist/
 ideadb
 exception.log
 version.txt

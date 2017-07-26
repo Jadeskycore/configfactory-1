@@ -65,7 +65,7 @@
     </div>
 {% endblock %}
 
-{% block page_js %}
+{% block page_inline_js %}
     <script>
         var $editor = $('#id_settings').ace({theme: 'twilight', lang: 'json'});
         {% if readonly %}
