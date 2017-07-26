@@ -28,7 +28,8 @@ TEMPLATES = [
         'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
-                'configfactory.context_proccessors.components',
+                'configfactory.context_processors.components',
+                'configfactory.context_processors.version',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
