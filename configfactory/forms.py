@@ -3,9 +3,14 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import fields
 
-from configfactory.exceptions import JSONEncodeError
+from configfactory.exceptions import (
+    CircularInjectError,
+    InjectKeyError,
+    JSONEncodeError,
+)
 from configfactory.models import Component
-from configfactory.utils import json_dumps, json_loads
+from configfactory.services import get_all_settings
+from configfactory.utils import inject_dict_params, json_dumps, json_loads
 
 
 class JSONFormField(fields.CharField):
@@ -50,9 +55,10 @@ class ComponentForm(forms.ModelForm):
 
 class ComponentSettingsForm(forms.Form):
 
-    def __init__(self, component, *args, **kwargs):
+    def __init__(self, component, environment, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.component = component
+        self.environment = environment
 
     settings = JSONFormField(
         required=False,
@@ -64,6 +70,15 @@ class ComponentSettingsForm(forms.Form):
 
     def clean_settings(self):
         data = self.cleaned_data['settings']
+        try:
+            inject_dict_params(
+                data=data,
+                params=get_all_settings(self.environment, flatten=True),
+                flatten=True,
+                raise_exception=True
+            )
+        except (InjectKeyError, CircularInjectError) as e:
+            raise ValidationError(str(e))
         if self.component.require_schema:
             try:
                 jsonschema.validate(data, self.component.schema)

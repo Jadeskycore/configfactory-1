@@ -1,10 +1,10 @@
-from collections import OrderedDict
-
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
 from configfactory.models import Component, environments
+from configfactory.services import get_all_settings
+from configfactory.utils import inject_dict_params
 
 
 def environments_view(request):
@@ -24,18 +24,18 @@ def environments_view(request):
 def components_view(request, environment):
 
     flatten = _get_flatten_param(request)
-    components = Component.objects.all()
     environment = environments.get_or_404(environment)
 
-    data = OrderedDict([
-        (
-            component.alias,
-            component.get_settings(environment, flatten=flatten)
-        )
-        for component in components
-    ])
+    data = inject_dict_params(
+        data=get_all_settings(
+            environment=environment,
+            flatten=flatten
+        ),
+        params=get_all_settings(environment, flatten=True),
+        raise_exception=False
+    )
 
-    return JsonResponse(data=data, safe=False)
+    return JsonResponse(data, safe=False)
 
 
 def component_settings_view(request, environment, alias):

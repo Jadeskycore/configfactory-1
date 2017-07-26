@@ -1,4 +1,10 @@
-from configfactory.models import Component
+from collections import OrderedDict
+
+from configfactory.exceptions import ComponentDeleteError, InjectKeyError
+from django.db import transaction
+
+from configfactory.models import Component, environments
+from configfactory.utils import flatten_dict, inject_dict_params
 
 
 def update_settings(component, environment, data):
@@ -13,23 +19,43 @@ def update_settings(component, environment, data):
     return component
 
 
-def delete_component(component):
+def delete_component(component: Component):
     """
     Delete component.
     """
-    component.delete()
+
+    with transaction.atomic():
+
+        component.delete()
+
+        for environment in environments:
+            try:
+                inject_dict_params(
+                    data=component.get_settings(environment),
+                    params=get_all_settings(environment, flatten=True),
+                    flatten=True,
+                    raise_exception=True
+                )
+            except InjectKeyError as e:
+                raise ComponentDeleteError(
+                    'One of other components is referring '
+                    'to `%(key)s` key.' % {
+                        'key': e.key
+                    }
+                )
 
 
-def get_inject_params(environment):
+def get_all_settings(environment, flatten=False):
     """
-    Get global inject parameters.
+    Get all settings.
     """
-    return {
-        {
-            component.alias: component.get_settings(
-                environment=environment,
-                flatten=True
-            )
-        }
+    data = OrderedDict([
+        (
+            component.alias,
+            component.get_settings(environment)
+        )
         for component in Component.objects.all()
-    }
+    ])
+    if flatten:
+        return flatten_dict(data)
+    return data

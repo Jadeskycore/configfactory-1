@@ -22,3 +22,7 @@ class InjectKeyError(Exception):
 
 class CircularInjectError(RuntimeError):
     pass
+
+
+class ComponentDeleteError(Exception):
+    pass

@@ -12,7 +12,6 @@ from configfactory.exceptions import (
 key_re = r'[a-zA-Z][(\-|\.)a-zA-Z0-9_]*'
 inject_regex = re.compile(r'(?<!\$)(\$(?:{param:(%(n)s)}))'
                           % ({'n': key_re}))
-pytype_regex = re.compile(r'\"pytype:.+\"')
 
 
 def json_dumps(obj, indent=None):
@@ -78,7 +77,9 @@ def inject_params(
         calls: int=0,
         raise_exception: bool=True
 ):
-    """Inject params to content."""
+    """
+    Inject params to content.
+    """
 
     circular_threshold = 100
 
@@ -94,10 +95,7 @@ def inject_params(
     def replace_param(match):
         whole, key = match.groups()
         try:
-            val = params[key]
-            if not isinstance(val, str):
-                return 'pytype:{}'.format(params[key])
-            return val
+            return str(params[key])
         except KeyError:
             if raise_exception:
                 raise InjectKeyError(
@@ -107,6 +105,9 @@ def inject_params(
                     key=key
                 )
             return whole
+
+    if not inject_regex.search(content):
+        return content
 
     content = inject_regex.sub(replace_param, content)
 
@@ -118,6 +119,71 @@ def inject_params(
             raise_exception=raise_exception
         )
 
-    content = pytype_regex.sub(replace_pytype, content)
-
     return content
+
+
+def inject_dict_params(
+        data: dict,
+        params: dict,
+        flatten: bool = False,
+        raise_exception: bool = True):
+    """
+    Inject params to dictionary.
+    """
+
+    if flatten:
+        data = flatten_dict(data)
+
+    def inject(key, value):
+
+        if isinstance(value, str):
+
+            search = inject_regex.search(value)
+            if not search:
+                return value
+
+            whole, param_key = search.groups()
+            params_value = params.get(param_key)
+
+            value = inject_params(
+                content=value,
+                params=params,
+                raise_exception=raise_exception
+            )
+
+            if (
+                params_value is not None
+                and str(params_value) == value
+            ):
+                return params_value
+
+        return value
+
+    return traverse_dict(data, callback=inject)
+
+
+def traverse_dict(obj, path=None, callback=None):
+    """
+    Traverse through nested dictionary.
+    """
+
+    if path is None:
+        path = []
+
+    if isinstance(obj, dict):
+        value = OrderedDict([
+            (key, traverse_dict(value, path + [key], callback))
+            for key, value in obj.items()
+        ])
+    elif isinstance(obj, list):
+        value = [
+            traverse_dict(elem, path + [[]], callback)
+            for elem in obj
+        ]
+    else:
+        value = obj
+
+    if callback is None:
+        return value
+    else:
+        return callback(path, value)

@@ -1,3 +1,4 @@
+from configfactory.exceptions import ComponentDeleteError
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import Http404
@@ -11,8 +12,12 @@ from configfactory.forms import (
     ComponentSettingsForm,
 )
 from configfactory.models import Component, environments
-from configfactory.services import delete_component, update_settings
-from configfactory.utils import json_dumps
+from configfactory.services import (
+    delete_component,
+    get_all_settings,
+    update_settings,
+)
+from configfactory.utils import inject_dict_params, inject_params, json_dumps
 
 
 def index(request):
@@ -90,7 +95,14 @@ def component_delete(request, alias):
     component = get_object_or_404(Component, alias=alias)
 
     if request.method == 'POST':
-        delete_component(component)
+        try:
+            delete_component(component)
+        except ComponentDeleteError as e:
+            messages.error(request, str(e), extra_tags=' alert-danger')
+            return redirect(to=reverse('delete_component', kwargs={
+                'alias': component.alias
+            }))
+
         messages.success(request, "Component successfully deleted.")
         return redirect(to=reverse('index'))
 
@@ -109,21 +121,26 @@ def component_view(request, alias, environment=None):
     except TypeError:
         raise Http404
 
-    settings_json = json_dumps(
-        component.get_settings(
-            environment=environment,
-            flatten=readonly
-        ),
-        indent=4
+    settings_dict = component.get_settings(
+        environment=environment,
+        flatten=readonly
     )
+
+    if readonly:
+        settings_dict = inject_dict_params(
+            data=settings_dict,
+            params=get_all_settings(environment, flatten=True),
+            raise_exception=False
+        )
 
     if request.method == 'POST':
 
         form = ComponentSettingsForm(
             component=component,
+            environment=environment,
             data=request.POST,
             initial={
-                'settings': settings_json
+                'settings': settings_dict
             }
         )
 
@@ -150,8 +167,9 @@ def component_view(request, alias, environment=None):
     else:
         form = ComponentSettingsForm(
             component=component,
+            environment=environment,
             initial={
-                'settings': settings_json
+                'settings': settings_dict
             }
         )
 
