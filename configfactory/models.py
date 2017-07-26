@@ -55,7 +55,7 @@ class Component(models.Model):
     def settings(self):
         return json_loads(self.settings_json)
 
-    def get_settings(self, environment=None, flatten=False, raw_json=False):
+    def get_settings(self, environment=None, flatten=False):
 
         settings_dict = json_loads(self.settings_json)
         base_settings_dict = settings_dict.get(
@@ -85,9 +85,6 @@ class Component(models.Model):
 
         if flatten:
             ret = flatten_dict(ret)
-
-        if raw_json:
-            return json_dumps(ret, indent=4)
 
         return ret
 

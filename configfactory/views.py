@@ -11,7 +11,8 @@ from configfactory.forms import (
     ComponentSettingsForm,
 )
 from configfactory.models import Component, environments
-from configfactory.services import update_settings
+from configfactory.services import delete_component, update_settings
+from configfactory.utils import json_dumps
 
 
 def index(request):
@@ -89,7 +90,7 @@ def component_delete(request, alias):
     component = get_object_or_404(Component, alias=alias)
 
     if request.method == 'POST':
-        component.delete()
+        delete_component(component)
         messages.success(request, "Component successfully deleted.")
         return redirect(to=reverse('index'))
 
@@ -108,10 +109,12 @@ def component_view(request, alias, environment=None):
     except TypeError:
         raise Http404
 
-    settings_json = component.get_settings(
-        environment=environment,
-        flatten=readonly,
-        raw_json=True
+    settings_json = json_dumps(
+        component.get_settings(
+            environment=environment,
+            flatten=readonly
+        ),
+        indent=4
     )
 
     if request.method == 'POST':

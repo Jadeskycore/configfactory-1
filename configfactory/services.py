@@ -8,3 +8,10 @@ def update_settings(component, environment, data):
     )
     component.save()
     return component
+
+
+def delete_component(component):
+    """
+    Delete component.
+    """
+    component.delete()
