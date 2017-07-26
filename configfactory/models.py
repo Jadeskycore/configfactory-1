@@ -3,6 +3,7 @@ import collections
 from django.conf import settings
 from django.db import models
 from django.http import Http404
+from django.utils.functional import cached_property
 from jsonfield import JSONField
 
 from configfactory.utils import (
@@ -49,6 +50,10 @@ class Component(models.Model):
 
     def __str__(self):
         return self.name
+
+    @cached_property
+    def settings(self):
+        return json_loads(self.settings_json)
 
     def get_settings(self, environment=None, flatten=False, raw_json=False):
 
@@ -99,17 +104,6 @@ class Component(models.Model):
         settings_dict[environment] = data
 
         self.settings_json = json_dumps(settings_dict)
-
-    def get_all_settings(self, flatten=False):
-        return collections.OrderedDict(
-            [
-                (
-                    environment.alias,
-                    self.get_settings(environment, flatten=flatten)
-                )
-                for environment in environments
-            ]
-        )
 
 
 class Environment:
