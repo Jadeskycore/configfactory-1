@@ -29,7 +29,11 @@ class Component(models.Model):
         default='{}'
     )
 
-    schema = JSONField(default={})
+    schema_json = models.TextField(
+        blank=True,
+        null=True,
+        default='{}'
+    )
 
     require_schema = models.BooleanField(
         default=True,
@@ -101,6 +105,14 @@ class Component(models.Model):
         settings_dict[environment] = data
 
         self.settings_json = json_dumps(settings_dict)
+
+    @property
+    def schema(self):
+        return json_loads(self.schema_json)
+
+    @schema.setter
+    def schema(self, value):
+        self.schema_json = json_dumps(value)
 
 
 class Environment:

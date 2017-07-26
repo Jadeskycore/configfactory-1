@@ -17,7 +17,7 @@ from configfactory.services import (
     get_all_settings,
     update_settings,
 )
-from configfactory.utils import inject_dict_params, inject_params, json_dumps
+from configfactory.utils import inject_dict_params
 
 
 def index(request):
@@ -79,6 +79,12 @@ def component_edit_schema(request, alias):
             component.schema = data['schema']
             component.save()
             messages.success(request, "Component schema successfully updated.")
+        else:
+            messages.error(
+                request,
+                form.errors.as_text(),
+                extra_tags=' alert-danger'
+            )
     else:
         form = ComponentSchemaForm(initial={
             'schema': schema
