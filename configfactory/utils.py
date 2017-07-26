@@ -1,8 +1,18 @@
 import copy
 import json
+import re
 from collections import OrderedDict
 
-from configfactory.exceptions import JSONEncodeError
+from configfactory.exceptions import (
+    CircularInjectError,
+    InjectKeyError,
+    JSONEncodeError,
+)
+
+key_re = r'[a-zA-Z][(\-|\.)a-zA-Z0-9_]*'
+inject_regex = re.compile(r'(?<!\$)(\$(?:{param:(%(n)s)}))'
+                          % ({'n': key_re}))
+pytype_regex = re.compile(r'\"pytype:.+\"')
 
 
 def json_dumps(obj, indent=None):
@@ -50,3 +60,64 @@ def flatten_dict(d, parent_key='', sep='.'):
         else:
             items.append((new_key, v))
     return OrderedDict(items)
+
+
+def replace_pytype(match):
+    content = match.group()
+    val = content.replace('\"', '').split(':')[-1]
+    if val == 'True':
+        return 'true'
+    elif val == 'False':
+        return 'false'
+    return val
+
+
+def inject_params(
+        content: str,
+        params: dict,
+        calls: int=0,
+        raise_exception: bool=True
+):
+    """Inject params to content."""
+
+    circular_threshold = 100
+
+    if calls > circular_threshold:
+        if raise_exception:
+            raise CircularInjectError(
+                'Circular injections detected.'
+            )
+        return content
+
+    calls += 1
+
+    def replace_param(match):
+        whole, key = match.groups()
+        try:
+            val = params[key]
+            if not isinstance(val, str):
+                return 'pytype:{}'.format(params[key])
+            return val
+        except KeyError:
+            if raise_exception:
+                raise InjectKeyError(
+                    message='Injection key `%(key)s` does not exist.' % {
+                        'key': key
+                    },
+                    key=key
+                )
+            return whole
+
+    content = inject_regex.sub(replace_param, content)
+
+    if inject_regex.search(content):
+        return inject_params(
+            content=content,
+            params=params,
+            calls=calls,
+            raise_exception=raise_exception
+        )
+
+    content = pytype_regex.sub(replace_pytype, content)
+
+    return content
