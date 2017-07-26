@@ -138,7 +138,7 @@ def component_view(request, alias, environment=None):
         else:
             messages.error(
                 request,
-                "Validation error.",
+                form.errors.as_text(),
                 extra_tags=' alert-danger'
             )
 
