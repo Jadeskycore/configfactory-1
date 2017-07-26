@@ -11,6 +11,7 @@ from configfactory.forms import (
     ComponentSettingsForm,
 )
 from configfactory.models import Component, environments
+from configfactory.services import update_settings
 
 
 def index(request):
@@ -116,8 +117,7 @@ def component_view(request, alias, environment=None):
     if request.method == 'POST':
 
         form = ComponentSettingsForm(
-            require_schema=component.require_schema,
-            schema=component.schema,
+            component=component,
             data=request.POST,
             initial={
                 'settings': settings_json
@@ -126,14 +126,16 @@ def component_view(request, alias, environment=None):
 
         if form.is_valid():
             data = form.cleaned_data
-            component.set_settings(
-                data=data['settings'],
-                environment=environment.alias
+            component = update_settings(
+                component=component,
+                environment=environment,
+                data=data['settings']
             )
-            component.save()
             messages.success(
                 request,
-                "Component settings successfully updated."
+                "Component %(component)s settings successfully updated." % {
+                    'component': component.name
+                }
             )
         else:
             messages.error(
@@ -144,11 +146,11 @@ def component_view(request, alias, environment=None):
 
     else:
         form = ComponentSettingsForm(
-            require_schema=component.require_schema,
-            schema=component.schema,
+            component=component,
             initial={
                 'settings': settings_json
-            })
+            }
+        )
 
     return render(request, 'components/view.html', {
         'component': component,

@@ -50,23 +50,23 @@ class ComponentForm(forms.ModelForm):
 
 class ComponentSettingsForm(forms.Form):
 
-    def __init__(self, schema=None, require_schema=True, *args, **kwargs):
+    def __init__(self, component, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if schema is None:
-            schema = {}
-        self.require_schema = require_schema
-        self.schema = schema
+        self.component = component
 
-    settings = JSONFormField(required=False, widget=forms.Textarea(attrs={
-        'rows': 32,
-        'style': 'width: 100%',
-    }))
+    settings = JSONFormField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'rows': 32,
+            'style': 'width: 100%',
+        })
+    )
 
     def clean_settings(self):
         data = self.cleaned_data['settings']
-        if self.require_schema:
+        if self.component.require_schema:
             try:
-                jsonschema.validate(data, self.schema)
+                jsonschema.validate(data, self.component.schema)
             except jsonschema.ValidationError as e:
                 raise ValidationError(str(e))
         return data
