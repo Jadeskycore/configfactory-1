@@ -1,11 +1,11 @@
-from configfactory.exceptions import ComponentDeleteError
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
 
-from configfactory import backup
+from configfactory import auth, backup
+from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import (
     ComponentForm,
     ComponentSchemaForm,
@@ -22,6 +22,15 @@ from configfactory.utils import inject_dict_params
 
 def index(request):
     return render(request, 'index.html')
+
+
+def login(request):
+    return render(request, 'login.html')
+
+
+def logout(request):
+    auth.logout(request)
+    return redirect(reverse('login'))
 
 
 def component_create(request):

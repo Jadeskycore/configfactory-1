@@ -36,15 +36,17 @@ TEMPLATES = [
     },
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'configfactory.middleware.auth_middleware'
 ]
 
 INSTALLED_APPS = [
     'configfactory',
     'django.contrib.staticfiles',
+    'django.contrib.sessions',
 ]
 
 STATIC_URL = '/static/'

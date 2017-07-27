@@ -1,10 +1,10 @@
 import collections
 
 from django.conf import settings
+from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
 from django.http import Http404
 from django.utils.functional import cached_property
-from jsonfield import JSONField
 
 from configfactory.utils import (
     flatten_dict,
@@ -176,4 +176,40 @@ class EnvironmentHandler:
     def __getitem__(self, item):
         return self.get(item)
 
+
+class User:
+
+    def __init__(self, username, password=None, is_active=True):
+        self.username = username
+        self.password_hash = None
+        self.is_active = is_active
+        if password:
+            self.set_password(password)
+
+    def set_password(self, password):
+        self.password_hash = make_password(password)
+
+    def check_password(self, password):
+        return check_password(password, self.password_hash)
+
+
+class UserManager:
+
+    auth_session = 'userid'
+
+    def __init__(self):
+        self._users = {}
+        for user in getattr(settings, 'USERS', []):
+            username = user['username']
+            password = user.get('password')
+            self._users[username] = User(
+                username=username,
+                password=password,
+            )
+
+    def get(self, username):
+        return self._users[username]
+
+
+user_manager = UserManager()
 environment_manager = EnvironmentHandler()
