@@ -1,0 +1,49 @@
+{% macro help_block(field) %}
+    {% if field.description %}
+        <span class="help-block">
+            {{ field.description|safe }}
+        </span>
+    {% endif %}
+{% endmacro %}
+
+{% macro error_block(field) %}
+    {% if field.errors %}
+        <span class="help-block">
+            {{ field.errors|first }}
+        </span>
+    {% endif %}
+{% endmacro %}
+
+{% macro label(field, asterisk=False) %}
+    <label for="{{ field.auto_id }}" {{ render_attrs(**kwargs) }}>
+        {% if asterisk and field.required %}<span class="required" aria-required="true">* </span>{% endif %}{{ field.label }}
+    </label>
+{% endmacro %}
+
+{% macro input(field) %}
+    <input type="{{ field.field.widget.input_type }}" id="{{ field.auto_id }}" name="{{ field.name }}" {% if 'value' not in kwargs %}value="{{ field.value() or '' }}{% endif %}" {{ render_attrs(**kwargs) }}>
+{% endmacro %}
+
+{% macro input_field(field, hide_errors=False) %}
+    <div class="form-group {% if not hide_errors and field.errors %}has-error{% endif %}">
+        {{ label(field, class_='control-label') }}
+        {{ input(field, class_='form-control', **kwargs) }}
+        {{ help_block(field) }}
+        {% if not hide_errors %}
+            {{ error_block(field) }}
+        {% endif %}
+    </div>
+{% endmacro %}
+
+
+{% macro checkbox_field(field) %}
+    <div class="form-group {% if not hide_errors and field.errors %}has-error{% endif %}">
+        <div class="checkbox">
+            <label> {{ field }} {{ field.label }} </label>
+        </div>
+        {% if not hide_errors %}
+            {{ error_block(field) }}
+        {% endif %}
+    </div>
+{% endmacro %}
+

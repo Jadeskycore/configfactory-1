@@ -2,7 +2,9 @@ import jsonschema
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import fields
+from django.utils.html import format_html
 
+from configfactory import auth
 from configfactory.exceptions import (
     CircularInjectError,
     InjectKeyError,
@@ -11,6 +13,22 @@ from configfactory.exceptions import (
 from configfactory.models import Component
 from configfactory.services import get_all_settings
 from configfactory.utils import inject_dict_params, json_dumps, json_loads
+
+
+def html_params(**kwargs):
+    params = []
+    for k, v in sorted(kwargs.items()):
+        if k in ('class_', 'class__', 'for_'):
+            k = k[:-1]
+        elif k.startswith('data_'):
+            k = k.replace('_', '-', 1)
+        if v is True:
+            params.append(k)
+        elif v is False:
+            pass
+        else:
+            params.append('%s=%s' % (str(k), format_html(v)))
+    return ' '.join(params)
 
 
 class JSONFormField(fields.CharField):
@@ -35,6 +53,31 @@ class JSONFormField(fields.CharField):
         if isinstance(value, dict):
             return json_dumps(value, indent=4)
         return value
+
+
+class LoginForm(forms.Form):
+
+    username = forms.CharField(label='Username')
+
+    password = forms.CharField(
+        label='Password',
+        strip=False,
+        widget=forms.PasswordInput
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        username = cleaned_data['username']
+        password = cleaned_data['password']
+        self.user = auth.authenticate(username, password)
+        if self.user is None:
+            raise ValidationError(
+                'Invalid username or password.'
+            )
 
 
 class ComponentForm(forms.ModelForm):

@@ -1,11 +1,10 @@
-{% extends 'layouts/base.html' %}
-{% load json %}
+{% extends 'layouts/main.html' %}
 
 {% block content %}
     <h3>Delete {{ component.name }}</h3>
     <form method="post">
         <p>Are you sure you want to delete <strong>{{ component.name }}</strong> ?</p>
         <button type="submit" class="btn btn-danger">Yes, delete</button>
-        <a href="{% url 'view_component' alias=component.alias %}" class="btn btn-primary">Cancel</a>
+        <a href="{{ url('view_component', alias=component.alias) }}" class="btn btn-primary">Cancel</a>
     </form>
 {% endblock %}

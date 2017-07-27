@@ -1,0 +1,39 @@
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="{{ url('index') }}"><i class="fa fa-cubes fa-fw"></i>
+            ConfigFactory <sub>{{ version }}</sub>
+        </a>
+    </div>
+    {% if current_user %}
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="{{ url('dump_backup') }}">
+                    <i class="fa fa-upload"></i>
+                    DUMP
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('load_backup') }}">
+                    <i class="fa fa-download"></i>
+                    LOAD
+                </a>
+            </li>
+        </ul>
+        <a href="{{ url('new_component') }}" class="btn btn-success navbar-btn">
+            <i class="fa fa-plus"></i> ADD COMPONENT
+        </a>
+        <ul class="nav navbar-nav pull-right">
+            <li>
+                <p class="navbar-text">
+                    <i class="fa fa-user"></i>&nbsp;&nbsp;{{ current_user }}
+                </p>
+            </li>
+            <li>
+                <a href="{{ url('logout') }}">
+                    <i class="fa fa-sign-out"></i>
+                    Logout
+                </a>
+            </li>
+        </ul>
+    {% endif %}
+</nav>

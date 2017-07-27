@@ -5,12 +5,13 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
 
 from configfactory import auth, backup
+from configfactory.decorators import login_required
 from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import (
     ComponentForm,
     ComponentSchemaForm,
     ComponentSettingsForm,
-)
+    LoginForm)
 from configfactory.models import Component, environment_manager
 from configfactory.services import (
     delete_component,
@@ -20,12 +21,24 @@ from configfactory.services import (
 from configfactory.utils import inject_dict_params
 
 
+@login_required()
 def index(request):
     return render(request, 'index.html')
 
 
 def login(request):
-    return render(request, 'login.html')
+
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            auth.login(request, form.user)
+            return redirect(to=reverse('index'))
+    else:
+        form = LoginForm()
+
+    return render(request, 'login.html', {
+        'form': form
+    })
 
 
 def logout(request):
@@ -33,6 +46,7 @@ def logout(request):
     return redirect(reverse('login'))
 
 
+@login_required()
 def component_create(request):
 
     if request.method == 'POST':
@@ -50,6 +64,7 @@ def component_create(request):
     })
 
 
+@login_required()
 def component_edit(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -72,6 +87,7 @@ def component_edit(request, alias):
     })
 
 
+@login_required()
 def component_edit_schema(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -105,6 +121,7 @@ def component_edit_schema(request, alias):
     })
 
 
+@login_required()
 def component_delete(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -126,6 +143,7 @@ def component_delete(request, alias):
     })
 
 
+@login_required()
 def component_view(request, alias, environment=None):
 
     component = get_object_or_404(Component, alias=alias)
@@ -197,6 +215,7 @@ def component_view(request, alias, environment=None):
     })
 
 
+@login_required()
 def backup_dump(request):
 
     if request.method == 'POST':
@@ -214,6 +233,7 @@ def backup_dump(request):
     })
 
 
+@login_required()
 def backup_load(request, filename=None):
 
     if filename:
@@ -235,6 +255,7 @@ def backup_load(request, filename=None):
     })
 
 
+@login_required()
 def backup_delete(request, filename):
 
     if not backup.exists(filename):
@@ -250,6 +271,7 @@ def backup_delete(request, filename):
     return render(request, 'backup/delete.html')
 
 
+@login_required()
 def backup_serve(request, filename):
 
     if not backup.exists(filename):

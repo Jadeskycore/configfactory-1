@@ -21,13 +21,13 @@ DATABASES = {
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(paths.APP_ROOT, 'templates'),
-        ],
-        'APP_DIRS': False,
+        'BACKEND': 'django_jinja.backend.Jinja2',
+        'APP_DIRS': True,
         'OPTIONS': {
+            'match_extension': '.html',
+            'auto_reload': True,
             'context_processors': [
+                'configfactory.context_processors.auth',
                 'configfactory.context_processors.components',
                 'configfactory.context_processors.version',
                 'django.contrib.messages.context_processors.messages',
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'configfactory',
     'django.contrib.staticfiles',
     'django.contrib.sessions',
+    'django_jinja',
 ]
 
 STATIC_URL = '/static/'
@@ -59,6 +60,8 @@ STATICFILES_DIRS = (
     os.path.join(paths.APP_ROOT, 'static'),
 )
 
+TIME_ZONE = 'UTC'
+
 ENVIRONMENTS = config.get('environments', [])
 
-TIME_ZONE = 'UTC'
+USERS = config.get('users', [])

@@ -15,6 +15,7 @@ requires = [
     'django==1.11.3',
     'django-jsonfield==1.0.1',
     'django-autoslug==1.9.3',
+    'django-jinja==2.3.1',
     'dj-static==0.0.6',
     'dj-database-url==0.4.2',
     'pytz==2017.2',

@@ -51,12 +51,6 @@ def get_user(request):
     """
 
     if AUTH_SESSION_KEY in request.session:
-
         username = request.session[AUTH_SESSION_KEY]
-        try:
-            user = user_manager.get(username)
-            return user
-        except KeyError:
-            pass
-
+        return user_manager.get(username)
     return None

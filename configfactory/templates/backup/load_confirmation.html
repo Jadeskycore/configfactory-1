@@ -1,5 +1,4 @@
-{% extends 'layouts/base.html' %}
-{% load json %}
+{% extends 'layouts/main.html' %}
 
 {% block content %}
     <div class="row">
@@ -10,7 +9,7 @@
                     <form method="post">
                         <p>Are you sure you want to load {{ filename }} ?</p>
                         <button type="submit" class="btn btn-success">Yes, load</button>
-                        <a href="{% url 'load_backup' %}" class="btn btn-primary">Cancel</a>
+                        <a href="{{ url('load_backup') }}" class="btn btn-primary">Cancel</a>
                     </form>
                 </div>
             </div>

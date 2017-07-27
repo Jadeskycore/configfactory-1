@@ -186,6 +186,9 @@ class User:
         if password:
             self.set_password(password)
 
+    def __str__(self):
+        return self.username
+
     def set_password(self, password):
         self.password_hash = make_password(password)
 
@@ -195,20 +198,23 @@ class User:
 
 class UserManager:
 
-    auth_session = 'userid'
-
     def __init__(self):
         self._users = {}
         for user in getattr(settings, 'USERS', []):
             username = user['username']
             password = user.get('password')
+            is_active = user.get('is_active', True)
             self._users[username] = User(
                 username=username,
                 password=password,
+                is_active=is_active
             )
 
     def get(self, username):
-        return self._users[username]
+        try:
+            return self._users[username]
+        except KeyError:
+            return None
 
 
 user_manager = UserManager()

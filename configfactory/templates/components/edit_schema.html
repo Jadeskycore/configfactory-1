@@ -1,4 +1,4 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/main.html' %}
 
 {% block content %}
     <div class="row">
@@ -13,7 +13,7 @@
                             <i class="fa fa-download"></i>
                             Update schema
                         </button>
-                        <a href="{% url 'view_component' alias=component.alias %}" class="btn btn-default">
+                        <a href="{{ url('view_component', alias=component.alias) }}" class="btn btn-default">
                             <i class="fa fa-arrow-circle-o-left"></i>
                             Back
                         </a>
@@ -26,6 +26,6 @@
 
 {% block page_inline_js %}
     <script>
-        var $editor = $('#id_schema').ace({theme: 'twilight', lang: 'json'});
+        $('#id_schema').ace({theme: 'twilight', lang: 'json'});
     </script>
 {% endblock %}

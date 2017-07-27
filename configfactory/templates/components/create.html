@@ -1,4 +1,5 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/main.html' %}
+{% import 'forms.html' as forms %}
 
 {% block content %}
     <div class="row">
@@ -7,10 +8,10 @@
             <div class="row">
                 <div class="col-lg-6">
                     <form method="post">
-                        {% include 'shared/forms/_field.html' with field=form.name %}
-                        {% include 'shared/forms/_field.html' with field=form.alias %}
-                        {% include 'shared/forms/_field.html' with field=form.require_schema %}
-                        {% include 'shared/forms/_field.html' with field=form.is_global %}
+                        {{ forms.input_field(form.name) }}
+                        {{ forms.input_field(form.alias) }}
+                        {{ forms.checkbox_field(form.require_schema) }}
+                        {{ forms.checkbox_field(form.is_global) }}
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
                 </div>
