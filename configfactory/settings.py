@@ -1,5 +1,6 @@
 import os
 
+import appdirs
 import dj_database_url
 from configfactory import paths
 from configfactory.support import config
@@ -59,6 +60,63 @@ STATICFILES_FINDERS = (
 STATICFILES_DIRS = (
     os.path.join(paths.APP_ROOT, 'static'),
 )
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': "[%(asctime)-15s] (%(name)s) %(levelname)s - %(message)s",
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': config.get(
+                'logging.filename',
+                os.path.join(
+                    appdirs.user_data_dir('logs'),
+                    'configfactory.log'
+                )
+            ),
+            'maxBytes': 5000000,
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'level': 'WARNING',
+            'handlers': ['console', 'file'],
+        },
+        'django.request': {
+            'handlers': ['console', 'file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'file'],
+            'propagate': False,
+        },
+        'configfactory': {
+            'level': 'INFO',
+            'handlers': ['console', 'file'],
+            'propagate': False,
+        },
+    }
+}
 
 TIME_ZONE = 'UTC'
 

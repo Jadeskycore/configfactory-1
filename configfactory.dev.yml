@@ -10,6 +10,9 @@ backup:
   interval: 3600
   count: 20
 
+logging:
+  filename: "/Users/antonruhlov/Projects/am-configfactory/logs/application.log"
+
 environments:
   - alias: development
     name: Development
