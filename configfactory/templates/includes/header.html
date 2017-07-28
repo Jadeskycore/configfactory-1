@@ -1,43 +1,58 @@
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="navbar-header">
-        <a class="navbar-brand" href="{{ url('index') }}"><i class="fa fa-cubes fa-fw"></i>
-            ConfigFactory <sub>{{ version }}</sub>
-        </a>
-    </div>
-    {% if current_user %}
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="{{ url('dump_backup') }}">
-                    <i class="fa fa-upload"></i>
-                    DUMP
-                </a>
-            </li>
-            {% if current_user.is_admin %}
-                <li>
-                    <a href="{{ url('load_backup') }}">
-                        <i class="fa fa-download"></i>
-                        LOAD
-                    </a>
-                </li>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            {% if current_user %}
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             {% endif %}
-        </ul>
-        {% if current_user.is_admin %}
-            <a href="{{ url('new_component') }}" class="btn btn-success navbar-btn">
-                <i class="fa fa-plus"></i> ADD COMPONENT
+            <a class="navbar-brand" href="{{ url('index') }}"><i class="fa fa-cubes fa-fw"></i>
+                ConfigFactory <sub>{{ version }}</sub>
             </a>
+        </div>
+        {% if current_user %}
+            <div id="navbar" class="navbar-collapse collapse">
+                {% if current_user.is_admin %}
+                    <a href="{{ url('new_component') }}" class="btn btn-success btn-xs-block navbar-btn">
+                        <i class="fa fa-plus"></i> ADD COMPONENT
+                    </a>
+                {% endif %}
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{{ url('dump_backup') }}">
+                            <i class="fa fa-upload"></i>
+                            DUMP
+                        </a>
+                    </li>
+                    {% if current_user.is_admin %}
+                        <li>
+                            <a href="{{ url('load_backup') }}">
+                                <i class="fa fa-download"></i>
+                                LOAD
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-user"></i>&nbsp;&nbsp;{{ current_user }} <span
+                            class="caret"></span>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li>
+                                    <a href="{{ url('logout') }}">
+                                        <i class="fa fa-sign-out"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         {% endif %}
-        <ul class="nav navbar-nav pull-right">
-            <li>
-                <p class="navbar-text">
-                    <i class="fa fa-user"></i>&nbsp;&nbsp;{{ current_user }}
-                </p>
-            </li>
-            <li>
-                <a href="{{ url('logout') }}">
-                    <i class="fa fa-sign-out"></i>
-                    Logout
-                </a>
-            </li>
-        </ul>
-    {% endif %}
+    </div>
 </nav>

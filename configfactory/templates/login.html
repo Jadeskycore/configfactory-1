@@ -3,6 +3,7 @@
 
 {% block content %}
     <div class="auth-block">
+        <h3 class="text-center">Log-in to ConfigFactory</h3>
         <form method="post" autocomplete="off">
             {% if form.errors %}
                 <div class="alert alert-danger" role="alert">
@@ -12,7 +13,7 @@
             {% endif %}
             {{ forms.input_field(form.username, value='', autocomplete="off", feedback_icon='user') }}
             {{ forms.input_field(form.password, value='', autocomplete="off", feedback_icon='lock') }}
-            <button type="submit" class="btn btn-success btn-block">Login</button>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
         </form>
     </div>
 {% endblock %}
