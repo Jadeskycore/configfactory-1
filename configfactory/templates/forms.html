@@ -24,10 +24,13 @@
     <input type="{{ field.field.widget.input_type }}" id="{{ field.auto_id }}" name="{{ field.name }}" {% if 'value' not in kwargs %}value="{{ field.value() or '' }}{% endif %}" {{ render_attrs(**kwargs) }}>
 {% endmacro %}
 
-{% macro input_field(field, hide_errors=False) %}
-    <div class="form-group {% if not hide_errors and field.errors %}has-error{% endif %}">
+{% macro input_field(field, hide_errors=False, feedback_icon=None) %}
+    <div class="form-group {% if not hide_errors and field.errors %}has-error{% endif %} {% if feedback_icon %}has-feedback{% endif %}">
         {{ label(field, class_='control-label') }}
         {{ input(field, class_='form-control', **kwargs) }}
+        {% if feedback_icon %}
+            <span class="glyphicon glyphicon-{{ feedback_icon }} form-control-feedback" aria-hidden="true"></span>
+        {% endif %}
         {{ help_block(field) }}
         {% if not hide_errors %}
             {{ error_block(field) }}

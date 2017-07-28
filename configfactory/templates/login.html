@@ -10,8 +10,8 @@
                     Wrong username or password
                 </div>
             {% endif %}
-            {{ forms.input_field(form.username, value='', autocomplete="off") }}
-            {{ forms.input_field(form.password, value='', autocomplete="off") }}
+            {{ forms.input_field(form.username, value='', autocomplete="off", feedback_icon='user') }}
+            {{ forms.input_field(form.password, value='', autocomplete="off", feedback_icon='lock') }}
             <button type="submit" class="btn btn-success btn-block">Login</button>
         </form>
     </div>
