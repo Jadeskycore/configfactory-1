@@ -16,6 +16,9 @@
         </div>
         <div id="page-content-wrapper">
             {% include 'includes/messages.html' %}
+            {% block page_head %}
+                <h3>{% block page_title %}{% endblock %}</h3><hr>
+            {% endblock %}
             {% block content %}{% endblock %}
         </div>
     </div>

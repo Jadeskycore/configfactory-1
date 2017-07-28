@@ -276,7 +276,9 @@ def backup_delete(request, filename):
             'Backup `{}` successfully deleted.'.format(filename))
         return redirect(to=reverse('load_backup'))
 
-    return render(request, 'backup/delete.html')
+    return render(request, 'backup/delete.html', {
+        'filename': filename
+    })
 
 
 @admin_required()

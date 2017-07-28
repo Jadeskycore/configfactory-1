@@ -1,44 +1,37 @@
 {% extends 'layouts/main.html' %}
 
+{% block page_title %}Load settings{% endblock %}
+
 {% block content %}
-    <div class="row">
-        <div class="col-lg-12">
-            <h3>Load settings</h3>
-            <div class="row">
-                <div class="col-lg-12">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Filename</th>
-                                <th>Size</th>
-                                <th>Created at</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for backup in backups %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ backup.url }}">{{ backup.name }}</a>
-                                    </td>
-                                    <td>{{ backup.size|filesizeformat }}</td>
-                                    <td>{{ backup.created_at }}</td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
-                                            <a href="{{ url('load_backup_file', filename=backup.name) }}" class="btn btn-success">
-                                                LOAD
-                                            </a>
-                                            <a href="{{ url('delete_backup', filename=backup.name) }}" class="btn btn-danger">
-                                                DELETE
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Size</th>
+                <th>Created at</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for backup in backups %}
+                <tr>
+                    <td>
+                        <a href="{{ backup.url }}">{{ backup.name }}</a>
+                    </td>
+                    <td>{{ backup.size|filesizeformat }}</td>
+                    <td>{{ backup.created_at }}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <a href="{{ url('load_backup_file', filename=backup.name) }}" class="btn btn-success">
+                                LOAD
+                            </a>
+                            <a href="{{ url('delete_backup', filename=backup.name) }}" class="btn btn-danger">
+                                DELETE
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
