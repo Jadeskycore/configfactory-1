@@ -12,16 +12,20 @@
                     DUMP
                 </a>
             </li>
-            <li>
-                <a href="{{ url('load_backup') }}">
-                    <i class="fa fa-download"></i>
-                    LOAD
-                </a>
-            </li>
+            {% if current_user.is_admin %}
+                <li>
+                    <a href="{{ url('load_backup') }}">
+                        <i class="fa fa-download"></i>
+                        LOAD
+                    </a>
+                </li>
+            {% endif %}
         </ul>
-        <a href="{{ url('new_component') }}" class="btn btn-success navbar-btn">
-            <i class="fa fa-plus"></i> ADD COMPONENT
-        </a>
+        {% if current_user.is_admin %}
+            <a href="{{ url('new_component') }}" class="btn btn-success navbar-btn">
+                <i class="fa fa-plus"></i> ADD COMPONENT
+            </a>
+        {% endif %}
         <ul class="nav navbar-nav pull-right">
             <li>
                 <p class="navbar-text">

@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
 
 from configfactory import auth, backup
-from configfactory.decorators import login_required
+from configfactory.decorators import login_required, admin_required
 from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import (
     ComponentForm,
@@ -49,7 +49,7 @@ def logout(request):
     return redirect(reverse('login'))
 
 
-@login_required()
+@admin_required()
 def component_create(request):
 
     if request.method == 'POST':
@@ -67,7 +67,7 @@ def component_create(request):
     })
 
 
-@login_required()
+@admin_required()
 def component_edit(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -90,7 +90,7 @@ def component_edit(request, alias):
     })
 
 
-@login_required()
+@admin_required()
 def component_edit_schema(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -124,7 +124,7 @@ def component_edit_schema(request, alias):
     })
 
 
-@login_required()
+@admin_required()
 def component_delete(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -149,8 +149,13 @@ def component_delete(request, alias):
 @login_required()
 def component_view(request, alias, environment=None):
 
+    user = request.user
     component = get_object_or_404(Component, alias=alias)
-    environment = environment_manager.get_or_404(environment)
+    environments = environment_manager.all(user=user)
+    environment = environment_manager.get_or_404(
+        alias=environment,
+        user=user
+    )
 
     try:
         readonly = int(request.GET.get('readonly', False))
@@ -211,7 +216,7 @@ def component_view(request, alias, environment=None):
 
     return render(request, 'components/view.html', {
         'component': component,
-        'environments': environment_manager.all(),
+        'environments': environments,
         'current_environment': environment,
         'form': form,
         'readonly': readonly
@@ -236,7 +241,7 @@ def backup_dump(request):
     })
 
 
-@login_required()
+@admin_required()
 def backup_load(request, filename=None):
 
     if filename:
@@ -258,7 +263,7 @@ def backup_load(request, filename=None):
     })
 
 
-@login_required()
+@admin_required()
 def backup_delete(request, filename):
 
     if not backup.exists(filename):
@@ -274,7 +279,7 @@ def backup_delete(request, filename):
     return render(request, 'backup/delete.html')
 
 
-@login_required()
+@admin_required()
 def backup_serve(request, filename):
 
     if not backup.exists(filename):

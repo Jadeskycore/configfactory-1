@@ -156,22 +156,41 @@ class EnvironmentHandler:
                 fallback=fallback
             )
 
-    def all(self):
+    def all(self, user: 'User' = None):
+        """
+        Get environment list.
+        """
+        if user and not user.is_admin:
+            return [
+                environment
+                for environment in self._environments.values()
+                if (
+                    environment.alias in user.environments
+                    or environment.is_base
+                )
+            ]
         return list(self._environments.values())
 
-    def get(self, alias=None):
+    def get(self, alias=None, user: 'User' = None):
         if alias is None:
             alias = Environment.base_alias
-        return self._environments[alias]
+        if user and not user.is_admin:
+            environments = {
+                environment.alias: environment
+                for environment in self.all(user)
+            }
+        else:
+            environments = self._environments
+        return environments[alias]
 
-    def get_or_404(self, alias=None):
+    def get_or_404(self, alias=None, user: 'User' = None):
         try:
-            return self.get(alias)
+            return self.get(
+                alias=alias,
+                user=user
+            )
         except KeyError:
             raise Http404
-
-    def __contains__(self, item):
-        return item is self._environments
 
     def __getitem__(self, item):
         return self.get(item)
@@ -179,10 +198,19 @@ class EnvironmentHandler:
 
 class User:
 
-    def __init__(self, username, password=None, is_active=True):
+    def __init__(self,
+                 username,
+                 password=None,
+                 is_active=True,
+                 is_admin=False,
+                 environments=None):
         self.username = username
         self.password_hash = None
         self.is_active = is_active
+        self.is_admin = is_admin
+        if environments is None:
+            environments = []
+        self.environments = environments
         if password:
             self.set_password(password)
 
@@ -200,15 +228,20 @@ class UserManager:
 
     def __init__(self):
         self._users = {}
-        for user in getattr(settings, 'USERS', []):
-            username = user['username']
-            password = user.get('password')
-            is_active = user.get('is_active', True)
-            self._users[username] = User(
+        for user_data in getattr(settings, 'USERS', []):
+            username = user_data['username']
+            password = user_data.get('password')
+            is_active = user_data.get('is_active', True)
+            is_admin = user_data.get('is_admin', False)
+            environments = user_data.get('environments')
+            user = User(
                 username=username,
                 password=password,
-                is_active=is_active
+                is_active=is_active,
+                is_admin=is_admin,
+                environments=environments
             )
+            self._users[username] = user
 
     def get(self, username):
         try:

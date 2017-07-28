@@ -10,7 +10,7 @@ def version(request):
 
 def components(request):
     return {
-        'components': Component.objects.all()
+        'components': Component.objects.all(),
     }
 
 

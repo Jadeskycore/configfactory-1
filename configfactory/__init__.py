@@ -1,5 +1,5 @@
 from configfactory.support.versioning import get_version
 
 # Set public version
-VERSION = '0.20dev'
+VERSION = '0.20'
 __version__ = get_version(VERSION)

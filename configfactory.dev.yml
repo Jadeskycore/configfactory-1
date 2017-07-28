@@ -25,3 +25,10 @@ environments:
 users:
   - username: admin
     password: admin
+    is_admin: true
+  - username: guest
+    password: guest
+    is_admin: false
+    environments:
+      - development
+      - migration
