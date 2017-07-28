@@ -70,14 +70,15 @@ class LoginForm(forms.Form):
         self.user = None
 
     def clean(self):
-        cleaned_data = self.cleaned_data
-        username = cleaned_data['username']
-        password = cleaned_data['password']
-        self.user = auth.authenticate(username, password)
-        if self.user is None:
-            raise ValidationError(
-                'Invalid username or password.'
-            )
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+        if username and password:
+            self.user = auth.authenticate(username, password)
+            if self.user is None:
+                raise ValidationError(
+                    'Invalid username or password.'
+                )
 
 
 class ComponentForm(forms.ModelForm):
