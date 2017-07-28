@@ -3,8 +3,7 @@
         <li>
             <a href="{{ url('view_component', alias=component.alias) }}"
                class="{% if is_current %}active{% endif %}">
-                <i class="fa fa-cube fa-fw"></i> {{ component.name|upper }}
-                <small><strong>[{{ component.alias }}]</strong></small>
+                <i class="fa fa-cube fa-fw"></i>&nbsp;{{ component.name|upper }}
             </a>
         </li>
     {% endfor %}
