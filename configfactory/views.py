@@ -28,6 +28,9 @@ def index(request):
 
 def login(request):
 
+    if request.user:
+        return redirect(to=reverse('index'))
+
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
         if form.is_valid():
