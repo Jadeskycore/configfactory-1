@@ -134,7 +134,7 @@ class Environment:
         return self.alias
 
 
-class EnvironmentHandler:
+class EnvironmentManager:
 
     def __init__(self):
         self._environments = collections.OrderedDict([
@@ -251,4 +251,4 @@ class UserManager:
 
 
 user_manager = UserManager()
-environment_manager = EnvironmentHandler()
+environment_manager = EnvironmentManager()
