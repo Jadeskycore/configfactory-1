@@ -1,5 +1,7 @@
 from configfactory.settings import *
 
+LOGGING = None
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
