@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
 
@@ -314,3 +314,7 @@ def logs_serve(request, filename):
         path=filename,
         document_root=logs.LOGGING_DIR
     )
+
+
+def alive(request):
+    return HttpResponse('OK')
