@@ -1,6 +1,7 @@
 import copy
 import json
 import re
+import time
 from collections import OrderedDict
 
 from configfactory.exceptions import (
@@ -187,3 +188,16 @@ def traverse_dict(obj, path=None, callback=None):
         return value
     else:
         return callback(path, value)
+
+
+def current_timestamp():
+    return int(round(time.time() * 1000))
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

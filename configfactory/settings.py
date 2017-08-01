@@ -41,7 +41,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'configfactory.middleware.auth_middleware'
+    'configfactory.middleware.auth_middleware',
+    'configfactory.middleware.logging_middleware',
 ]
 
 INSTALLED_APPS = [
@@ -59,6 +60,16 @@ STATICFILES_FINDERS = (
 
 STATICFILES_DIRS = (
     os.path.join(paths.APP_ROOT, 'static'),
+)
+
+LOGGING_DIR = config.get(
+    'logging.dir',
+    appdirs.user_data_dir('logs'),
+)
+
+LOGGING_FILENAME = config.get(
+    'logging.filename',
+    'configfactory.log'
 )
 
 LOGGING = {
@@ -81,14 +92,11 @@ LOGGING = {
             'formatter': 'verbose'
         },
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': config.get(
-                'logging.filename',
-                os.path.join(
-                    appdirs.user_data_dir('logs'),
-                    'configfactory.log'
-                )
+            'filename': os.path.join(
+                LOGGING_DIR,
+                LOGGING_FILENAME
             ),
             'maxBytes': 5000000,
             'backupCount': 10,
@@ -107,14 +115,15 @@ LOGGING = {
         },
         'django.db': {
             'level': 'DEBUG',
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'propagate': False,
         },
         'configfactory': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'handlers': ['console', 'file'],
             'propagate': False,
         },
+        # 'acce'
     }
 }
 

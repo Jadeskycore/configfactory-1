@@ -1,6 +1,5 @@
 import logging
 import os
-import time
 
 import appdirs
 from django.core.management import call_command
@@ -8,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from configfactory.support import config
-
+from configfactory.utils import current_timestamp
 
 BACKUP_DIR = config.get(
     'backup.dir',
@@ -20,10 +19,6 @@ BACKUP_INTERVAL = config.get('backup.interval', default=3600)  # seconds
 BACKUP_COUNT = config.get('backup.count', default=20)
 
 logger = logging.getLogger(__name__)
-
-
-def current_timestamp():
-    return int(round(time.time() * 1000))
 
 
 def get_file(filename):

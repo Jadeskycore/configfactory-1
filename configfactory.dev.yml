@@ -11,7 +11,8 @@ backup:
   count: 20
 
 logging:
-  filename: "/Users/antonruhlov/Projects/am-configfactory/logs/application.log"
+  dir: logs
+  filename: "configfactory.log"
 
 environments:
   - alias: development

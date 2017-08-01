@@ -1,0 +1,26 @@
+{% extends 'layouts/main.html' %}
+
+{% block page_title %}Logs{% endblock %}
+
+{% block content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Size</th>
+                <th>Created at</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log_file in log_files %}
+                <tr>
+                    <td>
+                        <a href="{{ log_file.url }}">{{ log_file.name }}</a>
+                    </td>
+                    <td>{{ log_file.size|filesizeformat }}</td>
+                    <td>{{ log_file.created_at }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

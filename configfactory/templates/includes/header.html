@@ -17,7 +17,7 @@
         {% if current_user %}
             <div id="navbar" class="navbar-collapse collapse">
                 {% if current_user.is_admin %}
-                    <a href="{{ url('new_component') }}" class="btn btn-success btn-xs-block navbar-btn">
+                    <a href="{{ url('new_component') }}" class="btn btn-success btn-xs-block navbar-btn pull-left">
                         <i class="fa fa-plus"></i> ADD COMPONENT
                     </a>
                 {% endif %}
@@ -33,6 +33,12 @@
                             <a href="{{ url('load_backup') }}">
                                 <i class="fa fa-download"></i>
                                 LOAD
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ url('load_backup') }}">
+                                <i class="fa fa-file-text"></i>
+                                LOGS
                             </a>
                         </li>
                     {% endif %}

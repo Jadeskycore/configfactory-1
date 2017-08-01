@@ -4,14 +4,15 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
 
-from configfactory import auth, backup
-from configfactory.decorators import login_required, admin_required
+from configfactory import auth, backup, logs
+from configfactory.decorators import admin_required, login_required
 from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import (
     ComponentForm,
     ComponentSchemaForm,
     ComponentSettingsForm,
-    LoginForm)
+    LoginForm,
+)
 from configfactory.models import Component, environment_manager
 from configfactory.services import (
     delete_component,
@@ -291,4 +292,25 @@ def backup_serve(request, filename):
         request=request,
         path=filename,
         document_root=backup.BACKUP_DIR
+    )
+
+
+@admin_required()
+def logs_index(request):
+
+    return render(request, 'logs/index.html', {
+        'log_files': logs.get_all()
+    })
+
+
+@admin_required()
+def logs_serve(request, filename):
+
+    if not logs.exists(filename):
+        raise Http404
+
+    return serve(
+        request=request,
+        path=filename,
+        document_root=logs.LOGGING_DIR
     )
