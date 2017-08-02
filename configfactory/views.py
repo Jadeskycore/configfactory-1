@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
 
-from configfactory import auth, backup, logs
+from configfactory import auth, backup, logs, __version__
 from configfactory.decorators import admin_required, login_required
 from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import (
@@ -19,7 +19,7 @@ from configfactory.services import (
     get_all_settings,
     update_settings,
 )
-from configfactory.utils import inject_dict_params
+from configfactory.utils import inject_dict_params, current_timestamp
 
 
 @login_required()
@@ -316,5 +316,15 @@ def logs_serve(request, filename):
     )
 
 
-def alive(request):
+def ping(request):
     return HttpResponse('OK')
+
+
+def alive(request):
+    return JsonResponse(data={
+        'component': 'configfactory',
+        'version': __version__,
+        'host': request.META['HTTP_HOST'],
+        'time': current_timestamp(),
+        'alive': True,
+    })

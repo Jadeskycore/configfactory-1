@@ -4,6 +4,7 @@ from configfactory import views
 
 urlpatterns = [
     url(r'^$', view=views.index, name='index'),
+    url(r'^ping/$', view=views.ping, name='ping'),
     url(r'^alive/$', view=views.alive, name='alive'),
     url(r'^login/$', view=views.login, name='login'),
     url(r'^logout/$', view=views.logout, name='logout'),
