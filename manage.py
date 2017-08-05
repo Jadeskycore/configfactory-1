@@ -2,11 +2,12 @@
 import os
 import sys
 
-from configfactory import paths
+from configfactory.support import dirs
+
 
 if __name__ == "__main__":
 
-    os.environ.setdefault("CONFIGFACTORY_CONFIG", paths.CONFIG_PATH)
+    os.environ.setdefault("CONFIGFACTORY_CONFIG", dirs.root_dir('configfactory.dev.yml'))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "configfactory.settings")
 
     from django.core.management import execute_from_command_line

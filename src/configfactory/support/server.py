@@ -1,9 +1,7 @@
-import os
-
 import gunicorn.app.base
 from dj_static import Cling
 
-from configfactory import paths
+from configfactory.support import dirs
 
 
 class GunicornServer(gunicorn.app.base.BaseApplication):
@@ -28,5 +26,5 @@ class GunicornServer(gunicorn.app.base.BaseApplication):
     def load(self):
         return Cling(
             application=self.wsgi_app,
-            base_dir=os.path.join(paths.APP_ROOT, 'static')
+            base_dir=dirs.package_dir('static')
         )

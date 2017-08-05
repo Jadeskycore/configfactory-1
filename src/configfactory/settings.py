@@ -2,8 +2,8 @@ import os
 
 import appdirs
 import dj_database_url
-from configfactory import paths
-from configfactory.support import config
+
+from configfactory.support import config, dirs
 
 ALLOWED_HOSTS = ['*']
 
@@ -59,7 +59,7 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_DIRS = (
-    os.path.join(paths.APP_ROOT, 'static'),
+    dirs.package_dir('static'),
 )
 
 LOGGING_DIR = config.get(
