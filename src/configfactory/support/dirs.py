@@ -22,6 +22,13 @@ def package_dir(target=None):
     return target_dir(root, target)
 
 
+def var_dir(target=None):
+    return target_dir(
+        root=root_dir('var'),
+        target=target
+    )
+
+
 def target_dir(root, target=None):
     if target:
         return os.path.join(root, target)

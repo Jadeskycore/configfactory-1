@@ -6,12 +6,12 @@ database:
   url: "sqlite:///db.sqlite3"
 
 backup:
-  dir: data
+  dir: var/backup
   interval: 3600
   count: 20
 
 logging:
-  dir: logs
+  dir: var/log
   filename: "configfactory.log"
 
 environments:
