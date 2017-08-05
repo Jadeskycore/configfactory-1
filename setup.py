@@ -1,4 +1,5 @@
 import os
+import sys
 
 from setuptools import setup, find_packages
 
@@ -8,6 +9,8 @@ with open(os.path.join(root_path, 'README.rst')) as f:
     README = f.read()
 with open(os.path.join(root_path, 'CHANGES.txt')) as f:
     CHANGES = f.read()
+
+sys.path.insert(0, os.path.join(root_path, 'src'))
 
 version = __import__('configfactory').get_version()
 
@@ -37,7 +40,10 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
     ],
-    packages=find_packages(),
+    packages=find_packages('src', exclude=['tests']),
+    package_dir={
+        '': 'src',
+    },
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,

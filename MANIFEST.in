@@ -1,3 +1,7 @@
 include *.txt *.ini *.cfg *.rst *.yml *.yaml
+graft src
+graft tests
+global-exclude __pycache__
+global-exclude *.pyc
 recursive-include configfactory *.yml *.yaml *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml *.eot *.svg *.ttf *.otf *.woff
 recursive-include data *.json
