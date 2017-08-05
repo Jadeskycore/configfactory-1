@@ -23,7 +23,7 @@ urlpatterns = [
         view=views.component_delete, name='delete_component'),
     url(r'^components/(?P<alias>[-\w\d]+)/(?P<environment>\w+)/$', view=views.component_view,
         name='view_component_by_env'),
-    url(r'^logs/$', view=views.logs_index, name='logs_index'),
+    url(r'^logs/$', view=views.logs_index, name='logs'),
     url(r'^logs/serve/(?P<filename>.+)/$', view=views.logs_serve, name='serve_log_file'),
     url(r'^api/', include('configfactory.api.urls'))
 ]
