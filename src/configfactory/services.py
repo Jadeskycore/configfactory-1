@@ -1,13 +1,55 @@
 from collections import OrderedDict
 
-from configfactory.exceptions import ComponentDeleteError, InjectKeyError
 from django.db import transaction
 
-from configfactory.models import Component, environment_manager
-from configfactory.utils import flatten_dict, inject_dict_params
+from configfactory.exceptions import ComponentDeleteError, InjectKeyError
+from configfactory.models import Component, Environment, environment_manager
+from configfactory.utils import (
+    flatten_dict,
+    inject_dict_params,
+    json_loads,
+    merge_dicts,
+)
 
 
-def update_settings(component, environment, data):
+def get_component_settings(component, environment=None, flatten=False):
+    """
+    Get component settings.
+    """
+
+    settings_dict = json_loads(component.settings_json)
+    base_settings_dict = settings_dict.get(
+        Environment.base_alias,
+        {}
+    )
+
+    if isinstance(environment, str):
+        environment = environment_manager.get(environment)
+
+    if environment.is_base:
+        ret = base_settings_dict
+    else:
+        env_settings_dict = settings_dict.get(environment.alias)
+        if env_settings_dict is None:
+            if environment.fallback:
+                env_settings_dict = settings_dict.get(
+                    environment.fallback,
+                    {}
+                )
+            else:
+                env_settings_dict = {}
+        ret = merge_dicts(
+            base_settings_dict,
+            env_settings_dict,
+        )
+
+    if flatten:
+        ret = flatten_dict(ret)
+
+    return ret
+
+
+def update_component_settings(component, environment, data):
     """
     Update component settings.
     """
@@ -31,7 +73,10 @@ def delete_component(component: Component):
         for environment in environment_manager.all():
             try:
                 inject_dict_params(
-                    data=component.get_settings(environment),
+                    data=get_component_settings(
+                        component=component,
+                        environment=environment
+                    ),
                     params=get_all_settings(environment, flatten=True),
                     flatten=True,
                     raise_exception=True
@@ -52,7 +97,10 @@ def get_all_settings(environment, flatten=False):
     data = OrderedDict([
         (
             component.alias,
-            component.get_settings(environment)
+            get_component_settings(
+                component=component,
+                environment=environment
+            )
         )
         for component in Component.objects.all()
     ])

@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
 from configfactory.models import Component, environment_manager
-from configfactory.services import get_all_settings
-from configfactory.utils import inject_dict_params
+from configfactory.services import get_all_settings, get_component_settings
+from configfactory.utils import inject_dict_params, flatten_dict
 
 
 def environments_view(request):
@@ -25,15 +25,19 @@ def environments_view(request):
 
 def components_view(request, environment):
 
-    flatten = _get_flatten_param(request)
     environment = environment_manager.get_or_404(environment)
+    flatten = _get_flatten_param(request)
+    settings_dict = get_all_settings(environment, flatten=False)
+    flatten_settings_dict = flatten_dict(settings_dict)
+
+    if flatten:
+        data = flatten_settings_dict
+    else:
+        data = settings_dict
 
     data = inject_dict_params(
-        data=get_all_settings(
-            environment=environment,
-            flatten=flatten
-        ),
-        params=get_all_settings(environment, flatten=True),
+        data=data,
+        params=flatten_settings_dict,
         raise_exception=False
     )
 
@@ -44,9 +48,13 @@ def component_settings_view(request, environment, alias):
 
     component = get_object_or_404(Component, alias=alias)
     environment = environment_manager.get_or_404(environment)
-
     flatten = _get_flatten_param(request)
-    data = component.get_settings(environment, flatten=flatten)
+
+    data = get_component_settings(
+        component=component,
+        environment=environment,
+        flatten=flatten
+    )
 
     return JsonResponse(data=data, safe=False)
 

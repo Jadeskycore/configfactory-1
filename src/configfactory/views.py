@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
 
-from configfactory import __version__, auth, backup, logs
+from configfactory import __version__, backup, logs
 from configfactory.auth.decorators import admin_required, login_required
 from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import (
@@ -16,7 +16,8 @@ from configfactory.models import Component, environment_manager
 from configfactory.services import (
     delete_component,
     get_all_settings,
-    update_settings,
+    get_component_settings,
+    update_component_settings,
 )
 from configfactory.utils import current_timestamp, inject_dict_params
 
@@ -139,7 +140,8 @@ def component_view(request, alias, environment=None):
     except TypeError:
         raise Http404
 
-    settings_dict = component.get_settings(
+    settings_dict = get_component_settings(
+        component=component,
         environment=environment,
         flatten=readonly
     )
@@ -164,7 +166,7 @@ def component_view(request, alias, environment=None):
 
         if form.is_valid():
             data = form.cleaned_data
-            component = update_settings(
+            component = update_component_settings(
                 component=component,
                 environment=environment,
                 data=data['settings']

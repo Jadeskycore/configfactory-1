@@ -5,12 +5,7 @@ from django.db import models
 from django.http import Http404
 from django.utils.functional import cached_property
 
-from configfactory.utils import (
-    flatten_dict,
-    json_dumps,
-    json_loads,
-    merge_dicts,
-)
+from configfactory.utils import json_dumps, json_loads
 
 
 class Component(models.Model):
@@ -57,39 +52,6 @@ class Component(models.Model):
     @cached_property
     def settings(self):
         return json_loads(self.settings_json)
-
-    def get_settings(self, environment=None, flatten=False):
-
-        settings_dict = json_loads(self.settings_json)
-        base_settings_dict = settings_dict.get(
-            Environment.base_alias,
-            {}
-        )
-
-        if isinstance(environment, str):
-            environment = environment_manager.get(environment)
-
-        if environment.is_base:
-            ret = base_settings_dict
-        else:
-            env_settings_dict = settings_dict.get(environment.alias)
-            if env_settings_dict is None:
-                if environment.fallback:
-                    env_settings_dict = settings_dict.get(
-                        environment.fallback,
-                        {}
-                    )
-                else:
-                    env_settings_dict = {}
-            ret = merge_dicts(
-                base_settings_dict,
-                env_settings_dict,
-            )
-
-        if flatten:
-            ret = flatten_dict(ret)
-
-        return ret
 
     def set_settings(self, data, environment=None):
 
