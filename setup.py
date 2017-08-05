@@ -33,7 +33,7 @@ requires = [
 setup(
     name='am-configfactory',
     version=version,
-    description='Admiral Markets distributed configurations server',
+    description='Distributed configurations server',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
         "Programming Language :: Python",
