@@ -1,3 +1,5 @@
+from distutils.util import strtobool
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -50,7 +52,4 @@ def component_settings_view(request, environment, alias):
 
 
 def _get_flatten_param(request):
-    try:
-        return bool(int(request.GET.get('flatten', False)))
-    except (TypeError, ValueError):
-        return False
+    return bool(strtobool(request.GET.get('flatten', 'no').lower()))
