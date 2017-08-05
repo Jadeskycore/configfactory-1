@@ -28,9 +28,9 @@ TEMPLATES = [
             'match_extension': '.html',
             'auto_reload': True,
             'context_processors': [
-                'configfactory.context_processors.auth',
                 'configfactory.context_processors.components',
-                'configfactory.context_processors.version',
+                'configfactory.auth.context_processors.auth',
+                'configfactory.support.context_processors.version',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -41,8 +41,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'configfactory.middleware.auth_middleware',
-    'configfactory.middleware.logging_middleware',
+    'configfactory.auth.middleware.auth_middleware',
+    'configfactory.support.middleware.logging_middleware',
 ]
 
 INSTALLED_APPS = [

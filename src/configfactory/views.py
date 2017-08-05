@@ -4,14 +4,13 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
 
-from configfactory import auth, backup, logs, __version__
-from configfactory.decorators import admin_required, login_required
+from configfactory import __version__, auth, backup, logs
+from configfactory.auth.decorators import admin_required, login_required
 from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import (
     ComponentForm,
     ComponentSchemaForm,
     ComponentSettingsForm,
-    LoginForm,
 )
 from configfactory.models import Component, environment_manager
 from configfactory.services import (
@@ -19,35 +18,12 @@ from configfactory.services import (
     get_all_settings,
     update_settings,
 )
-from configfactory.utils import inject_dict_params, current_timestamp
+from configfactory.utils import current_timestamp, inject_dict_params
 
 
 @login_required()
 def index(request):
     return render(request, 'index.html')
-
-
-def login(request):
-
-    if request.user:
-        return redirect(to=reverse('index'))
-
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            auth.login(request, form.user)
-            return redirect(to=reverse('index'))
-    else:
-        form = LoginForm()
-
-    return render(request, 'login.html', {
-        'form': form
-    })
-
-
-def logout(request):
-    auth.logout(request)
-    return redirect(reverse('login'))
 
 
 @admin_required()

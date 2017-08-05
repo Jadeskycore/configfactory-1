@@ -1,23 +1,9 @@
 import json
 import logging
 
-from django.utils.functional import SimpleLazyObject
-
-from configfactory import auth
 from configfactory.utils import get_client_ip
 
 logger = logging.getLogger(__name__)
-
-
-def auth_middleware(get_response):
-    """
-    Authentication middleware.
-    """
-    def middleware(request):
-        request.user = SimpleLazyObject(lambda: auth.get_user(request))
-        response = get_response(request)
-        return response
-    return middleware
 
 
 def logging_middleware(get_response):

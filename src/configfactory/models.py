@@ -1,7 +1,6 @@
-import collections
+from collections import OrderedDict
 
 from django.conf import settings
-from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
 from django.http import Http404
 from django.utils.functional import cached_property
@@ -137,7 +136,7 @@ class Environment:
 class EnvironmentManager:
 
     def __init__(self):
-        self._environments = collections.OrderedDict([
+        self._environments = OrderedDict([
             (
                 Environment.base_alias,
                 Environment(
@@ -156,7 +155,7 @@ class EnvironmentManager:
                 fallback=fallback
             )
 
-    def all(self, user: 'User' = None):
+    def all(self, user=None):
         """
         Get environment list.
         """
@@ -171,7 +170,7 @@ class EnvironmentManager:
             ]
         return list(self._environments.values())
 
-    def get(self, alias=None, user: 'User' = None):
+    def get(self, alias=None, user = None):
         if alias is None:
             alias = Environment.base_alias
         if user and not user.is_admin:
@@ -183,7 +182,7 @@ class EnvironmentManager:
             environments = self._environments
         return environments[alias]
 
-    def get_or_404(self, alias=None, user: 'User' = None):
+    def get_or_404(self, alias=None, user = None):
         try:
             return self.get(
                 alias=alias,
@@ -195,60 +194,4 @@ class EnvironmentManager:
     def __getitem__(self, item):
         return self.get(item)
 
-
-class User:
-
-    def __init__(self,
-                 username,
-                 password=None,
-                 is_active=True,
-                 is_admin=False,
-                 environments=None):
-        self.username = username
-        self.password_hash = None
-        self.is_active = is_active
-        self.is_admin = is_admin
-        if environments is None:
-            environments = []
-        self.environments = environments
-        if password:
-            self.set_password(password)
-
-    def __str__(self):
-        return self.username
-
-    def set_password(self, password):
-        self.password_hash = make_password(password)
-
-    def check_password(self, password):
-        return check_password(password, self.password_hash)
-
-
-class UserManager:
-
-    def __init__(self):
-        self._users = {}
-        for user_data in getattr(settings, 'USERS', []):
-            username = user_data['username']
-            password = user_data.get('password')
-            is_active = user_data.get('is_active', True)
-            is_admin = user_data.get('is_admin', False)
-            environments = user_data.get('environments')
-            user = User(
-                username=username,
-                password=password,
-                is_active=is_active,
-                is_admin=is_admin,
-                environments=environments
-            )
-            self._users[username] = user
-
-    def get(self, username):
-        try:
-            return self._users[username]
-        except KeyError:
-            return None
-
-
-user_manager = UserManager()
 environment_manager = EnvironmentManager()

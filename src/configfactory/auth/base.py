@@ -1,6 +1,9 @@
+from typing import Optional
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.middleware.csrf import rotate_token
 
-from configfactory.models import user_manager
+from configfactory.auth.models import AnonymousUser, AuthUser, User
 
 AUTH_SESSION_KEY = 'userid'
 
@@ -31,26 +34,29 @@ def logout(request):
     """
     request.session.flush()
     if hasattr(request, 'user'):
-        request.user = None
+        request.user = AnonymousUser()
 
 
-def authenticate(username, password):
+def authenticate(username, password) -> Optional[User]:
     """
     Authenticate user.
     """
-    user = user_manager.get(username)
+    user = User.objects.find(username)
     if user:
         if user.check_password(password) and user.is_active:
             return user
     return None
 
 
-def get_user(request):
+def get_user(request) -> AuthUser:
     """
     Get user by current request.
     """
 
     if AUTH_SESSION_KEY in request.session:
         username = request.session[AUTH_SESSION_KEY]
-        return user_manager.get(username)
-    return None
+        try:
+            return User.objects.get(username)
+        except ObjectDoesNotExist:
+            pass
+    return AnonymousUser()

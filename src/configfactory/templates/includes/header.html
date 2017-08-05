@@ -1,7 +1,7 @@
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            {% if current_user %}
+            {% if current_user.is_authenticated %}
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                         data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
@@ -14,31 +14,28 @@
                 ConfigFactory <sub>{{ version }}</sub>
             </a>
         </div>
-        {% if current_user %}
+        {% if current_user.is_authenticated %}
             <div id="navbar" class="navbar-collapse collapse">
                 {% if current_user.is_admin %}
                     <a href="{{ url('new_component') }}" class="btn btn-success btn-xs-block navbar-btn pull-left">
-                        <i class="fa fa-plus"></i> ADD COMPONENT
+                        <i class="fa fa-plus"></i>&nbsp;&nbsp;ADD COMPONENT
                     </a>
                 {% endif %}
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="{{ url('dump_backup') }}">
-                            <i class="fa fa-upload"></i>
-                            DUMP
+                            <i class="fa fa-upload"></i>&nbsp;&nbsp;DUMP
                         </a>
                     </li>
                     {% if current_user.is_admin %}
                         <li>
                             <a href="{{ url('load_backup') }}">
-                                <i class="fa fa-download"></i>
-                                LOAD
+                                <i class="fa fa-download"></i>&nbsp;&nbsp;LOAD
                             </a>
                         </li>
                         <li>
                             <a href="{{ url('logs') }}">
-                                <i class="fa fa-file-text"></i>
-                                LOGS
+                                <i class="fa fa-file-text"></i>&nbsp;&nbsp;LOGS
                             </a>
                         </li>
                     {% endif %}
