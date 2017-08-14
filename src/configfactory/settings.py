@@ -123,7 +123,6 @@ LOGGING = {
             'handlers': ['console', 'file'],
             'propagate': False,
         },
-        # 'acce'
     }
 }
 
@@ -132,3 +131,13 @@ TIME_ZONE = 'UTC'
 ENVIRONMENTS = config.get('environments', [])
 
 USERS = config.get('users', [])
+
+CLEANSED_HIDDEN = config.get(
+    'cleansed.hidden',
+    default='api token key secret pass password signature'
+)
+
+CLEANSED_SUBSTITUTE = config.get(
+    'cleansed.substitute',
+    default='***************'
+)

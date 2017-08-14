@@ -10,15 +10,22 @@ class AuthUser(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def is_authenticated(self): ...
+    def is_authenticated(self):
+        pass
 
     @property
     @abc.abstractmethod
-    def is_active(self): ...
+    def is_active(self):
+        pass
 
     @property
     @abc.abstractmethod
-    def is_admin(self): ...
+    def is_admin(self):
+        pass
+
+    @abc.abstractmethod
+    def has_perm(self, perm):
+        pass
 
 
 class AnonymousUser(AuthUser):
@@ -36,6 +43,9 @@ class AnonymousUser(AuthUser):
 
     @property
     def is_active(self):
+        return False
+
+    def has_perm(self, perm):
         return False
 
 
@@ -57,13 +67,13 @@ class UserManager:
             password = user_data.get('password')
             is_active = user_data.get('is_active', True)
             is_admin = user_data.get('is_admin', False)
-            environments = user_data.get('environments')
+            permissions = user_data.get('permissions')
             user = User(
                 username=username,
                 password=password,
                 is_active=is_active,
                 is_admin=is_admin,
-                environments=environments
+                permissions=permissions
             )
             users[username] = user
 
@@ -93,16 +103,16 @@ class User(AuthUser):
                  password=None,
                  is_active=True,
                  is_admin=False,
-                 environments=None):
+                 permissions=None):
 
         self.username = username
         self.password_hash = None
         self._is_active = is_active
         self._is_admin = is_admin
 
-        if environments is None:
-            environments = []
-        self.environments = environments
+        if permissions is None:
+            permissions = []
+        self.permissions = permissions
 
         if password:
             self.set_password(password)
@@ -127,3 +137,10 @@ class User(AuthUser):
 
     def check_password(self, password):
         return check_password(password, self.password_hash)
+
+    def has_perm(self, perm: str):
+        if perm not in self.permissions and perm.endswith(':read'):
+            write_perm = perm.replace(':read', ':write')
+            if write_perm in self.permissions:
+                self.permissions.append(perm)
+        return perm in self.permissions

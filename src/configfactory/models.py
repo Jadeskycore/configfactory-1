@@ -122,17 +122,26 @@ class EnvironmentManager:
         Get environment list.
         """
         if user and not user.is_admin:
+
+            # Get user environments
+            user_environments = list(set([
+                permission.split('environment:')[-1].split(':')[0]
+                for permission in user.permissions
+                if 'environment:' in permission
+            ]))
+
             return [
                 environment
                 for environment in self._environments.values()
                 if (
-                    environment.alias in user.environments
+                    environment.alias in user_environments
                     or environment.is_base
                 )
             ]
+
         return list(self._environments.values())
 
-    def get(self, alias=None, user = None):
+    def get(self, alias=None, user=None):
         if alias is None:
             alias = Environment.base_alias
         if user and not user.is_admin:

@@ -6,6 +6,7 @@ from django.views.static import serve
 
 from configfactory import __version__, backup, logs
 from configfactory.auth.decorators import admin_required, login_required
+from configfactory.auth.utils import test_perm
 from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import (
     ComponentForm,
@@ -19,7 +20,11 @@ from configfactory.services import (
     get_component_settings,
     update_component_settings,
 )
-from configfactory.utils import current_timestamp, inject_dict_params
+from configfactory.utils import (
+    cleanse_dict,
+    current_timestamp,
+    inject_dict_params,
+)
 
 
 @login_required()
@@ -134,23 +139,32 @@ def component_view(request, alias, environment=None):
         alias=environment,
         user=user
     )
+    read_perm = 'environment:{}:read'.format(environment.alias)
+    write_perm = 'environment:{}:write'.format(environment.alias)
 
     try:
-        readonly = int(request.GET.get('readonly', False))
+        edit_mode = int(request.GET.get('edit_mode', False))
     except TypeError:
         raise Http404
+
+    if edit_mode:
+        test_perm(user, write_perm)
+    else:
+        test_perm(user, read_perm)
 
     settings_dict = get_component_settings(
         component=component,
         environment=environment,
-        flatten=readonly
+        flatten=not edit_mode
     )
 
-    if readonly:
-        settings_dict = inject_dict_params(
-            data=settings_dict,
-            params=get_all_settings(environment, flatten=True),
-            raise_exception=False
+    if not edit_mode:
+        settings_dict = cleanse_dict(
+            inject_dict_params(
+                data=settings_dict,
+                params=get_all_settings(environment, flatten=True),
+                raise_exception=False
+            )
         )
 
     if request.method == 'POST':
@@ -198,7 +212,11 @@ def component_view(request, alias, environment=None):
         'environments': environments,
         'current_environment': environment,
         'form': form,
-        'readonly': readonly
+        'edit_mode': edit_mode,
+        'perms': {
+            'read': read_perm,
+            'write': write_perm
+        }
     })
 
 

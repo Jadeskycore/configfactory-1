@@ -4,6 +4,8 @@ import re
 import time
 from collections import OrderedDict
 
+from django.conf import settings
+
 from configfactory.exceptions import (
     CircularInjectError,
     InjectKeyError,
@@ -188,6 +190,61 @@ def traverse_dict(obj, path=None, callback=None):
         return value
     else:
         return callback(path, value)
+
+
+def cleanse_dict(d, hidden=None, substitute=None):
+    """
+    Hide dictionary secured data.
+    """
+
+    ret = copy.deepcopy(d)
+
+    for k, v in d.items():
+        if isinstance(v, dict):
+            ret[k] = cleanse_dict(v, hidden=hidden, substitute=substitute)
+        else:
+            ret[k] = cleanse_value(
+                key=k,
+                value=v,
+                hidden=hidden,
+                substitute=substitute
+            )
+    return ret
+
+
+def cleanse_value(key, value, hidden=None, substitute=None):
+    """
+    Hide secured data.
+    """
+
+    if hidden is None:
+        hidden = getattr(settings, 'CLEANSED_HIDDEN', '')
+
+    if isinstance(hidden, str):
+        hidden = hidden.split()
+
+    hidden_re = re.compile('|'.join(hidden), flags=re.IGNORECASE)
+
+    if substitute is None:
+        substitute = getattr(settings, 'CLEANSED_SUBSTITUTE', '*****')
+
+    try:
+        if hidden_re.search(key):
+            cleansed = substitute
+        else:
+            if isinstance(value, dict):
+                cleansed = OrderedDict([
+                    (k, cleanse_value(k, v,
+                                      hidden=hidden,
+                                      substitute=substitute))
+                    for k, v in value.items()
+                ])
+            else:
+                cleansed = value
+    except TypeError:
+        cleansed = value
+
+    return cleansed
 
 
 def current_timestamp():

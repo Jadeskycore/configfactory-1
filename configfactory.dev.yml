@@ -30,6 +30,9 @@ users:
   - username: guest
     password: guest
     is_admin: false
-    environments:
-      - development
-      - migration
+    permissions:
+      - "environment:base:read"
+      - "environment:base:write"
+      - "environment:development:read"
+      - "environment:development:write"
+      - "environment:migration:write"

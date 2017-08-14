@@ -2,6 +2,10 @@ server:
   host: 127.0.0.1
   port: 8080
 
+cleansed:
+  hidden: "api token key secret pass password signature"
+  substitute: "***************"
+
 database:
   url: "sqlite://:memory:"
 

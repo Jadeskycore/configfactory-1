@@ -7,16 +7,20 @@
         </div>
         <div class="col-md-4">
             <ul class="nav nav-pills pull-right">
-                <li class="{% if readonly %}active{% endif %}">
-                    <a href="{{ url('view_component_by_env', alias=component.alias, environment=current_environment.alias) }}?readonly=1" data-toggle="tooltip" title="Flatten View">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                </li>
-                <li class="{% if not readonly %}active{% endif %}">
-                    <a href="{{ url('view_component_by_env', alias=component.alias, environment=current_environment.alias) }}" data-toggle="tooltip" title="Edit">
-                        <i class="fa fa-pencil-square-o"></i>
-                    </a>
-                </li>
+                {% if current_user.has_perm(perms.read) %}
+                    <li class="{% if not edit_mode %}active{% endif %}">
+                        <a href="{{ url('view_component_by_env', alias=component.alias, environment=current_environment.alias) }}" data-toggle="tooltip" title="Flatten View">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if current_user.has_perm(perms.write) %}
+                    <li class="{% if edit_mode %}active{% endif %}">
+                        <a href="{{ url('view_component_by_env', alias=component.alias, environment=current_environment.alias) }}?edit_mode=1" data-toggle="tooltip" title="Edit">
+                            <i class="fa fa-pencil-square-o"></i>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -30,7 +34,7 @@
                 <ul class="nav nav-pills pull-left">
                     {% for environment in environments %}
                         <li class="{% if environment.alias == current_environment.alias %}active{% endif %}">
-                            <a href="{{ url('view_component_by_env', alias=component.alias, environment=environment.alias) }}{% if readonly %}?readonly=1{% endif %}">{{ environment.name|upper }}</a>
+                            <a href="{{ url('view_component_by_env', alias=component.alias, environment=environment.alias) }}{% if edit_mode %}?edit_mode=1{% endif %}">{{ environment.name|upper }}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -41,8 +45,8 @@
     <form method="post">
         {{ form.settings }}
         <br>
-        {% if not readonly %}
-            <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to update settings?')">
+        {% if edit_mode %}
+            <button class="btn btn-primary" onclick="return confirm('Are you sure you want to update settings?')">
                 <i class="fa fa-download"></i>
                 Update
             </button>
@@ -69,7 +73,7 @@
 {% block page_inline_js %}
     <script>
         var $editor = $('#id_settings').ace({theme: 'twilight', lang: 'json'});
-        {% if readonly %}
+        {% if not edit_mode %}
             $editor.data('ace').editor.ace.setReadOnly(true);
         {% endif %}
     </script>
