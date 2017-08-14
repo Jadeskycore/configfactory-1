@@ -139,6 +139,8 @@ class User(AuthUser):
         return check_password(password, self.password_hash)
 
     def has_perm(self, perm: str):
+        if self.is_admin:
+            return True
         if perm not in self.permissions and perm.endswith(':read'):
             write_perm = perm.replace(':read', ':write')
             if write_perm in self.permissions:
