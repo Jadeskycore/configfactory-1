@@ -7,14 +7,14 @@
         </div>
         <div class="col-md-4">
             <ul class="nav nav-pills pull-right">
-                <li class="{% if not readonly %}active{% endif %}">
-                    <a href="{{ url('view_component_by_env', alias=component.alias, environment=current_environment.alias) }}" data-toggle="tooltip" title="Edit">
-                        <i class="fa fa-pencil-square-o"></i>
-                    </a>
-                </li>
                 <li class="{% if readonly %}active{% endif %}">
                     <a href="{{ url('view_component_by_env', alias=component.alias, environment=current_environment.alias) }}?readonly=1" data-toggle="tooltip" title="Flatten View">
                         <i class="fa fa-eye"></i>
+                    </a>
+                </li>
+                <li class="{% if not readonly %}active{% endif %}">
+                    <a href="{{ url('view_component_by_env', alias=component.alias, environment=current_environment.alias) }}" data-toggle="tooltip" title="Edit">
+                        <i class="fa fa-pencil-square-o"></i>
                     </a>
                 </li>
             </ul>
