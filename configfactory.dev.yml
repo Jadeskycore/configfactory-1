@@ -36,3 +36,4 @@ users:
       - "environment:development:read"
       - "environment:development:write"
       - "environment:migration:write"
+      - "environment:production:read"

@@ -33,8 +33,9 @@
             <div class="col-md-12">
                 <ul class="nav nav-pills pull-left">
                     {% for environment in environments %}
+                        {% set edit_perm = 'environment:{}:edit'.format(environment.alias) %}
                         <li class="{% if environment.alias == current_environment.alias %}active{% endif %}">
-                            <a href="{{ url('view_component_by_env', alias=component.alias, environment=environment.alias) }}{% if edit_mode %}?edit_mode=1{% endif %}">{{ environment.name|upper }}</a>
+                            <a href="{{ url('view_component_by_env', alias=component.alias, environment=environment.alias) }}{% if edit_mode and current_user.has_perm(edit_perm) %}?edit_mode=1{% endif %}">{{ environment.name|upper }}</a>
                         </li>
                     {% endfor %}
                 </ul>
