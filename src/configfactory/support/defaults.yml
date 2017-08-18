@@ -3,7 +3,7 @@ server:
   port: 8080
 
 cleansed:
-  hidden: "api token key secret pass password signature"
+  hidden: "pass password"
   substitute: "***************"
 
 database:
