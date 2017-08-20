@@ -64,16 +64,6 @@ def flatten_dict(d, parent_key='', sep='.'):
     return OrderedDict(items)
 
 
-def replace_pytype(match):
-    content = match.group()
-    val = content.replace('\"', '').split(':')[-1]
-    if val == 'True':
-        return 'true'
-    elif val == 'False':
-        return 'false'
-    return val
-
-
 def inject_params(
         content: str,
         params: dict,
