@@ -46,10 +46,12 @@ MIDDLEWARE = [
 ]
 
 INSTALLED_APPS = [
-    'configfactory',
     'django.contrib.staticfiles',
     'django.contrib.sessions',
     'django_jinja',
+
+    'configfactory',
+    'configfactory.config',
 ]
 
 STATIC_URL = '/static/'

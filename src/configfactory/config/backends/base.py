@@ -7,4 +7,9 @@ class ConfigBackend(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_settings(self, name): ...
+    def get_settings(self, component, environment):
+        pass
+
+    @abc.abstractmethod
+    def update_settings(self, component, environment, settings):
+        pass
