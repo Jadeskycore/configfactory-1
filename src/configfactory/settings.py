@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'django_jinja',
 
     'configfactory',
-    'configfactory.config',
+    'configfactory.configmanager',
 ]
 
 STATIC_URL = '/static/'
