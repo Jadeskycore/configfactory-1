@@ -17,3 +17,20 @@ def create_default_users(app_config,
 
     if not router.allow_migrate_model(using, User):
         return
+
+    for user_data in settings.DEFAULT_USERS:
+        username = user_data['username']
+        password = user_data['password']
+        is_superuser = user_data.get('is_admin', False)
+
+        if not User.objects.using(using).filter(username=username).exists():
+
+            if verbosity >= 2:
+                print("Create default user {username}.".format(username=username))
+
+            User.objects.create_user(
+                username=username,
+                password=password,
+                is_staff=is_superuser,
+                is_superuser=is_superuser,
+            )

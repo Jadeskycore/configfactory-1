@@ -51,6 +51,9 @@ class Environment(models.Model):
         verbose_name = _('environment')
         verbose_name_plural = _('environments')
         ordering = ('order', 'name',)
+        permissions = (
+            ('view_environment', _('Can view environment')),
+        )
 
     def __str__(self):
         return self.name

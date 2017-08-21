@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sessions',
     'django_jinja',
+    'guardian',
 
     'configfactory',
     'configfactory.environments',
@@ -150,7 +151,7 @@ CLEANSED_SUBSTITUTE = config.get(
 ######################################
 # Auth / users settings
 ######################################
-USERS = config.get('users', [])
+DEFAULT_USERS = config.get('users', [])
 
 AUTH_USER_MODEL = 'users.User'
 

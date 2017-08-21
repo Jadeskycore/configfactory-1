@@ -62,7 +62,7 @@ class UserManager:
 
         users = {}
 
-        for user_data in getattr(settings, 'USERS', []):
+        for user_data in getattr(settings, 'DEFAULT_USERS', []):
             username = user_data['username']
             password = user_data.get('password')
             is_active = user_data.get('is_active', True)
