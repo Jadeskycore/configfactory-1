@@ -46,6 +46,9 @@ MIDDLEWARE = [
 ]
 
 INSTALLED_APPS = [
+
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
     'django.contrib.staticfiles',
     'django.contrib.sessions',
     'django_jinja',
@@ -53,6 +56,7 @@ INSTALLED_APPS = [
     'configfactory',
     'configfactory.environments',
     'configfactory.configurations',
+    'configfactory.users',
 ]
 
 STATIC_URL = '/static/'
@@ -134,6 +138,8 @@ TIME_ZONE = 'UTC'
 ENVIRONMENTS = config.get('environments', [])
 
 USERS = config.get('users', [])
+
+AUTH_USER_MODEL = 'users.User'
 
 CLEANSED_HIDDEN = config.get(
     'cleansed.hidden',
