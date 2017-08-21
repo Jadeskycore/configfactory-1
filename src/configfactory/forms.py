@@ -4,13 +4,9 @@ from django.core.exceptions import ValidationError
 from django.forms import fields
 from django.utils.html import format_html
 
-from configfactory.exceptions import (
-    CircularInjectError,
-    InjectKeyError,
-    JSONEncodeError,
-)
+from configfactory.configurations import config
+from configfactory.exceptions import CircularInjectError, InjectKeyError, JSONEncodeError
 from configfactory.models import Component
-from configfactory.services import get_all_settings
 from configfactory.utils import inject_dict_params, json_dumps, json_loads
 
 
@@ -90,7 +86,7 @@ class ComponentSettingsForm(forms.Form):
         try:
             inject_dict_params(
                 data=data,
-                params=get_all_settings(self.environment, flatten=True),
+                params=config.get_all_settings(self.environment, flatten=True),
                 flatten=True,
                 raise_exception=True
             )

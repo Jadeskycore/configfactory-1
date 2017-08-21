@@ -7,17 +7,13 @@ from django.views.static import serve
 from guardian.shortcuts import get_objects_for_user
 
 from configfactory import __version__, backup, logs
+from configfactory.configurations import config
 from configfactory.environments.helpers import get_environment_alias
 from configfactory.environments.models import Environment
 from configfactory.exceptions import ComponentDeleteError
 from configfactory.forms import ComponentForm, ComponentSchemaForm, ComponentSettingsForm
 from configfactory.models import Component
-from configfactory.services import (
-    delete_component,
-    get_all_settings,
-    get_component_settings,
-    update_component_settings,
-)
+from configfactory.services import delete_component
 from configfactory.users.decorators import superuser_required
 from configfactory.utils import cleanse_dict, current_timestamp, inject_dict_params
 
@@ -143,7 +139,7 @@ def component_view(request, alias, environment=None):
     except TypeError:
         raise Http404
 
-    settings_dict = get_component_settings(
+    settings_dict = config.get_settings(
         component=component,
         environment=environment,
         flatten=not edit_mode
@@ -153,7 +149,7 @@ def component_view(request, alias, environment=None):
         settings_dict = cleanse_dict(
             inject_dict_params(
                 data=settings_dict,
-                params=get_all_settings(environment, flatten=True),
+                params=config.get_all_settings(environment, flatten=True),
                 raise_exception=False
             )
         )
@@ -171,10 +167,10 @@ def component_view(request, alias, environment=None):
 
         if form.is_valid():
             data = form.cleaned_data
-            component = update_component_settings(
+            component = config.update_settings(
                 component=component,
                 environment=environment,
-                data=data['settings']
+                settings=data['settings']
             )
             messages.success(
                 request,

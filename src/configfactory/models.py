@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.functional import cached_property
 
-from configfactory.environments.settings import BASE_ENVIRONMENT
+from configfactory.environments.helpers import get_environment_alias
 from configfactory.utils import json_dumps, json_loads
 
 
@@ -52,8 +52,7 @@ class Component(models.Model):
 
     def set_settings(self, data, environment=None):
 
-        if environment is None:
-            environment = BASE_ENVIRONMENT
+        environment = get_environment_alias(environment)
 
         settings_dict = json_loads(self.settings_json)
 
