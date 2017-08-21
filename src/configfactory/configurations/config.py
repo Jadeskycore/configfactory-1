@@ -5,10 +5,11 @@ from django.utils.module_loading import import_string
 
 from configfactory.configurations import settings
 from configfactory.configurations.backends.base import ConfigBackend
+from configfactory.environments.helpers import get_environment_alias
 from configfactory.environments.models import Environment
 from configfactory.environments.settings import BASE_ENVIRONMENT
 from configfactory.models import Component
-from configfactory.utils import flatten_dict, json_loads, merge_dicts
+from configfactory.utils import flatten_dict, json_dumps, json_loads, merge_dicts
 
 backend = SimpleLazyObject(func=lambda: _get_backend())  # type: ConfigBackend
 
@@ -73,11 +74,18 @@ def update_settings(component, environment, settings):
     """
     Update component settings.
     """
-    component.set_settings(
-        data=settings,
-        environment=environment.alias
-    )
+
+    environment = get_environment_alias(environment)
+    settings_dict = json_loads(component.settings_json)
+
+    if isinstance(settings, str):
+        settings = json_loads(settings)
+
+    settings_dict[environment] = settings
+
+    component.settings_json = json_dumps(settings_dict)
     component.save()
+
     return component
 
 
