@@ -29,7 +29,7 @@ TEMPLATES = [
             'auto_reload': True,
             'context_processors': [
                 'configfactory.configurations.context_processors.components',
-                'configfactory.auth.context_processors.auth',
+                'configfactory.users.context_processors.auth',
                 'configfactory.support.context_processors.version',
                 'django.contrib.messages.context_processors.messages',
             ],
