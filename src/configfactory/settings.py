@@ -137,10 +137,6 @@ TIME_ZONE = 'UTC'
 
 ENVIRONMENTS = config.get('environments', [])
 
-USERS = config.get('users', [])
-
-AUTH_USER_MODEL = 'users.User'
-
 CLEANSED_HIDDEN = config.get(
     'cleansed.hidden',
     default='api token key secret pass password signature'
@@ -149,4 +145,16 @@ CLEANSED_HIDDEN = config.get(
 CLEANSED_SUBSTITUTE = config.get(
     'cleansed.substitute',
     default='***************'
+)
+
+######################################
+# Auth / users settings
+######################################
+USERS = config.get('users', [])
+
+AUTH_USER_MODEL = 'users.User'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend'
 )

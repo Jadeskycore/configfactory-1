@@ -18,6 +18,7 @@ requires = [
     'django==1.11.4',
     'django-jsonfield==1.0.1',
     'django-autoslug==1.9.3',
+    'django-guardian==1.4.9',
     'django-jinja==2.3.1',
     'dj-static==0.0.6',
     'dj-database-url==0.4.2',
