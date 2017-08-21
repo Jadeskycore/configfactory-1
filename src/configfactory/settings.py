@@ -28,7 +28,7 @@ TEMPLATES = [
             'match_extension': '.html',
             'auto_reload': True,
             'context_processors': [
-                'configfactory.context_processors.components',
+                'configfactory.configmanager.context_processors.components',
                 'configfactory.auth.context_processors.auth',
                 'configfactory.support.context_processors.version',
                 'django.contrib.messages.context_processors.messages',
