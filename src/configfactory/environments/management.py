@@ -1,5 +1,4 @@
 from django.apps import apps as global_apps
-from django.conf import settings
 from django.db import DEFAULT_DB_ALIAS, router
 
 from configfactory.environments import settings

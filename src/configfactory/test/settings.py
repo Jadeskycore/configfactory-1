@@ -9,11 +9,14 @@ DATABASES = {
     }
 }
 
+BASE_ENVIRONMENT = 'default'
+
 ENVIRONMENTS = [
     {
         'alias': 'development'
     },
     {
-        'alias': 'testing'
+        'alias': 'testing',
+        'fallback': 'development'
     }
 ]
