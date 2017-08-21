@@ -31,9 +31,9 @@ requires = [
 ]
 
 setup(
-    name='am-configfactory',
+    name='configfactory',
     version=version,
-    description='Distributed configurations server',
+    description='Distributed configurations manager',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
         "Programming Language :: Python",
