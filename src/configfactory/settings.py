@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'django_jinja',
 
     'configfactory',
-    'configfactory.configmanager',
+    'configfactory.environments',
+    'configfactory.configurations',
 ]
 
 STATIC_URL = '/static/'
@@ -115,11 +116,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        'django.db': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-            'propagate': False,
-        },
+        # 'django.db': {
+        #     'level': 'DEBUG',
+        #     'handlers': ['console'],
+        #     'propagate': False,
+        # },
         'configfactory': {
             'level': 'DEBUG',
             'handlers': ['console', 'file'],

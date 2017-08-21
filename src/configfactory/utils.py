@@ -248,3 +248,13 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+def settings_val(name, default=None, allow_none=False):
+    """
+    Get settings value.
+    """
+    value = getattr(settings, name, None)
+    if value is None and not allow_none:
+        value = default
+    return value

@@ -4,15 +4,15 @@ from .base import ConfigBackend
 class MemoryConfigBackend(ConfigBackend):
 
     def __init__(self):
-        self.store = {}
+        self._storage = {}
 
     def get_settings(self, component, environment):
         try:
-            return self.store[component][environment]
+            return self._storage[component][environment]
         except KeyError:
             return {}
 
     def update_settings(self, component, environment, settings):
-        if component not in self.store:
-            self.store[component] = {}
-        self.store[component][environment] = settings
+        if component not in self._storage:
+            self._storage[component] = {}
+        self._storage[component][environment] = settings
