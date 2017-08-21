@@ -41,7 +41,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'configfactory.auth.middleware.auth_middleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'configfactory.support.middleware.logging_middleware',
 ]
 
@@ -159,3 +159,9 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend'
 )
+
+ANONYMOUS_USER_NAME = None
+
+LOGIN_URL = 'login'
+
+LOGIN_REDIRECT_URL = 'index'

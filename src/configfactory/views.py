@@ -1,30 +1,26 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.static import serve
+from guardian.shortcuts import get_objects_for_user
 
 from configfactory import __version__, backup, logs
-from configfactory.auth.decorators import admin_required, login_required
 from configfactory.auth.utils import test_perm
+from configfactory.environments.helpers import get_environment_alias
+from configfactory.environments.models import Environment
 from configfactory.exceptions import ComponentDeleteError
-from configfactory.forms import (
-    ComponentForm,
-    ComponentSchemaForm,
-    ComponentSettingsForm,
-)
-from configfactory.models import Component, environment_manager
+from configfactory.forms import ComponentForm, ComponentSchemaForm, ComponentSettingsForm
+from configfactory.models import Component
 from configfactory.services import (
     delete_component,
     get_all_settings,
     get_component_settings,
     update_component_settings,
 )
-from configfactory.utils import (
-    cleanse_dict,
-    current_timestamp,
-    inject_dict_params,
-)
+from configfactory.users.decorators import superuser_required
+from configfactory.utils import cleanse_dict, current_timestamp, inject_dict_params
 
 
 @login_required()
@@ -32,7 +28,7 @@ def index(request):
     return render(request, 'index.html')
 
 
-@admin_required()
+@superuser_required()
 def component_create(request):
 
     if request.method == 'POST':
@@ -50,7 +46,7 @@ def component_create(request):
     })
 
 
-@admin_required()
+@superuser_required()
 def component_edit(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -73,7 +69,7 @@ def component_edit(request, alias):
     })
 
 
-@admin_required()
+@superuser_required()
 def component_edit_schema(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -107,7 +103,7 @@ def component_edit_schema(request, alias):
     })
 
 
-@admin_required()
+@superuser_required()
 def component_delete(request, alias):
 
     component = get_object_or_404(Component, alias=alias)
@@ -134,23 +130,18 @@ def component_view(request, alias, environment=None):
 
     user = request.user
     component = get_object_or_404(Component, alias=alias)
-    environments = environment_manager.all(user=user)
-    environment = environment_manager.get_or_404(
-        alias=environment,
-        user=user
+    environments = get_objects_for_user(
+        user=user,
+        perms=('view_environment', 'change_environment'),
+        klass=Environment
     )
-    read_perm = 'environment:{}:read'.format(environment.alias)
-    write_perm = 'environment:{}:write'.format(environment.alias)
+    alias = get_environment_alias(environment)
+    environment = get_object_or_404(environments, alias=alias)
 
     try:
         edit_mode = int(request.GET.get('edit_mode', False))
     except TypeError:
         raise Http404
-
-    if edit_mode:
-        test_perm(user, write_perm)
-    else:
-        test_perm(user, read_perm)
 
     settings_dict = get_component_settings(
         component=component,
@@ -213,10 +204,6 @@ def component_view(request, alias, environment=None):
         'current_environment': environment,
         'form': form,
         'edit_mode': edit_mode,
-        'perms': {
-            'read': read_perm,
-            'write': write_perm
-        }
     })
 
 
@@ -238,7 +225,7 @@ def backup_dump(request):
     })
 
 
-@admin_required()
+@superuser_required()
 def backup_load(request, filename=None):
 
     if filename:
@@ -260,7 +247,7 @@ def backup_load(request, filename=None):
     })
 
 
-@admin_required()
+@superuser_required()
 def backup_delete(request, filename):
 
     if not backup.exists(filename):
@@ -278,7 +265,7 @@ def backup_delete(request, filename):
     })
 
 
-@admin_required()
+@superuser_required()
 def backup_serve(request, filename):
 
     if not backup.exists(filename):
@@ -291,7 +278,7 @@ def backup_serve(request, filename):
     )
 
 
-@admin_required()
+@superuser_required()
 def logs_index(request):
 
     return render(request, 'logs/index.html', {
@@ -299,7 +286,7 @@ def logs_index(request):
     })
 
 
-@admin_required()
+@superuser_required()
 def logs_serve(request, filename):
 
     if not logs.exists(filename):

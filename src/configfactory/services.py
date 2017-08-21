@@ -2,14 +2,11 @@ from collections import OrderedDict
 
 from django.db import transaction
 
+from configfactory.environments.models import Environment
+from configfactory.environments.settings import BASE_ENVIRONMENT
 from configfactory.exceptions import ComponentDeleteError, InjectKeyError
-from configfactory.models import Component, Environment, environment_manager
-from configfactory.utils import (
-    flatten_dict,
-    inject_dict_params,
-    json_loads,
-    merge_dicts,
-)
+from configfactory.models import Component
+from configfactory.utils import flatten_dict, inject_dict_params, json_loads, merge_dicts
 
 
 def get_component_settings(component, environment=None, flatten=False):
@@ -19,12 +16,12 @@ def get_component_settings(component, environment=None, flatten=False):
 
     settings_dict = json_loads(component.settings_json)
     base_settings_dict = settings_dict.get(
-        Environment.base_alias,
+        BASE_ENVIRONMENT,
         {}
     )
 
     if isinstance(environment, str):
-        environment = environment_manager.get(environment)
+        environment = Environment.objects.get(environment)
 
     if environment.is_base:
         ret = base_settings_dict
@@ -70,7 +67,7 @@ def delete_component(component: Component):
 
         component.delete()
 
-        for environment in environment_manager.all():
+        for environment in Environment.objects.all():
             try:
                 inject_dict_params(
                     data=get_component_settings(

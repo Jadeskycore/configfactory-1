@@ -23,6 +23,6 @@ urlpatterns = [
         name='view_component_by_env'),
     url(r'^logs/$', view=views.logs_index, name='logs'),
     url(r'^logs/serve/(?P<filename>.+)/$', view=views.logs_serve, name='serve_log_file'),
-    url(r'^', include('configfactory.auth.urls')),
+    url(r'^', include('configfactory.users.urls')),
     url(r'^api/', include('configfactory.api.urls')),
 ]
