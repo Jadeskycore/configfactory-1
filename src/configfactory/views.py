@@ -7,7 +7,6 @@ from django.views.static import serve
 from guardian.shortcuts import get_objects_for_user
 
 from configfactory import __version__, backup, logs
-from configfactory.auth.utils import test_perm
 from configfactory.environments.helpers import get_environment_alias
 from configfactory.environments.models import Environment
 from configfactory.exceptions import ComponentDeleteError
@@ -133,6 +132,7 @@ def component_view(request, alias, environment=None):
     environments = get_objects_for_user(
         user=user,
         perms=('view_environment', 'change_environment'),
+        any_perm=True,
         klass=Environment
     )
     alias = get_environment_alias(environment)
