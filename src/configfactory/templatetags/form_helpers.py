@@ -1,6 +1,6 @@
 from django_jinja import library
 
-from configfactory.forms import html_params
+from configfactory.forms.helpers import html_params
 
 
 @library.global_function

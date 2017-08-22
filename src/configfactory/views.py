@@ -9,7 +9,7 @@ from guardian.shortcuts import get_objects_for_user
 from configfactory import __version__, backup, logs
 from configfactory.decorators import superuser_required
 from configfactory.exceptions import ComponentDeleteError
-from configfactory.forms import (
+from configfactory.forms.component import (
     ComponentForm,
     ComponentSchemaForm,
     ComponentSettingsForm,
