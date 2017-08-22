@@ -21,5 +21,9 @@ class DatabaseConfigStore(ConfigStore):
         config, created = Config.objects.get_or_create(
             component=component
         )
-        config.settings = settings
+
+        update_settings = config.settings.copy()
+        update_settings[environment] = settings
+
+        config.settings = update_settings
         config.save(update_fields=['settings_json'])

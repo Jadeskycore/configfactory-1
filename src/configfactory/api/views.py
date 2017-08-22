@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
 from configfactory.models import Component, Environment
-from configfactory.services import config
+from configfactory.services import get_all_settings, get_settings
 from configfactory.utils import flatten_dict, inject_dict_params
 
 
@@ -27,7 +27,7 @@ def components_view(request, environment):
 
     environment = get_object_or_404(Environment, alias=environment)
     flatten = _get_flatten_param(request)
-    settings_dict = config.get_all_settings(environment, flatten=False)
+    settings_dict = get_all_settings(environment, flatten=False)
     flatten_settings_dict = flatten_dict(settings_dict)
 
     if flatten:
@@ -50,7 +50,7 @@ def component_settings_view(request, environment, alias):
     environment = get_object_or_404(Environment, alias=environment)
     flatten = _get_flatten_param(request)
 
-    data = config.get_settings(
+    data = get_settings(
         component=component,
         environment=environment,
         flatten=flatten

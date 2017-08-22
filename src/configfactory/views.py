@@ -15,8 +15,12 @@ from configfactory.forms import (
     ComponentSettingsForm,
 )
 from configfactory.models import Component, Environment
-from configfactory.services import config
-from configfactory.services.component import delete_component
+from configfactory.services import (
+    delete_component,
+    get_all_settings,
+    get_settings,
+    update_settings,
+)
 from configfactory.shortcuts import get_environment_alias
 from configfactory.utils import (
     cleanse_dict,
@@ -146,7 +150,7 @@ def component_view(request, alias, environment=None):
     except TypeError:
         raise Http404
 
-    settings_dict = config.get_settings(
+    settings_dict = get_settings(
         component=component,
         environment=environment,
         flatten=not edit_mode
@@ -156,7 +160,7 @@ def component_view(request, alias, environment=None):
         settings_dict = cleanse_dict(
             inject_dict_params(
                 data=settings_dict,
-                params=config.get_all_settings(environment, flatten=True),
+                params=get_all_settings(environment, flatten=True),
                 raise_exception=False
             )
         )
@@ -174,7 +178,7 @@ def component_view(request, alias, environment=None):
 
         if form.is_valid():
             data = form.cleaned_data
-            component = config.update_settings(
+            component = update_settings(
                 component=component,
                 environment=environment,
                 settings=data['settings']

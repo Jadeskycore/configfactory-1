@@ -133,6 +133,13 @@ LOGGING = {
 
 TIME_ZONE = 'UTC'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'configfactory',
+    }
+}
+
 ENVIRONMENTS = config.get('environments', [{
     'name': 'Development',
     'alias': 'development'

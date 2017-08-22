@@ -11,5 +11,9 @@ class ConfigFactoryConfig(AppConfig):
     verbose_name = _("ConfigFactory")
 
     def ready(self):
+
         post_migrate.connect(create_default_users, sender=self)
         post_migrate.connect(create_environments, sender=self)
+
+        # Run project autodiscover
+        self.module.autodiscover()

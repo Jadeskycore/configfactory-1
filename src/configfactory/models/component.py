@@ -65,3 +65,7 @@ class Component(models.Model):
     @schema.setter
     def schema(self, value):
         self.schema_json = json_dumps(value)
+
+    @property
+    def cache_key(self):
+        return 'settings:{}'.format(self.alias)
