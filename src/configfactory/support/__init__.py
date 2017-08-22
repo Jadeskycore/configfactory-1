@@ -1,3 +1,3 @@
-from .config import Config, LazyConfig
+from .config import Config, ConfigHandler
 
-config = LazyConfig()  # type: Config
+config = ConfigHandler()  # type: Config

@@ -1,7 +1,7 @@
-from .base import ConfigBackend
+from .base import ConfigStore
 
 
-class MemoryConfigBackend(ConfigBackend):
+class MemoryConfigStore(ConfigStore):
 
     def __init__(self):
         self._storage = {}

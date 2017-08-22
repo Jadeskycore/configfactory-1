@@ -1,9 +1,9 @@
 from django.test import TestCase
 
-from configfactory.environments.models import Environment
+from configfactory.models import Environment
 
 
-class EnvironmentsManagementTestCase(TestCase):
+class ManagementTestCase(TestCase):
 
     def test_post_migrate_base_environment(self):
 

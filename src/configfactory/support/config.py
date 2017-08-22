@@ -72,7 +72,7 @@ class Config:
         return self.has(item)
 
 
-class LazyConfig(LazyObject):
+class ConfigHandler(LazyObject):
 
     def _setup(self):
         wrapped = Config()

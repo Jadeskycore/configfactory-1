@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.functional import cached_property
+from django.utils.translation import ugettext_lazy as _
 
 from configfactory.utils import json_dumps, json_loads
 
@@ -40,6 +41,8 @@ class Component(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        verbose_name = _('component')
+        verbose_name_plural = _('components')
         ordering = ('name',)
 
     def __str__(self):

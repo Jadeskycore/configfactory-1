@@ -28,9 +28,9 @@ TEMPLATES = [
             'match_extension': '.html',
             'auto_reload': True,
             'context_processors': [
-                'configfactory.configurations.context_processors.components',
-                'configfactory.users.context_processors.auth',
-                'configfactory.support.context_processors.version',
+                'configfactory.context_processors.components',
+                'configfactory.context_processors.auth',
+                'configfactory.context_processors.version',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -55,9 +55,6 @@ INSTALLED_APPS = [
     'guardian',
 
     'configfactory',
-    'configfactory.environments',
-    'configfactory.configurations',
-    'configfactory.users',
 ]
 
 STATIC_URL = '/static/'
@@ -136,7 +133,16 @@ LOGGING = {
 
 TIME_ZONE = 'UTC'
 
-ENVIRONMENTS = config.get('environments', [])
+ENVIRONMENTS = config.get('environments', [{
+    'name': 'Development',
+    'alias': 'development'
+}])
+
+BASE_ENVIRONMENT = config.get('base_environment', 'base')
+
+STORE = config.get('store', {
+    'class': 'configfactory.stores.memory.'
+})
 
 CLEANSED_HIDDEN = config.get(
     'cleansed.hidden',
@@ -151,9 +157,14 @@ CLEANSED_SUBSTITUTE = config.get(
 ######################################
 # Auth / users settings
 ######################################
-DEFAULT_USERS = config.get('users', [])
+DEFAULT_USERS = config.get('users', [
+    {
+        'username': 'admin',
+        'password': 'admin'
+    }
+])
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'configfactory.User'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

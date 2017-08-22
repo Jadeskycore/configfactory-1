@@ -1,9 +1,7 @@
 from django.db import transaction
 
-from configfactory.configurations import config
-from configfactory.environments.models import Environment
 from configfactory.exceptions import ComponentDeleteError, InjectKeyError
-from configfactory.models import Component
+from configfactory.models import Component, Environment
 from configfactory.utils import inject_dict_params
 
 
@@ -12,6 +10,8 @@ def delete_component(component: Component):
     Delete component.
     """
 
+    from .config import get_settings, get_all_settings
+
     with transaction.atomic():
 
         component.delete()
@@ -19,11 +19,11 @@ def delete_component(component: Component):
         for environment in Environment.objects.all():
             try:
                 inject_dict_params(
-                    data=config.get_settings(
+                    data=get_settings(
                         component=component,
                         environment=environment
                     ),
-                    params=config.get_all_settings(environment, flatten=True),
+                    params=get_all_settings(environment, flatten=True),
                     flatten=True,
                     raise_exception=True
                 )

@@ -1,7 +1,7 @@
-from .base import ConfigBackend
+from .base import ConfigStore
 
 
-class DatabaseConfigBackend(ConfigBackend):
+class FileConfigStore(ConfigStore):
 
     def get_settings(self, component, environment):
         pass

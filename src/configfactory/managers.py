@@ -1,6 +1,5 @@
+from django.conf import settings
 from django.db import models
-
-from configfactory.environments import settings
 
 
 class EnvironmentQuerySet(models.QuerySet):

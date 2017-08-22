@@ -1,17 +1,20 @@
 from collections import OrderedDict
 
+from django.conf import settings
 from django.utils.functional import SimpleLazyObject
 from django.utils.module_loading import import_string
 
-from configfactory.configurations import settings
-from configfactory.configurations.backends.base import ConfigBackend
-from configfactory.environments.helpers import get_environment_alias
-from configfactory.environments.models import Environment
-from configfactory.environments.settings import BASE_ENVIRONMENT
-from configfactory.models import Component
-from configfactory.utils import flatten_dict, json_dumps, json_loads, merge_dicts
+from configfactory.models import Component, Environment
+from configfactory.shortcuts import get_environment_alias
+from configfactory.stores.base import ConfigStore
+from configfactory.utils import (
+    flatten_dict,
+    json_dumps,
+    json_loads,
+    merge_dicts,
+)
 
-backend = SimpleLazyObject(func=lambda: _get_backend())  # type: ConfigBackend
+store = SimpleLazyObject(func=lambda: _get_store())  # type: ConfigStore
 
 
 def get_settings(component, environment=None, flatten=False):
@@ -21,7 +24,7 @@ def get_settings(component, environment=None, flatten=False):
 
     settings_dict = json_loads(component.settings_json)
     base_settings_dict = settings_dict.get(
-        BASE_ENVIRONMENT,
+        settings.BASE_ENVIRONMENT,
         {}
     )
 
@@ -89,7 +92,7 @@ def update_settings(component, environment, settings):
     return component
 
 
-def _get_backend():
-    klass = import_string(settings.CONFIG_BACKEND['class'])
-    options = settings.CONFIG_BACKEND.get('options', {})
+def _get_store():
+    klass = import_string(settings.STORE['class'])
+    options = settings.STORE.get('options', {})
     return klass(**options)

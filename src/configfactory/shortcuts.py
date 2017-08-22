@@ -1,4 +1,4 @@
-from configfactory.environments import settings
+from django.conf import settings
 
 
 def get_environment_alias(environment=None):

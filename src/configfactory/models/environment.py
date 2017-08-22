@@ -1,8 +1,8 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from configfactory.environments import settings
-from configfactory.environments.managers import EnvironmentManager
+from configfactory.managers import EnvironmentManager
 
 
 class Environment(models.Model):

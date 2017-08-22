@@ -4,9 +4,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
-from configfactory.configurations import config
-from configfactory.environments.models import Environment
-from configfactory.models import Component
+from configfactory.models import Component, Environment
+from configfactory.services import config
 from configfactory.utils import flatten_dict, inject_dict_params
 
 
