@@ -7,42 +7,44 @@ from django.utils.module_loading import import_string
 from configfactory.models import Component, Environment
 from configfactory.shortcuts import get_environment_alias
 from configfactory.stores.base import ConfigStore
-from configfactory.utils import (
-    flatten_dict,
-    json_dumps,
-    json_loads,
-    merge_dicts,
-)
+from configfactory.utils import flatten_dict, merge_dicts
 
-store = SimpleLazyObject(func=lambda: _get_store())  # type: ConfigStore
+store = SimpleLazyObject(func=lambda: _init_store())  # type: ConfigStore
 
 
-def get_settings(component, environment=None, flatten=False):
+def get_settings(component: Component,
+                 environment: Environment=None,
+                 flatten: bool=False):
     """
     Get component settings.
     """
 
-    settings_dict = json_loads(component.settings_json)
-    base_settings_dict = settings_dict.get(
-        settings.BASE_ENVIRONMENT,
-        {}
-    )
-
-    if isinstance(environment, str):
-        environment = Environment.objects.get(environment)
+    if environment is None:
+        environment = Environment.objects.base().get()
 
     if environment.is_base:
-        ret = base_settings_dict
+        ret = store.get(
+            component=component.alias,
+            environment=environment.alias
+        )
     else:
-        env_settings_dict = settings_dict.get(environment.alias)
+        base_settings_dict = store.get(
+            component=component.alias,
+            environment=get_environment_alias()
+        )
+        env_settings_dict = store.get(
+            component=component.alias,
+            environment=environment.alias
+        )
         if env_settings_dict is None:
-            if environment.fallback:
-                env_settings_dict = settings_dict.get(
-                    environment.fallback,
-                    {}
+            if environment.fallback_id:
+                env_settings_dict = store.get(
+                    component=component.alias,
+                    environment=environment.fallback.alias,
                 )
             else:
                 env_settings_dict = {}
+
         ret = merge_dicts(
             base_settings_dict,
             env_settings_dict,
@@ -54,7 +56,7 @@ def get_settings(component, environment=None, flatten=False):
     return ret
 
 
-def get_all_settings(environment, flatten=False):
+def get_all_settings(environment: Environment, flatten=False):
     """
     Get all settings.
     """
@@ -73,26 +75,21 @@ def get_all_settings(environment, flatten=False):
     return data
 
 
-def update_settings(component, environment, settings):
+def update_settings(component: Component, environment: Environment, settings: dict):
     """
     Update component settings.
     """
 
-    environment = get_environment_alias(environment)
-    settings_dict = json_loads(component.settings_json)
-
-    if isinstance(settings, str):
-        settings = json_loads(settings)
-
-    settings_dict[environment] = settings
-
-    component.settings_json = json_dumps(settings_dict)
-    component.save()
+    store.update(
+        component=component.alias,
+        environment=environment.alias,
+        settings=settings
+    )
 
     return component
 
 
-def _get_store():
-    klass = import_string(settings.STORE['class'])
-    options = settings.STORE.get('options', {})
+def _init_store():
+    klass = import_string(settings.CONFIG_STORE['class'])
+    options = settings.CONFIG_STORE.get('options', {})
     return klass(**options)

@@ -1,18 +1,19 @@
+from typing import Dict
+
 from .base import ConfigStore
 
 
 class MemoryConfigStore(ConfigStore):
 
     def __init__(self):
-        self._storage = {}
+        self.settings = {}  # type: Dict[str, dict]
 
-    def get_settings(self, component, environment):
-        try:
-            return self._storage[component][environment]
-        except KeyError:
-            return {}
+    def get(self, component: str, environment: str) -> dict:
+        """
+        Get settings.
+        """
 
-    def update_settings(self, component, environment, settings):
-        if component not in self._storage:
-            self._storage[component] = {}
-        self._storage[component][environment] = settings
+    def update(self, component: str, environment: str, settings: dict):
+        """
+        Update settings.
+        """

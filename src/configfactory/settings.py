@@ -118,11 +118,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        # 'django.db': {
-        #     'level': 'DEBUG',
-        #     'handlers': ['console'],
-        #     'propagate': False,
-        # },
+        'django.db': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
         'configfactory': {
             'level': 'DEBUG',
             'handlers': ['console', 'file'],
@@ -140,8 +140,8 @@ ENVIRONMENTS = config.get('environments', [{
 
 BASE_ENVIRONMENT = config.get('base_environment', 'base')
 
-STORE = config.get('store', {
-    'class': 'configfactory.stores.memory.'
+CONFIG_STORE = config.get('config_store', {
+    'class': 'configfactory.stores.database.DatabaseConfigStore'
 })
 
 CLEANSED_HIDDEN = config.get(

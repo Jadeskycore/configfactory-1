@@ -1,8 +1,8 @@
-from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from configfactory.managers import EnvironmentManager
+from configfactory.shortcuts import is_base_environment
 
 
 class Environment(models.Model):
@@ -60,4 +60,4 @@ class Environment(models.Model):
 
     @property
     def is_base(self):
-        return self.alias == settings.BASE_ENVIRONMENT
+        return is_base_environment(self.alias)

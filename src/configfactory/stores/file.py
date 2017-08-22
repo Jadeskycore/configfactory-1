@@ -3,8 +3,12 @@ from .base import ConfigStore
 
 class FileConfigStore(ConfigStore):
 
-    def get_settings(self, component, environment):
-        pass
+    def get(self, component: str, environment: str) -> dict:
+        """
+        Get settings.
+        """
 
-    def update_settings(self, component, environment, settings):
-        pass
+    def update(self, component: str, environment: str, settings: dict):
+        """
+        Update settings.
+        """

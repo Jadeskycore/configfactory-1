@@ -36,9 +36,15 @@ class Component(models.Model):
         help_text="Use only base environment"
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('creation datetime')
+    )
 
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('modification datetime')
+    )
 
     class Meta:
         verbose_name = _('component')
