@@ -9,8 +9,11 @@ from configfactory.utils import json_dumps, json_loads
 class Config(models.Model):
 
     component = models.SlugField(
-        unique=True,
         verbose_name=_('component alias')
+    )
+
+    environment = models.SlugField(
+        verbose_name=_('environment alias')
     )
 
     settings_json = models.TextField(
@@ -22,6 +25,7 @@ class Config(models.Model):
     class Meta:
         verbose_name = _('config')
         verbose_name_plural = _('configs')
+        unique_together = ('component', 'environment')
 
     @property
     def settings(self) -> dict:
