@@ -21,18 +21,28 @@
                         <i class="fa fa-plus"></i>&nbsp;&nbsp;ADD COMPONENT
                     </a>
                 {% endif %}
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="{{ url('dump_backup') }}">
-                            <i class="fa fa-upload"></i>&nbsp;&nbsp;DUMP
+                <ul class="nav navbar-nav" style="margin-left: 12px">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-database"></i>&nbsp;&nbsp;{{ _('BACKUPS') }}
+                            <span class="caret"></span>
                         </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ url('dump_backup') }}">
+                                    <i class="fa fa-upload"></i>&nbsp;&nbsp;DUMP
+                                </a>
+                            </li>
+                            {% if current_user.is_superuser %}
+                                <li>
+                                    <a href="{{ url('load_backup') }}">
+                                        <i class="fa fa-download"></i>&nbsp;&nbsp;LOAD
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
                     </li>
                     {% if current_user.is_superuser %}
-                        <li>
-                            <a href="{{ url('load_backup') }}">
-                                <i class="fa fa-download"></i>&nbsp;&nbsp;LOAD
-                            </a>
-                        </li>
                         <li>
                             <a href="{{ url('logs') }}">
                                 <i class="fa fa-file-text"></i>&nbsp;&nbsp;LOGS
@@ -43,16 +53,16 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-user"></i>&nbsp;&nbsp;{{ current_user }} <span
-                            class="caret"></span>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li>
-                                    <a href="{{ url('logout') }}">
-                                        <i class="fa fa-sign-out"></i> Logout
-                                    </a>
-                                </li>
-                            </ul>
+                            <i class="fa fa-user"></i>&nbsp;&nbsp;{{ current_user }}
+                            <span class="caret"></span>
                         </a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="{{ url('logout') }}">
+                                    <i class="fa fa-sign-out"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
