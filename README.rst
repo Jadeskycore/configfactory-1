@@ -1,2 +1,2 @@
-Admiral Markets distributed configurations server
-=================================================
+Distributed configurations server
+=================================
