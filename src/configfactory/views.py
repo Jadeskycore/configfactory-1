@@ -15,12 +15,7 @@ from configfactory.forms import (
     ComponentSettingsForm,
 )
 from configfactory.models import Component, Environment
-from configfactory.services import (
-    delete_component,
-    get_all_settings,
-    get_settings,
-    update_settings,
-)
+from configfactory.services import config
 from configfactory.shortcuts import get_environment_alias
 from configfactory.utils import (
     cleanse_dict,
@@ -116,7 +111,7 @@ def component_delete(request, alias):
 
     if request.method == 'POST':
         try:
-            delete_component(component)
+            config.delete_component(component)
         except ComponentDeleteError as e:
             messages.error(request, str(e), extra_tags=' alert-danger')
             return redirect(to=reverse('delete_component', kwargs={
@@ -150,7 +145,7 @@ def component_view(request, alias, environment=None):
     except TypeError:
         raise Http404
 
-    settings_dict = get_settings(
+    settings_dict = config.get_settings(
         component=component,
         environment=environment,
         flatten=not edit_mode
@@ -160,7 +155,7 @@ def component_view(request, alias, environment=None):
         settings_dict = cleanse_dict(
             inject_dict_params(
                 data=settings_dict,
-                params=get_all_settings(environment, flatten=True),
+                params=config.get_all_settings(environment, flatten=True),
                 raise_exception=False
             )
         )
@@ -178,7 +173,7 @@ def component_view(request, alias, environment=None):
 
         if form.is_valid():
             data = form.cleaned_data
-            component = update_settings(
+            component = config.update_settings(
                 component=component,
                 environment=environment,
                 settings=data['settings']

@@ -10,7 +10,7 @@ from configfactory.exceptions import (
     JSONEncodeError,
 )
 from configfactory.models import Component
-from configfactory.services import get_all_settings
+from configfactory.services import config
 from configfactory.utils import inject_dict_params, json_dumps, json_loads
 
 
@@ -90,7 +90,7 @@ class ComponentSettingsForm(forms.Form):
         try:
             inject_dict_params(
                 data=data,
-                params=get_all_settings(self.environment, flatten=True),
+                params=config.get_all_settings(self.environment, flatten=True),
                 flatten=True,
                 raise_exception=True
             )

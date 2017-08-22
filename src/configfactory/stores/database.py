@@ -5,19 +5,19 @@ from .base import ConfigStore
 
 class DatabaseConfigStore(ConfigStore):
 
+    def all(self):
+        return {
+            config.component: config.settings
+            for config in Config.objects.all()
+        }
+
     def get(self, component: str, environment: str) -> dict:
-        """
-        Get settings.
-        """
         config, created = Config.objects.get_or_create(
             component=component
         )
         return config.settings.get(environment, {})
 
     def update(self, component: str, environment: str, settings: dict):
-        """
-        Update settings.
-        """
         config, created = Config.objects.get_or_create(
             component=component
         )
