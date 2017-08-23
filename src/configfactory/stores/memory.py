@@ -13,7 +13,12 @@ class MemoryConfigStore(ConfigStore):
         return self.settings
 
     def get_impl(self, component: str, environment: str) -> dict:
-        pass
+        try:
+            return self.settings[component][environment]
+        except KeyError:
+            return {}
 
     def update_impl(self, component: str, environment: str, data: str):
-        pass
+        if component not in self.settings:
+            self.settings[component] = {}
+        self.settings[component][environment] = data
