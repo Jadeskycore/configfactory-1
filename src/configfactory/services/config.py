@@ -63,18 +63,30 @@ def get_all_settings(environment: Environment, flatten=False):
     """
     Get all settings.
     """
-    data = OrderedDict([
-        (
-            component.alias,
-            get_settings(
-                component=component,
-                environment=environment
+
+    data = cache.get_settings(environment=environment.alias)
+
+    if data is None:
+
+        data = OrderedDict([
+            (
+                component.alias,
+                get_settings(
+                    component=component,
+                    environment=environment
+                )
             )
+            for component in Component.objects.all()
+        ])
+
+        cache.set_settings(
+            environment=environment.alias,
+            data=data
         )
-        for component in Component.objects.all()
-    ])
+
     if flatten:
         return flatten_dict(data)
+
     return data
 
 
