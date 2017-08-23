@@ -13,11 +13,9 @@ class MemoryConfigStoreTestCase(TestCase):
 
         self.assertDictEqual(store.all(), {})
 
-    def test_get_and_update_store_data(self):
+    def test_get_update_store_data(self):
 
         store = MemoryConfigStore()
-
-        self.assertDictEqual(store.all(), {})
 
         store.update('db', 'prod', OrderedDict([
             ('user', 'root'),
@@ -42,11 +40,34 @@ class MemoryConfigStoreTestCase(TestCase):
             }
         })
 
-        self.assertDictEqual(store.get('db', 'prod'), OrderedDict([
+        self.assertDictEqual(
+            store.get('db', 'prod'),
+            OrderedDict([
+                ('user', 'root'),
+                ('pass', 'secret'),
+            ])
+        )
+
+        self.assertDictEqual(
+            store.get('redis', 'prod'),
+            OrderedDict([
+                ('url', 'redis://127.0.0.1:5050/1'),
+            ])
+        )
+
+    def test_get_update_data_with_encode_enabled(self):
+
+        store = MemoryConfigStore(encode=True)
+
+        store.update('db', 'prod', OrderedDict([
             ('user', 'root'),
             ('pass', 'secret'),
         ]))
 
-        self.assertDictEqual(store.get('redis', 'prod'), OrderedDict([
-            ('url', 'redis://127.0.0.1:5050/1'),
-        ]))
+        self.assertDictEqual(
+            store.get('db', 'prod'),
+            OrderedDict([
+                ('user', 'root'),
+                ('pass', 'secret'),
+            ])
+        )

@@ -148,7 +148,10 @@ ENVIRONMENTS = config.get('environments', [{
 BASE_ENVIRONMENT = config.get('base_environment', 'base')
 
 CONFIG_STORE = config.get('config_store', {
-    'class': 'configfactory.stores.database.DatabaseConfigStore'
+    'class': 'configfactory.stores.database.DatabaseConfigStore',
+    'options': {
+        'encode': False
+    }
 })
 
 CLEANSED_HIDDEN = config.get(

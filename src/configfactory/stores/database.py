@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 
 from configfactory.models import Config
 
@@ -7,7 +7,7 @@ from .base import ConfigStore
 
 class DatabaseConfigStore(ConfigStore):
 
-    def all_impl(self) -> Dict[str, Dict[str, str]]:
+    def all_impl(self) -> Dict[str, Dict[str, Union[str, bytes]]]:
         settings = {}  # type: Dict[str, Dict[str, str]]
         for config in Config.objects.all():
             if config.component not in settings:
@@ -15,7 +15,7 @@ class DatabaseConfigStore(ConfigStore):
             settings[config.component][config.environment] = config.data
         return settings
 
-    def get_impl(self, component: str, environment: str) -> str:
+    def get_impl(self, component: str, environment: str) -> Union[str, bytes]:
         config, created = Config.objects.get_or_create(
             component=component,
             environment=environment
