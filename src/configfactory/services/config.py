@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
-from django.core.cache import cache
 from django.conf import settings
+from django.core.cache import cache
 from django.db import transaction
 from django.utils.functional import SimpleLazyObject
 from django.utils.module_loading import import_string
@@ -35,32 +35,18 @@ def get_settings(component: Component,
             environment = Environment.objects.base().get()
 
         if environment.is_base:
-            ret = store.get(
-                component=component.alias,
-                environment=environment.alias
-            )
+            ret = store.get(component.alias, environment.alias)
         else:
-            base_settings_dict = store.get(
-                component=component.alias,
-                environment=get_environment_alias()
-            )
-            env_settings_dict = store.get(
-                component=component.alias,
-                environment=environment.alias
-            )
-            if env_settings_dict is None:
+            base_settings = store.get(component.alias, get_environment_alias())
+            env_settings = store.get(component.alias, environment.alias)
+            if env_settings is None:
                 if environment.fallback_id:
-                    env_settings_dict = store.get(
-                        component=component.alias,
-                        environment=environment.fallback.alias,
-                    )
+                    fallback = environment.fallback.alias
+                    env_settings = store.get(component.alias, fallback)
                 else:
-                    env_settings_dict = {}
+                    env_settings = {}
 
-            ret = merge_dicts(
-                base_settings_dict,
-                env_settings_dict,
-            )
+            ret = merge_dicts(base_settings, env_settings)
 
         cache.set(cache_key, ret, timeout=60 * 60)
 
