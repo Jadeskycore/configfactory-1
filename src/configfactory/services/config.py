@@ -93,7 +93,7 @@ def inject_settings_params(environment, data, components=None, raise_exception=T
     def _getter(components=None):
 
         if components is None:
-            components = Component.objects.all()
+            components = get_inject_components(data)
 
         return flatten_dict(OrderedDict([
             (
