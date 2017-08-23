@@ -151,6 +151,10 @@ def component_view(request, alias, environment=None):
         settings_dict = cleanse_dict(
             config.inject_settings_params(
                 environment=environment,
+                components=config.get_inject_components(
+                    data=settings_dict,
+                    component=component,
+                ),
                 data=settings_dict,
                 raise_exception=False
             )

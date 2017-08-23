@@ -1,7 +1,9 @@
+import json
 from collections import OrderedDict
 
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Q
 from django.utils.functional import SimpleLazyObject
 from django.utils.module_loading import import_string
 
@@ -10,7 +12,12 @@ from configfactory.models import Component, Environment
 from configfactory.shortcuts import get_environment_alias
 from configfactory.signals import component_deleted, config_updated
 from configfactory.stores.base import ConfigStore
-from configfactory.utils import flatten_dict, inject_dict_params, merge_dicts
+from configfactory.utils import (
+    flatten_dict,
+    inject_dict_params,
+    inject_regex,
+    merge_dicts,
+)
 
 store = SimpleLazyObject(func=lambda: _init_store())  # type: ConfigStore
 
@@ -59,6 +66,26 @@ def get_all_settings(environment: Environment, flatten=False):
         return flatten_dict(data)
 
     return data
+
+
+def get_inject_components(data, component=None):
+
+    query = set()
+
+    for match in inject_regex.findall(
+        json.dumps(data, separators=(',', ':'))
+    ):
+        query.add(match[1].split()[0])
+
+    components = Component.objects.all()
+
+    if query:
+        q = Q(alias__in=query)
+        if component:
+            q |= Q(pk=component.pk)
+        components = components.filter(q)
+
+    return components
 
 
 def inject_settings_params(environment, data, components=None, raise_exception=True):
