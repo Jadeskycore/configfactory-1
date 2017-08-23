@@ -15,7 +15,6 @@ class Config(models.Model):
     data = models.TextField(
         blank=True,
         null=True,
-        default='{}'
     )
 
     class Meta:

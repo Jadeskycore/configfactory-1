@@ -15,12 +15,15 @@ class DatabaseConfigStore(ConfigStore):
             settings[config.environment][config.component] = config.data
         return settings
 
-    def get_data(self, environment: str, component: str) -> Union[str, bytes]:
-        config, created = Config.objects.get_or_create(
-            component=component,
-            environment=environment
-        )
-        return config.data
+    def get_data(self, environment: str, component: str) -> Union[str, bytes, None]:
+        try:
+            config = Config.objects.get(
+                component=component,
+                environment=environment
+            )
+            return config.data
+        except Config.DoesNotExist:
+            return None
 
     def update_data(self, environment: str, component: str, data: str):
         config, created = Config.objects.get_or_create(

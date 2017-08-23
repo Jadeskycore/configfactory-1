@@ -34,6 +34,8 @@ class ConfigStore(abc.ABC):
         Get settings.
         """
         data = self.get_data(environment, component)
+        if data is None:
+            return {}
         return json.loads(
             self._decode_data(data),
             object_pairs_hook=OrderedDict
@@ -54,7 +56,7 @@ class ConfigStore(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_data(self, environment: str, component: str) -> Union[str, bytes]:
+    def get_data(self, environment: str, component: str) -> Union[str, bytes, None]:
         pass
 
     @abc.abstractmethod
