@@ -28,4 +28,4 @@ class DatabaseConfigStore(ConfigStore):
             environment=environment
         )
         config.data = data
-        config.save(update_fields=['settings_json'])
+        config.save(update_fields=['data'])
