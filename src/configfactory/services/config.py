@@ -1,15 +1,15 @@
 from collections import OrderedDict
 
 from django.conf import settings
-from django.core.cache import cache
 from django.db import transaction
 from django.utils.functional import SimpleLazyObject
 from django.utils.module_loading import import_string
 
+from configfactory import cache
 from configfactory.exceptions import ComponentDeleteError, InjectKeyError
 from configfactory.models import Component, Environment
 from configfactory.shortcuts import get_environment_alias
-from configfactory.signals import config_updated
+from configfactory.signals import config_updated, component_deleted
 from configfactory.stores.base import ConfigStore
 from configfactory.utils import flatten_dict, inject_dict_params, merge_dicts
 
@@ -23,19 +23,18 @@ def get_settings(component: Component,
     Get component settings.
     """
 
-    cache_key = 'settings:{}:{}'.format(
-        component.alias,
-        environment.alias,
+    data = cache.get_settings(
+        component=component.alias,
+        environment=environment.alias
     )
-    ret = cache.get(cache_key)
 
-    if ret is None:
+    if data is None:
 
         if environment is None:
             environment = Environment.objects.base().get()
 
         if environment.is_base:
-            ret = store.get(component.alias, environment.alias)
+            data = store.get(component.alias, environment.alias)
         else:
             base_settings = store.get(component.alias, get_environment_alias())
             env_settings = store.get(component.alias, environment.alias)
@@ -46,14 +45,18 @@ def get_settings(component: Component,
                 else:
                     env_settings = {}
 
-            ret = merge_dicts(base_settings, env_settings)
+            data = merge_dicts(base_settings, env_settings)
 
-        cache.set(cache_key, ret, timeout=60 * 60)
+        cache.set_settings(
+            component=component.alias,
+            environment=environment.alias,
+            data=data,
+        )
 
     if flatten:
-        ret = flatten_dict(ret)
+        data = flatten_dict(data)
 
-    return ret
+    return data
 
 
 def get_all_settings(environment: Environment, flatten=False):
@@ -86,7 +89,7 @@ def update_settings(component: Component, environment: Environment, settings: di
         settings=settings
     )
 
-    # Notify about update component
+    # Notify about updated component
     config_updated.send(
         sender=Component,
         component=component,
@@ -123,6 +126,9 @@ def delete_component(component: Component):
                         'key': e.key
                     }
                 )
+
+        # Notify about deleted component
+        component_deleted.send(sender=Component, component=component)
 
 
 def _init_store():
