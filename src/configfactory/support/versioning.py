@@ -1,7 +1,7 @@
 import packaging.version
 
 
-def get_version(version=None, base=False) -> str:
+def get_version(version=None, base=False):
 
     from configfactory import VERSION
 

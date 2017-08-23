@@ -1,13 +1,11 @@
-from typing import Optional
-
-from django.core.cache import BaseCache, caches
+from django.core.cache import caches
 
 
-def get_settings_cache() -> BaseCache:
+def get_settings_cache():
     return caches['settings']
 
 
-def make_settings_key(component: str, environment: str = None):
+def make_settings_key(component, environment=None):
     parts = ['settings']
     if component:
         parts.append('c:{}'.format(component))
@@ -16,19 +14,19 @@ def make_settings_key(component: str, environment: str = None):
     return '/'.join(parts)
 
 
-def get_settings(component: str = None, environment: str = None) -> Optional[dict]:
+def get_settings(component=None, environment=None):
     cache = get_settings_cache()
     key = make_settings_key(component, environment)
     return cache.get(key)
 
 
-def set_settings(data: dict, component: str = None, environment: str = None):
+def set_settings(data, component=None, environment=None):
     cache = get_settings_cache()
     key = make_settings_key(component, environment)
     cache.set(key, data, timeout=60 * 60)
 
 
-def delete_settings(component: str = None, environment: str = None):
+def delete_settings(component=None, environment=None):
     cache = get_settings_cache()
     key = make_settings_key(component, environment)
     cache.delete(key)
