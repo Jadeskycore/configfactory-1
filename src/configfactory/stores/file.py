@@ -1,13 +1,15 @@
+from typing import Dict
+
 from .base import ConfigStore
 
 
 class FileConfigStore(ConfigStore):
 
-    def all(self):
+    def all_impl(self) -> Dict[str, Dict[str, str]]:
         pass
 
-    def get(self, component: str, environment: str) -> dict:
+    def get_impl(self, component: str, environment: str) -> str:
         pass
 
-    def update(self, component: str, environment: str, settings: dict):
+    def update_impl(self, component: str, environment: str, data: str):
         pass

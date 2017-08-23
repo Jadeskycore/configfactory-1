@@ -6,13 +6,14 @@ from .base import ConfigStore
 class MemoryConfigStore(ConfigStore):
 
     def __init__(self):
+        super().__init__()
         self.settings = {}  # type: Dict[str, dict]
 
-    def all(self):
+    def all_impl(self):
         return self.settings
 
-    def get(self, component: str, environment: str) -> dict:
+    def get_impl(self, component: str, environment: str) -> dict:
         pass
 
-    def update(self, component: str, environment: str, settings: dict):
+    def update_impl(self, component: str, environment: str, data: str):
         pass
