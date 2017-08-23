@@ -6,7 +6,6 @@ from configfactory.exceptions import CircularInjectError, InjectKeyError
 from configfactory.forms.fields import JSONFormField
 from configfactory.models import Component
 from configfactory.services import config
-from configfactory.utils import inject_dict_params
 
 
 class ComponentForm(forms.ModelForm):
@@ -43,10 +42,9 @@ class ComponentSettingsForm(forms.Form):
     def clean_settings(self):
         data = self.cleaned_data['settings']
         try:
-            inject_dict_params(
+            config.inject_settings_params(
+                environment=self.environment,
                 data=data,
-                params=config.get_all_settings(self.environment, flatten=True),
-                flatten=True,
                 raise_exception=True
             )
         except (InjectKeyError, CircularInjectError) as e:

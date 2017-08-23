@@ -118,14 +118,10 @@ def inject_params(
 def inject_dict_params(
         data: dict,
         params: dict,
-        flatten: bool = False,
         raise_exception: bool = True):
     """
     Inject params to dictionary.
     """
-
-    if flatten:
-        data = flatten_dict(data)
 
     def inject(key, value):
 

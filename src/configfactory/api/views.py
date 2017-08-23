@@ -6,7 +6,6 @@ from django.urls import reverse
 
 from configfactory.models import Component, Environment
 from configfactory.services import config
-from configfactory.utils import flatten_dict, inject_dict_params
 
 
 def environments_view(request):
@@ -27,17 +26,10 @@ def components_view(request, environment):
 
     environment = get_object_or_404(Environment, alias=environment)
     flatten = _get_flatten_param(request)
-    settings_dict = config.get_all_settings(environment, flatten=False)
-    flatten_settings_dict = flatten_dict(settings_dict)
 
-    if flatten:
-        data = flatten_settings_dict
-    else:
-        data = settings_dict
-
-    data = inject_dict_params(
-        data=data,
-        params=flatten_settings_dict,
+    data = config.inject_settings_params(
+        environment=environment,
+        data=config.get_all_settings(environment, flatten=flatten),
         raise_exception=False
     )
 

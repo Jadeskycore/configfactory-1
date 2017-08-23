@@ -17,11 +17,7 @@ from configfactory.forms.component import (
 from configfactory.models import Component, Environment
 from configfactory.services import config
 from configfactory.shortcuts import get_environment_alias
-from configfactory.utils import (
-    cleanse_dict,
-    current_timestamp,
-    inject_dict_params,
-)
+from configfactory.utils import cleanse_dict, current_timestamp
 
 
 @login_required()
@@ -153,9 +149,9 @@ def component_view(request, alias, environment=None):
 
     if not edit_mode:
         settings_dict = cleanse_dict(
-            inject_dict_params(
+            config.inject_settings_params(
+                environment=environment,
                 data=settings_dict,
-                params=config.get_all_settings(environment, flatten=True),
                 raise_exception=False
             )
         )

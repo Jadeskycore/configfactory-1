@@ -8,7 +8,7 @@ from django.utils.module_loading import import_string
 from configfactory.exceptions import ComponentDeleteError, InjectKeyError
 from configfactory.models import Component, Environment
 from configfactory.shortcuts import get_environment_alias
-from configfactory.signals import config_updated, component_deleted
+from configfactory.signals import component_deleted, config_updated
 from configfactory.stores.base import ConfigStore
 from configfactory.utils import flatten_dict, inject_dict_params, merge_dicts
 
@@ -40,31 +40,49 @@ def get_settings(environment: Environment, component: Component, flatten=False):
     return data
 
 
-def get_all_settings(environment: Environment, flatten=False) -> dict:
+def get_all_settings(environment: Environment, flatten=False):
     """
     Get all settings.
     """
 
-    def _getter():
+    components = Component.objects.all()
 
-        components = Component.objects.all()
+    data = OrderedDict([
+        (
+            component.alias,
+            get_settings(environment, component)
+        )
+        for component in components
+    ])
 
-        data = OrderedDict([
+    if flatten:
+        return flatten_dict(data)
+
+    return data
+
+
+def inject_settings_params(environment, data, components=None, raise_exception=True):
+
+    def _getter(components=None):
+
+        if components is None:
+            components = Component.objects.all()
+
+        return flatten_dict(OrderedDict([
             (
                 component.alias,
                 get_settings(environment, component)
             )
             for component in components
-        ])
+        ]))
 
-        if flatten:
-            return flatten_dict(data)
+    params = SimpleLazyObject(func=lambda: _getter(components))  # type: dict
 
-        return data
-
-    ret = SimpleLazyObject(func=lambda: _getter())  # type: dict
-
-    return ret
+    return inject_dict_params(
+        data=data,
+        params=params,
+        raise_exception=raise_exception
+    )
 
 
 def update_settings(component: Component, environment: Environment, settings: dict):
@@ -98,11 +116,11 @@ def delete_component(component: Component):
         component.delete()
 
         for environment in Environment.objects.all():
+            data = get_settings(environment, component)
             try:
-                inject_dict_params(
-                    data=get_settings(environment, component),
-                    params=get_all_settings(environment, flatten=True),
-                    flatten=True,
+                inject_settings_params(
+                    environment=environment,
+                    data=data,
                     raise_exception=True
                 )
             except InjectKeyError as e:
