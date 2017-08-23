@@ -22,6 +22,7 @@ requires = [
     'django-jinja==2.3.1',
     'dj-static==0.0.6',
     'dj-database-url==0.4.2',
+    'cryptography==2.0.3',
     'pytz==2017.2',
     'jsonschema==2.6.0',
     'gunicorn==19.7.1',
