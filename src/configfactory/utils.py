@@ -18,7 +18,7 @@ inject_regex = re.compile(r'(?<!\$)(\$(?:{param:(%(n)s)}))'
 
 
 def json_dumps(obj, indent=None):
-    return json.dumps(obj, indent=indent, separators=(',', ':'))
+    return json.dumps(obj, indent=indent)
 
 
 def json_loads(s):

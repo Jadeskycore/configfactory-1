@@ -1,12 +1,12 @@
 import abc
 import base64
+import json
 import zlib
+from collections import OrderedDict
 from typing import Dict, Union
 
 from cryptography.fernet import Fernet
 from django.utils.functional import cached_property
-
-from configfactory.utils import json_dumps, json_loads
 
 
 class ConfigStore(abc.ABC):
@@ -22,7 +22,10 @@ class ConfigStore(abc.ABC):
         for environment, component_data in self.all_data().items():
             all_settings[environment] = {}
             for component, data in component_data.items():
-                settings = json_loads(self._decode_data(data))
+                settings = json.loads(
+                    self._decode_data(data),
+                    object_pairs_hook=OrderedDict
+                )
                 all_settings[environment][component] = settings
         return all_settings
 
@@ -31,7 +34,10 @@ class ConfigStore(abc.ABC):
         Get settings.
         """
         data = self.get_data(component, environment)
-        return json_loads(self._decode_data(data))
+        return json.loads(
+            self._decode_data(data),
+            object_pairs_hook=OrderedDict
+        )
 
     def update(self, component: str, environment: str, settings: dict):
         """
@@ -39,7 +45,7 @@ class ConfigStore(abc.ABC):
         """
         # Prepare settings string
         if isinstance(settings, dict):
-            settings = json_dumps(settings)
+            settings = json.dumps(settings, separators=(',', ':'))
         data = self._encode_data(settings)
         self.update_data(component, environment, data)
 
