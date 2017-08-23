@@ -20,13 +20,13 @@ class DatabaseConfigStoreTestCase(TestCase):
 
         self.assertDictEqual(store.all(), {})
 
-        store.update('db', 'prod', OrderedDict([
+        store.update('prod', 'db', OrderedDict([
             ('user', 'root'),
             ('pass', 'secret'),
         ]))
 
         self.assertDictEqual(
-            store.get('db', 'prod'),
+            store.get('prod', 'db'),
             OrderedDict([
                 ('user', 'root'),
                 ('pass', 'secret'),
@@ -34,36 +34,34 @@ class DatabaseConfigStoreTestCase(TestCase):
         )
 
         self.assertEqual(
-            Config.objects.get(component='db', environment='prod').data,
+            Config.objects.get(environment='prod', component='db').data,
             '{"user":"root","pass":"secret"}'
         )
 
-        store.update('redis', 'prod', OrderedDict([
+        store.update('prod', 'redis', OrderedDict([
             ('url', 'redis://127.0.0.1:5050/1'),
         ]))
 
         self.assertDictEqual(
-            store.get('redis', 'prod'),
+            store.get('prod', 'redis'),
             OrderedDict([
                 ('url', 'redis://127.0.0.1:5050/1'),
             ])
         )
 
         self.assertEqual(
-            Config.objects.get(component='redis', environment='prod').data,
+            Config.objects.get(environment='prod', component='redis').data,
             '{"url":"redis://127.0.0.1:5050/1"}'
         )
 
         self.assertDictEqual(store.all(), {
-            'db': {
-                'prod': OrderedDict([
+            'prod': {
+                'db': OrderedDict([
                     ('user', 'root'),
                     ('pass', 'secret'),
-                ])
-            },
-            'redis': {
-                'prod': OrderedDict([
+                ]),
+                'redis': OrderedDict([
                     ('url', 'redis://127.0.0.1:5050/1'),
-                ])
+                ]),
             }
         })

@@ -146,8 +146,8 @@ def component_view(request, alias, environment=None):
         raise Http404
 
     settings_dict = config.get_settings(
-        component=component,
         environment=environment,
+        component=component,
         flatten=not edit_mode
     )
 

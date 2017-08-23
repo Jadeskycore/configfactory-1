@@ -29,17 +29,17 @@ class ConfigStore(abc.ABC):
                 all_settings[environment][component] = settings
         return all_settings
 
-    def get(self, component: str, environment: str) -> dict:
+    def get(self, environment: str, component: str) -> dict:
         """
         Get settings.
         """
-        data = self.get_data(component, environment)
+        data = self.get_data(environment, component)
         return json.loads(
             self._decode_data(data),
             object_pairs_hook=OrderedDict
         )
 
-    def update(self, component: str, environment: str, settings: dict):
+    def update(self, environment: str, component: str, settings: dict):
         """
         Update settings.
         """
@@ -47,18 +47,18 @@ class ConfigStore(abc.ABC):
         if isinstance(settings, dict):
             settings = json.dumps(settings, separators=(',', ':'))
         data = self._encode_data(settings)
-        self.update_data(component, environment, data)
+        self.update_data(environment, component, data)
 
     @abc.abstractmethod
     def all_data(self) -> Dict[str, Dict[str, Union[str, bytes]]]:
         pass
 
     @abc.abstractmethod
-    def get_data(self, component: str, environment: str) -> Union[str, bytes]:
+    def get_data(self, environment: str, component: str) -> Union[str, bytes]:
         pass
 
     @abc.abstractmethod
-    def update_data(self, component: str, environment: str, data: str):
+    def update_data(self, environment: str, component: str, data: str):
         pass
 
     @cached_property

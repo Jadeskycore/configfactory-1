@@ -51,8 +51,8 @@ def component_settings_view(request, environment, alias):
     flatten = _get_flatten_param(request)
 
     data = config.get_settings(
-        component=component,
         environment=environment,
+        component=component,
         flatten=flatten
     )
 

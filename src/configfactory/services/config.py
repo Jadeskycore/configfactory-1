@@ -5,7 +5,6 @@ from django.db import transaction
 from django.utils.functional import SimpleLazyObject
 from django.utils.module_loading import import_string
 
-from configfactory import cache
 from configfactory.exceptions import ComponentDeleteError, InjectKeyError
 from configfactory.models import Component, Environment
 from configfactory.shortcuts import get_environment_alias
@@ -16,42 +15,24 @@ from configfactory.utils import flatten_dict, inject_dict_params, merge_dicts
 store = SimpleLazyObject(func=lambda: _init_store())  # type: ConfigStore
 
 
-def get_settings(component: Component,
-                 environment: Environment=None,
-                 flatten: bool=False):
+def get_settings(environment: Environment, component: Component, flatten=False):
     """
     Get component settings.
     """
 
-    data = cache.get_settings(
-        component=component.alias,
-        environment=environment.alias
-    )
+    if environment.is_base:
+        data = store.get(environment.alias, component.alias)
+    else:
+        base_settings = store.get(get_environment_alias(), component.alias)
+        env_settings = store.get(environment.alias, component.alias)
+        if env_settings is None:
+            if environment.fallback_id:
+                fallback = environment.fallback.alias
+                env_settings = store.get(fallback, component.alias)
+            else:
+                env_settings = {}
 
-    if data is None:
-
-        if environment is None:
-            environment = Environment.objects.base().get()
-
-        if environment.is_base:
-            data = store.get(component.alias, environment.alias)
-        else:
-            base_settings = store.get(component.alias, get_environment_alias())
-            env_settings = store.get(component.alias, environment.alias)
-            if env_settings is None:
-                if environment.fallback_id:
-                    fallback = environment.fallback.alias
-                    env_settings = store.get(component.alias, fallback)
-                else:
-                    env_settings = {}
-
-            data = merge_dicts(base_settings, env_settings)
-
-        cache.set_settings(
-            component=component.alias,
-            environment=environment.alias,
-            data=data,
-        )
+        data = merge_dicts(base_settings, env_settings)
 
     if flatten:
         data = flatten_dict(data)
@@ -59,35 +40,31 @@ def get_settings(component: Component,
     return data
 
 
-def get_all_settings(environment: Environment, flatten=False):
+def get_all_settings(environment: Environment, flatten=False) -> dict:
     """
     Get all settings.
     """
 
-    data = cache.get_settings(environment=environment.alias)
+    def _getter():
 
-    if data is None:
+        components = Component.objects.all()
 
         data = OrderedDict([
             (
                 component.alias,
-                get_settings(
-                    component=component,
-                    environment=environment
-                )
+                get_settings(environment, component)
             )
-            for component in Component.objects.all()
+            for component in components
         ])
 
-        cache.set_settings(
-            environment=environment.alias,
-            data=data
-        )
+        if flatten:
+            return flatten_dict(data)
 
-    if flatten:
-        return flatten_dict(data)
+        return data
 
-    return data
+    ret = SimpleLazyObject(func=lambda: _getter())  # type: dict
+
+    return ret
 
 
 def update_settings(component: Component, environment: Environment, settings: dict):
@@ -96,8 +73,8 @@ def update_settings(component: Component, environment: Environment, settings: di
     """
 
     store.update(
-        component=component.alias,
         environment=environment.alias,
+        component=component.alias,
         settings=settings
     )
 
@@ -123,10 +100,7 @@ def delete_component(component: Component):
         for environment in Environment.objects.all():
             try:
                 inject_dict_params(
-                    data=get_settings(
-                        component=component,
-                        environment=environment
-                    ),
+                    data=get_settings(environment, component),
                     params=get_all_settings(environment, flatten=True),
                     flatten=True,
                     raise_exception=True

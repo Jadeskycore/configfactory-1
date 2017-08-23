@@ -12,13 +12,13 @@ class MemoryConfigStore(ConfigStore):
     def all_data(self) -> Dict[str, Dict[str, Union[str, bytes]]]:
         return self._settings
 
-    def get_data(self, component: str, environment: str) -> Union[str, bytes]:
+    def get_data(self, environment: str, component: str) -> Union[str, bytes]:
         try:
-            return self._settings[component][environment]
+            return self._settings[environment][component]
         except KeyError:
             return ''
 
-    def update_data(self, component: str, environment: str, data: str):
-        if component not in self._settings:
-            self._settings[component] = {}
-        self._settings[component][environment] = data
+    def update_data(self, environment: str, component: str, data: str):
+        if environment not in self._settings:
+            self._settings[environment] = {}
+        self._settings[environment][component] = data

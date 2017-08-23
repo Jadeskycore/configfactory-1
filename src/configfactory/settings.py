@@ -137,10 +137,6 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     },
-    'settings': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'configfactory',
-    }
 }
 
 ENVIRONMENTS = config.get('environments', [{
