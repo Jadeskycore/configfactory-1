@@ -9,16 +9,16 @@ class MemoryConfigStore(ConfigStore):
         super().__init__(*args, **kwargs)
         self._settings = {}  # type: Dict[str, Dict[str, str]]
 
-    def all_impl(self) -> Dict[str, Dict[str, Union[str, bytes]]]:
+    def all_data(self) -> Dict[str, Dict[str, Union[str, bytes]]]:
         return self._settings
 
-    def get_impl(self, component: str, environment: str) -> Union[str, bytes]:
+    def get_data(self, component: str, environment: str) -> Union[str, bytes]:
         try:
             return self._settings[component][environment]
         except KeyError:
             return ''
 
-    def update_impl(self, component: str, environment: str, data: str):
+    def update_data(self, component: str, environment: str, data: str):
         if component not in self._settings:
             self._settings[component] = {}
         self._settings[component][environment] = data

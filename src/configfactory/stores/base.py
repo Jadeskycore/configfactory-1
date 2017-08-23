@@ -19,7 +19,7 @@ class ConfigStore(abc.ABC):
         Get all settings.
         """
         all_settings = {}
-        for environment, component_data in self.all_impl().items():
+        for environment, component_data in self.all_data().items():
             all_settings[environment] = {}
             for component, data in component_data.items():
                 settings = json_loads(self._decode_data(data))
@@ -30,7 +30,7 @@ class ConfigStore(abc.ABC):
         """
         Get settings.
         """
-        data = self.get_impl(component, environment)
+        data = self.get_data(component, environment)
         return json_loads(self._decode_data(data))
 
     def update(self, component: str, environment: str, settings: dict):
@@ -41,22 +41,22 @@ class ConfigStore(abc.ABC):
         if isinstance(settings, dict):
             settings = json_dumps(settings)
         data = self._encode_data(settings)
-        self.update_impl(component, environment, data)
+        self.update_data(component, environment, data)
 
     @abc.abstractmethod
-    def all_impl(self) -> Dict[str, Dict[str, Union[str, bytes]]]:
+    def all_data(self) -> Dict[str, Dict[str, Union[str, bytes]]]:
         pass
 
     @abc.abstractmethod
-    def get_impl(self, component: str, environment: str) -> Union[str, bytes]:
+    def get_data(self, component: str, environment: str) -> Union[str, bytes]:
         pass
 
     @abc.abstractmethod
-    def update_impl(self, component: str, environment: str, data: str):
+    def update_data(self, component: str, environment: str, data: str):
         pass
 
     @cached_property
-    def _encoder(self):
+    def encoder(self):
         from django.conf import settings
         key = base64.urlsafe_b64encode(
             settings.SECRET_KEY[:32].encode()
@@ -68,7 +68,7 @@ class ConfigStore(abc.ABC):
         Encode and compress data.
         """
         if self.encode:
-            return self._encoder.encrypt(
+            return self.encoder.encrypt(
                 zlib.compress(data.encode())
             ).decode()
         return data
@@ -81,7 +81,7 @@ class ConfigStore(abc.ABC):
             if isinstance(data, str):
                 data = data.encode()
             data = zlib.decompress(
-                self._encoder.decrypt(data)
+                self.encoder.decrypt(data)
             )
         if isinstance(data, bytes):
             return data.decode()
