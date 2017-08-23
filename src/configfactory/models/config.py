@@ -12,7 +12,7 @@ class Config(models.Model):
         verbose_name=_('environment alias')
     )
 
-    settings_json = models.TextField(
+    data = models.TextField(
         blank=True,
         null=True,
         default='{}'
