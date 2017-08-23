@@ -65,7 +65,7 @@ def flatten_dict(d, parent_key='', sep='.'):
 
 
 def inject_params(
-        content: str,
+        data: str,
         params: dict,
         calls: int=0,
         raise_exception: bool=True
@@ -81,7 +81,7 @@ def inject_params(
             raise CircularInjectError(
                 'Circular injections detected.'
             )
-        return content
+        return data
 
     calls += 1
 
@@ -99,20 +99,20 @@ def inject_params(
                 )
             return whole
 
-    if not inject_regex.search(content):
-        return content
+    if not inject_regex.search(data):
+        return data
 
-    content = inject_regex.sub(replace_param, content)
+    data = inject_regex.sub(replace_param, data)
 
-    if inject_regex.search(content):
+    if inject_regex.search(data):
         return inject_params(
-            content=content,
+            data=data,
             params=params,
             calls=calls,
             raise_exception=raise_exception
         )
 
-    return content
+    return data
 
 
 def inject_dict_params(
@@ -139,7 +139,7 @@ def inject_dict_params(
             params_value = params.get(param_key)
 
             value = inject_params(
-                content=value,
+                data=value,
                 params=params,
                 raise_exception=raise_exception
             )
